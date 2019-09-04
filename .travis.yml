@@ -1,0 +1,8 @@
+sudo: enabled
+
+language: java
+jdk:
+  - oraclejdk8
+before_install:
+  - chmod +x mvnw
+dist: trusty
