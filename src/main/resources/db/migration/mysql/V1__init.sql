@@ -1,6 +1,6 @@
 CREATE TABLE `residencia` (
   `id` bigint(20) NOT NULL,
-  `iptu` varchar(20) NOT NULL,
+  `matricula` varchar(20) NOT NULL,
   `endereco` varchar(100) NOT NULL,
   `numero` varchar(10) NOT NULL,
   `bairro` varchar(100) NOT NULL,
@@ -37,13 +37,13 @@ CREATE TABLE `lancamento` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Indexes for table `empresa`
+-- Indexes for table `residencia`
 --
 ALTER TABLE `residencia`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `funcionario`
+-- Indexes for table `morador`
 --
 ALTER TABLE `morador`
   ADD PRIMARY KEY (`id`),

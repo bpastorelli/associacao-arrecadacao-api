@@ -23,7 +23,7 @@ public class Residencia implements Serializable {
 	private static final long serialVersionUID = 3960436649365666213L;
 	
 	private Long   id;
-	private String iptu;
+	private String matricula;
 	private String endereco;
 	private String numero;
 	private String bairro;
@@ -47,13 +47,13 @@ public class Residencia implements Serializable {
 		this.id = id;
 	}
 
-	@Column(name = "iptu", nullable = true)
-	public String getIptu() {
-		return iptu;
+	@Column(name = "matricula", nullable = true)
+	public String getMatricula() {
+		return matricula;
 	}
 
-	public void setIptu(String iptu) {
-		this.iptu = iptu;
+	public void setMatricula(String matricula) {
+		this.matricula = matricula;
 	}
 
 	@Column(name = "endereco", nullable = false)
@@ -151,7 +151,7 @@ public class Residencia implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Residencia [id=" + id + ", iptu=" + iptu + ", endereco=" + endereco + ", numero=" + numero + ", bairro=" + bairro + ", cidade=" + cidade + ", uf=" + uf + ", dataCriacao=" + dataCriacao
+		return "Residencia [id=" + id + ", matricula=" + matricula + ", endereco=" + endereco + ", numero=" + numero + ", bairro=" + bairro + ", cidade=" + cidade + ", uf=" + uf + ", dataCriacao=" + dataCriacao
 				+ ", dataAtualizacao=" + dataAtualizacao + "]";
 	}
 }

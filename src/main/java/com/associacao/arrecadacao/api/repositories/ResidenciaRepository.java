@@ -11,5 +11,7 @@ public interface ResidenciaRepository extends JpaRepository<Residencia, Long> {
 	
 	@Transactional(readOnly = true)
 	Optional<Residencia> findById(Long id);
+	
+	Residencia findByMatricula(String Matricula);
 
 }
