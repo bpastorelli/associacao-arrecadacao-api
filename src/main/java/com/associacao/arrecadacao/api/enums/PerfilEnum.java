@@ -1,4 +1,4 @@
-package com.associacao.arrecadacao.enums;
+package com.associacao.arrecadacao.api.enums;
 
 public enum PerfilEnum {
 	ROLE_ADMIN,

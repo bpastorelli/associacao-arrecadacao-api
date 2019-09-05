@@ -19,7 +19,7 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
-import com.associacao.arrecadacao.enums.PerfilEnum;
+import com.associacao.arrecadacao.api.enums.PerfilEnum;
 
 @Entity
 @Table(name = "morador")
