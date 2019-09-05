@@ -3,7 +3,6 @@ package com.associacao.arrecadacao.api.entities;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -19,7 +18,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import com.associacao.arrecadacao.enums.PerfilEnum;
 
@@ -77,11 +75,6 @@ public class Morador implements Serializable {
 	@Column(name = "cpf", nullable = true)
 	public String getCpf() {
 		return cpf;
-	}
-
-	@Transient
-	public Optional<String> getCpfOpt() {
-		return Optional.ofNullable(cpf);
 	}
 	
 	public void setCpf(String cpf) {

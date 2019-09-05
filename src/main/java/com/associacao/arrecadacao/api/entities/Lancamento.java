@@ -29,6 +29,7 @@ public class Lancamento implements Serializable {
 	private BigDecimal valor;
 	private Date dataCriacao;
 	private Date dataAtualizacao;
+	private Long usuarioRecebimento;
 	private Morador morador;
 
 	public Lancamento() {
@@ -99,6 +100,15 @@ public class Lancamento implements Serializable {
 		this.morador = morador;
 	}
 	
+	@Column(name = "usuario_recebimento", nullable = false)
+	public Long getUsuarioRecebimento() {
+		return usuarioRecebimento;
+	}
+
+	public void setUsuarioRecebimento(Long usuarioRecebimento) {
+		this.usuarioRecebimento = usuarioRecebimento;
+	}
+	
 	@PreUpdate
     public void preUpdate() {
         dataAtualizacao = new Date();
@@ -114,7 +124,7 @@ public class Lancamento implements Serializable {
 	@Override
 	public String toString() {
 		return "Lancamento [id=" + id + ", dataPagamento=" + dataPagamento + ", mesReferencia=" + mesReferencia + ", valor=" + valor
-				+ ", dataCriacao=" + dataCriacao + ", dataAtualizacao=" + dataAtualizacao + ", morador=" + morador + "]";
+				+ ", dataCriacao=" + dataCriacao + ", dataAtualizacao=" + dataAtualizacao + ", morador=" + morador + ", usuarioRecebimento=" + usuarioRecebimento + "]";
 	}
 
 }

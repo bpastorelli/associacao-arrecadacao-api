@@ -133,7 +133,7 @@ public class Residencia implements Serializable {
 		return moradores;
 	}
 
-	public void setFuncionarios(List<Morador> moradores) {
+	public void setMoradores(List<Morador> moradores) {
 		this.moradores = moradores;
 	}
 	
