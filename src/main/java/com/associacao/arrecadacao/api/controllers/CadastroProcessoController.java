@@ -1,8 +1,6 @@
 package com.associacao.arrecadacao.api.controllers;
 
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.validation.Valid;
 
@@ -21,16 +19,17 @@ import org.springframework.web.bind.annotation.RestController;
 import com.associacao.arrecadacao.api.dtos.CadastroResidenciaDto;
 import com.associacao.arrecadacao.api.entities.Morador;
 import com.associacao.arrecadacao.api.entities.Residencia;
+import com.associacao.arrecadacao.api.enums.PerfilEnum;
 import com.associacao.arrecadacao.api.response.Response;
 import com.associacao.arrecadacao.api.services.MoradorService;
 import com.associacao.arrecadacao.api.services.ResidenciaService;
 
 @RestController
-@RequestMapping("/api/residencia")
+@RequestMapping("/associados/processo")
 @CrossOrigin(origins = "*")
-public class CadastroResidenciaController {
+public class CadastroProcessoController {
 
-	private static final Logger log = LoggerFactory.getLogger(CadastroResidenciaController.class);
+	private static final Logger log = LoggerFactory.getLogger(CadastroProcessoController.class);
 	
 	@Autowired
 	private MoradorService moradorService;
@@ -38,28 +37,27 @@ public class CadastroResidenciaController {
 	@Autowired
 	private ResidenciaService residenciaService;
 	
-	public CadastroResidenciaController() {
+	public CadastroProcessoController() {
 	}
 	
 	@PostMapping
 	public ResponseEntity<Response<CadastroResidenciaDto>> cadastrar(@Valid @RequestBody CadastroResidenciaDto cadastroResidenciaDto,
 			BindingResult result) throws NoSuchAlgorithmException{
-		log.info("Cadastrando residência: {}", cadastroResidenciaDto.toString());
+		log.info("Cadastrando processo de associado: {}", cadastroResidenciaDto.toString());
 		Response<CadastroResidenciaDto> response = new Response<CadastroResidenciaDto>();
 		
+		cadastroResidenciaDto.getMoradores().forEach(p -> p.setPerfil(PerfilEnum.ROLE_USUARIO));
+		cadastroResidenciaDto.getMoradores().forEach(p -> p.setSenha("123456"));
 		validarDadosExistentes(cadastroResidenciaDto, result);
 		Residencia residencia = this.converterDtoParaResidencia(cadastroResidenciaDto);
-		List<Morador> moradores = this.converterDtoParaMorador(cadastroResidenciaDto, result);
 		
 		if(result.hasErrors()) {
-			log.error("Erro validando dados de cadastro de residência: {}", result.getAllErrors());
+			log.error("Erro validando dados para cadastro do processo: {}", result.getAllErrors());
 			result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
 			return ResponseEntity.badRequest().body(response);
 		}
 		
 		this.residenciaService.persistir(residencia);
-		moradores.forEach(p -> p.setResidencia(residencia));
-		this.moradorService.persistir(moradores);
 		
 		response.setData(this.converterCadastroResidenciaDto(residencia));
 		return ResponseEntity.ok(response);
@@ -68,6 +66,33 @@ public class CadastroResidenciaController {
 	private void validarDadosExistentes(CadastroResidenciaDto cadastroResidenciaDto, BindingResult result) {
 		this.residenciaService.bucarPorMatricula(cadastroResidenciaDto.getMatricula())
 				.ifPresent(res -> result.addError(new ObjectError("residencia", "Residência já existente")));
+		
+		if(cadastroResidenciaDto.getMoradores().size() == 0) {
+			result.addError(new ObjectError("morador", "Você deve informar ao menos um morador."));
+		}
+		
+		for(Morador morador : cadastroResidenciaDto.getMoradores()) {
+			if(morador.getNome().isEmpty())
+				result.addError(new ObjectError("morador", "O campo Nome é obrigatório."));
+			
+			if(morador.getCpf().isEmpty())
+				result.addError(new ObjectError("morador", "O campo CPF é obrigatório."));
+			
+			if(morador.getSenha().isEmpty())
+				result.addError(new ObjectError("morador", "O campo Senha é obrigatório."));
+			
+			if(morador.getRg().isEmpty())
+				result.addError(new ObjectError("morador", "O campo RG é obrigatório."));
+			
+			if(morador.getEmail().isEmpty())
+				result.addError(new ObjectError("morador", "O campo e-mail é obrigatório."));
+			
+			if(morador.getTelefone().isEmpty() && morador.getCelular().isEmpty())
+				result.addError(new ObjectError("morador", "Você deve informar um número de telefone ou celular."));
+			
+			if(morador.getPerfil().toString().isEmpty())
+				result.addError(new ObjectError("morador", "O campo Perfi é obrigatório."));
+		}
 		
 		for(Morador morador : cadastroResidenciaDto.getMoradores()) {
 			this.moradorService.buscarPorCpf(morador.getCpf())
@@ -95,7 +120,7 @@ public class CadastroResidenciaController {
 		
 		Residencia residencia = new Residencia();
 		residencia.setMatricula(cadastroResidenciaDto.getMatricula());
-		residencia.setBairro(cadastroResidenciaDto.getEndereco());
+		residencia.setEndereco(cadastroResidenciaDto.getEndereco());
 		residencia.setNumero(cadastroResidenciaDto.getNumero());
 		residencia.setBairro(cadastroResidenciaDto.getBairro());
 		residencia.setCep(cadastroResidenciaDto.getCep());
@@ -106,22 +131,11 @@ public class CadastroResidenciaController {
 	}
 	
 	/**
-	 * Converter o CadastroResidenciaDto para Morador.
+	 * Converter o objeto tipo Residencia para o tipo CadastroResidenciaDto.
 	 * 
-	 * @param cadastroResidenciaDto
-	 * @return Morador
+	 * @param residencia
+	 * @return CadastroResidenciaDto
 	 */
-	private List<Morador> converterDtoParaMorador(CadastroResidenciaDto cadastroResidenciaDto, BindingResult result) {
-		
-		List<Morador> moradores = new ArrayList<Morador>();
-		
-		for(Morador morador : cadastroResidenciaDto.getMoradores()) {
-			moradores.add(morador);
-		}
-
-		return moradores;
-	}
-	
 	private CadastroResidenciaDto converterCadastroResidenciaDto(Residencia residencia) {
 		
 		CadastroResidenciaDto cadastroResidenciaDto = new CadastroResidenciaDto();

@@ -47,7 +47,6 @@ public class CadastroResidenciaDto {
 		return endereco;
 	}
 
-	@NotEmpty(message = "Endereço não pode ser nulo.")
 	public void setEndereco(String endereco) {
 		this.endereco = endereco;
 	}
@@ -58,7 +57,6 @@ public class CadastroResidenciaDto {
 		return numero;
 	}
 
-	@NotEmpty(message = "Número não pode ser nulo.")
 	public void setNumero(String numero) {
 		this.numero = numero;
 	}
@@ -101,7 +99,6 @@ public class CadastroResidenciaDto {
 		this.uf = uf;
 	}	
 
-	@NotEmpty(message = "Você deve informar ao menos um morador.")
 	public List<Morador> getMoradores(){
 		return moradores;
 	}
