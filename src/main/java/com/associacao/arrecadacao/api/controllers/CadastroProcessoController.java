@@ -1,6 +1,8 @@
 package com.associacao.arrecadacao.api.controllers;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.validation.Valid;
 
@@ -46,10 +48,9 @@ public class CadastroProcessoController {
 		log.info("Cadastrando processo de associado: {}", cadastroResidenciaDto.toString());
 		Response<CadastroResidenciaDto> response = new Response<CadastroResidenciaDto>();
 		
-		cadastroResidenciaDto.getMoradores().forEach(p -> p.setPerfil(PerfilEnum.ROLE_USUARIO));
-		cadastroResidenciaDto.getMoradores().forEach(p -> p.setSenha("123456"));
 		validarDadosExistentes(cadastroResidenciaDto, result);
 		Residencia residencia = this.converterDtoParaResidencia(cadastroResidenciaDto);
+		List<Morador> moradores = this.converterDtoParaMorador(cadastroResidenciaDto);
 		
 		if(result.hasErrors()) {
 			log.error("Erro validando dados para cadastro do processo: {}", result.getAllErrors());
@@ -58,8 +59,10 @@ public class CadastroProcessoController {
 		}
 		
 		this.residenciaService.persistir(residencia);
+		moradores.forEach(p -> p.setResidencia(residencia));
+		this.moradorService.persistir(moradores);
 		
-		response.setData(this.converterCadastroResidenciaDto(residencia));
+		response.setData(this.converterCadastroProcessoDto(residencia));
 		return ResponseEntity.ok(response);
 	}
 	
@@ -130,13 +133,33 @@ public class CadastroProcessoController {
 		return residencia;
 	}
 	
+	public List<Morador> converterDtoParaMorador(CadastroResidenciaDto cadastroResidenciaDto){
+		
+		List<Morador> moradores = new ArrayList<Morador>();
+		for(Morador morador : cadastroResidenciaDto.getMoradores()) {
+			Morador item = new Morador();
+			item.setNome(morador.getNome());
+			item.setCpf(morador.getCpf());
+			item.setRg(morador.getRg());
+			item.setEmail(morador.getEmail());
+			item.setTelefone(morador.getTelefone());
+			item.setCelular(morador.getCelular());
+			item.setPerfil(PerfilEnum.ROLE_USUARIO);
+			item.setSenha(morador.getCpf().substring(0, 6));
+			
+			moradores.add(item);
+		}
+		
+		return moradores;
+	}
+	
 	/**
 	 * Converter o objeto tipo Residencia para o tipo CadastroResidenciaDto.
 	 * 
 	 * @param residencia
 	 * @return CadastroResidenciaDto
 	 */
-	private CadastroResidenciaDto converterCadastroResidenciaDto(Residencia residencia) {
+	private CadastroResidenciaDto converterCadastroProcessoDto(Residencia residencia) {
 		
 		CadastroResidenciaDto cadastroResidenciaDto = new CadastroResidenciaDto();
 		cadastroResidenciaDto.setId(residencia.getId());
