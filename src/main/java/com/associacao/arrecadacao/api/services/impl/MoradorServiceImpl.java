@@ -1,5 +1,6 @@
 package com.associacao.arrecadacao.api.services.impl;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -20,9 +21,9 @@ public class MoradorServiceImpl implements MoradorService {
 	private MoradorRepository moradorRepository;
 
 	@Override
-	public Morador persistir(Morador morador) {
-		log.info("Persistir morador {}", morador);
-		return this.moradorRepository.save(morador);
+	public List<Morador> persistir(List<Morador> moradores) {
+		log.info("Persistir morador {}", moradores);
+		return this.moradorRepository.save(moradores);
 	}
 
 	@Override

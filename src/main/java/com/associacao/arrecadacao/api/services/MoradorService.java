@@ -1,5 +1,6 @@
 package com.associacao.arrecadacao.api.services;
 
+import java.util.List;
 import java.util.Optional;
 
 import com.associacao.arrecadacao.api.entities.Morador;
@@ -12,7 +13,7 @@ public interface MoradorService {
 	 * @param morador
 	 * @return Morador
 	 */
-	Morador persistir(Morador morador);
+	List<Morador> persistir(List<Morador> morador);
 	
 	/**
 	 * Busca e retorna um morador dado o cpf.

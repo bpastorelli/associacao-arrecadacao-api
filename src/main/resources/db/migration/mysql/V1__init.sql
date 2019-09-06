@@ -5,6 +5,7 @@ CREATE TABLE `residencia` (
   `numero` varchar(10) NOT NULL,
   `bairro` varchar(100) NOT NULL,
   `cep` varchar(8) NOT NULL,
+  `cidade` varchar(100) NOT NULL,
   `uf` varchar(2) NOT NULL,
   `data_criacao` datetime NOT NULL,
   `data_atualizacao` datetime NOT NULL

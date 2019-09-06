@@ -3,6 +3,8 @@ package com.associacao.arrecadacao.api.services;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.Before;
@@ -41,9 +43,9 @@ public class MoradorServiceTest {
 	
 	@Test
 	public void testPersistirMorador() {
-		Morador morador = this.moradorService.persistir(new Morador());
+		List<Morador> moradores = this.moradorService.persistir(new ArrayList<Morador>());
 		
-		assertNotNull(morador);
+		assertNotNull(moradores);
 	}
 	
 	@Test
