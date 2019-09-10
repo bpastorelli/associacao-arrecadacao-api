@@ -38,7 +38,7 @@ public class Morador implements Serializable {
 	private PerfilEnum perfil;
 	private Date dataCriacao;
 	private Date dataAtualizacao;
-	private Residencia residencia;
+	private Long residenciaId;
 	private List<Lancamento> lancamentos;
 
 	public Morador() {
@@ -145,13 +145,14 @@ public class Morador implements Serializable {
 		this.senha = senha;
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER)
-	public Residencia getResidencia() {
-		return residencia;
+	//@ManyToOne(fetch = FetchType.EAGER)
+	@Column(name = "residencia_id", nullable = false)
+	public Long getResidencia() {
+		return residenciaId;
 	}
 
-	public void setResidencia(Residencia residencia) {
-		this.residencia = residencia;
+	public void setResidencia(Long residenciaId) {
+		this.residenciaId = residenciaId;
 	}
 
 	@OneToMany(mappedBy = "morador", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -179,7 +180,7 @@ public class Morador implements Serializable {
 	public String toString() {
 		return "Morador [id=" + id + ", nome=" + nome + ", email=" + email + ", senha=" + senha + ", cpf=" + cpf
 				+ ", rg=" + rg + ", telefone=" + telefone + ", celular=" + celular + ", perfil=" + perfil + ", dataCriacao="
-				+ dataCriacao + ", dataAtualizacao=" + dataAtualizacao + ", residencia=" + residencia + "]";
+				+ dataCriacao + ", dataAtualizacao=" + dataAtualizacao + ", residenciaId=" + residenciaId + "]";
 	}
 
 }

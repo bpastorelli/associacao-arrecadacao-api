@@ -99,7 +99,7 @@ public class LancamentoRepositoryTest {
 		morador.setTelefone("1156789087");
 		morador.setCelular("11978653456");
 		morador.setEmail(EMAIL);
-		morador.setResidencia(residencia);
+		morador.setResidencia(residencia.getId());
 		return morador;
 	}
 

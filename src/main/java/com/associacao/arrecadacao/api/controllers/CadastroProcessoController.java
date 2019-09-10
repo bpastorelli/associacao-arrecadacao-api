@@ -48,9 +48,10 @@ public class CadastroProcessoController {
 		log.info("Cadastrando processo de associado: {}", cadastroResidenciaDto.toString());
 		Response<CadastroResidenciaDto> response = new Response<CadastroResidenciaDto>();
 		
-		validarDadosExistentes(cadastroResidenciaDto, result);
 		Residencia residencia = this.converterDtoParaResidencia(cadastroResidenciaDto);
 		List<Morador> moradores = this.converterDtoParaMorador(cadastroResidenciaDto);
+		cadastroResidenciaDto.setMoradores(moradores);
+		validarDadosExistentes(cadastroResidenciaDto, result);
 		
 		if(result.hasErrors()) {
 			log.error("Erro validando dados para cadastro do processo: {}", result.getAllErrors());
@@ -59,10 +60,10 @@ public class CadastroProcessoController {
 		}
 		
 		this.residenciaService.persistir(residencia);
-		moradores.forEach(p -> p.setResidencia(residencia));
+		moradores.forEach(p -> p.setResidencia(residencia.getId()));
 		this.moradorService.persistir(moradores);
 		
-		response.setData(this.converterCadastroProcessoDto(residencia));
+		response.setData(this.converterCadastroProcessoDto(residencia, moradores));
 		return ResponseEntity.ok(response);
 	}
 	
@@ -129,7 +130,7 @@ public class CadastroProcessoController {
 		residencia.setCep(cadastroResidenciaDto.getCep());
 		residencia.setCidade(cadastroResidenciaDto.getCidade());
 		residencia.setUf(cadastroResidenciaDto.getUf());
-		residencia.setMoradores(cadastroResidenciaDto.getMoradores());
+		//residencia.setMoradores(cadastroResidenciaDto.getMoradores());
 		return residencia;
 	}
 	
@@ -142,11 +143,11 @@ public class CadastroProcessoController {
 			item.setCpf(morador.getCpf());
 			item.setRg(morador.getRg());
 			item.setEmail(morador.getEmail());
+			item.setSenha(morador.getCpf().substring(0, 6));
+			item.setPerfil(PerfilEnum.ROLE_USUARIO);
 			item.setTelefone(morador.getTelefone());
 			item.setCelular(morador.getCelular());
-			item.setPerfil(PerfilEnum.ROLE_USUARIO);
-			item.setSenha(morador.getCpf().substring(0, 6));
-			
+			item.setResidencia(null);
 			moradores.add(item);
 		}
 		
@@ -159,7 +160,7 @@ public class CadastroProcessoController {
 	 * @param residencia
 	 * @return CadastroResidenciaDto
 	 */
-	private CadastroResidenciaDto converterCadastroProcessoDto(Residencia residencia) {
+	private CadastroResidenciaDto converterCadastroProcessoDto(Residencia residencia, List<Morador> moradores) {
 		
 		CadastroResidenciaDto cadastroResidenciaDto = new CadastroResidenciaDto();
 		cadastroResidenciaDto.setId(residencia.getId());
@@ -171,7 +172,7 @@ public class CadastroProcessoController {
 		cadastroResidenciaDto.setCidade(residencia.getCidade());
 		cadastroResidenciaDto.setUf(residencia.getUf());
 		cadastroResidenciaDto.setCidade(residencia.getCidade());
-		cadastroResidenciaDto.setMoradores(residencia.getMoradores());
+		cadastroResidenciaDto.setMoradores(moradores);
 		return cadastroResidenciaDto;
 	}
 	
