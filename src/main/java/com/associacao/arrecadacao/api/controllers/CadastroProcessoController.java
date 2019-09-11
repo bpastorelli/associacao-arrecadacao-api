@@ -19,10 +19,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.associacao.arrecadacao.api.dtos.CadastroResidenciaDto;
+import com.associacao.arrecadacao.api.entities.Lancamento;
 import com.associacao.arrecadacao.api.entities.Morador;
 import com.associacao.arrecadacao.api.entities.Residencia;
 import com.associacao.arrecadacao.api.enums.PerfilEnum;
 import com.associacao.arrecadacao.api.response.Response;
+import com.associacao.arrecadacao.api.services.LancamentoService;
 import com.associacao.arrecadacao.api.services.MoradorService;
 import com.associacao.arrecadacao.api.services.ResidenciaService;
 
@@ -39,6 +41,9 @@ public class CadastroProcessoController {
 	@Autowired
 	private ResidenciaService residenciaService;
 	
+	@Autowired
+	private LancamentoService lancamentoService;
+	
 	public CadastroProcessoController() {
 	}
 	
@@ -50,6 +55,7 @@ public class CadastroProcessoController {
 		
 		Residencia residencia = this.converterDtoParaResidencia(cadastroResidenciaDto);
 		List<Morador> moradores = this.converterDtoParaMorador(cadastroResidenciaDto);
+		List<Lancamento> lancamentos = this.convertDtoParaLancamento(cadastroResidenciaDto);
 		cadastroResidenciaDto.setMoradores(moradores);
 		validarDadosExistentes(cadastroResidenciaDto, result);
 		
@@ -62,6 +68,8 @@ public class CadastroProcessoController {
 		this.residenciaService.persistir(residencia);
 		moradores.forEach(p -> p.setResidencia(residencia.getId()));
 		this.moradorService.persistir(moradores);
+		lancamentos.forEach(p -> p.setResidencia(residencia.getId()));
+		this.lancamentoService.persistir(lancamentos);
 		
 		response.setData(this.converterCadastroProcessoDto(residencia, moradores));
 		return ResponseEntity.ok(response);
@@ -130,11 +138,16 @@ public class CadastroProcessoController {
 		residencia.setCep(cadastroResidenciaDto.getCep());
 		residencia.setCidade(cadastroResidenciaDto.getCidade());
 		residencia.setUf(cadastroResidenciaDto.getUf());
-		//residencia.setMoradores(cadastroResidenciaDto.getMoradores());
 		return residencia;
 	}
 	
-	public List<Morador> converterDtoParaMorador(CadastroResidenciaDto cadastroResidenciaDto){
+	/**
+	 * Converter o CadastroResidenciaDto para Morador.
+	 * 
+	 * @param cadastroResidenciaDto
+	 * @return List<Morador>
+	 */
+	private List<Morador> converterDtoParaMorador(CadastroResidenciaDto cadastroResidenciaDto){
 		
 		List<Morador> moradores = new ArrayList<Morador>();
 		for(Morador morador : cadastroResidenciaDto.getMoradores()) {
@@ -152,6 +165,28 @@ public class CadastroProcessoController {
 		}
 		
 		return moradores;
+	}
+	
+	/**
+	 * Converter o CadastroResidenciaDto para Lancamento.
+	 * 
+	 * @param cadastroResidenciaDto
+	 * @return List<Lancamento>
+	 */
+	private List<Lancamento> convertDtoParaLancamento(CadastroResidenciaDto cadastroResidenciaDto){
+		
+		List<Lancamento> lancamentos = new ArrayList<Lancamento>();
+		for(Lancamento lancamento : cadastroResidenciaDto.getLancamentos()) {
+			Lancamento item = new Lancamento();
+			item.setResidencia(lancamento.getResidencia());
+			item.setMoradorId(lancamento.getMoradorId());
+			item.setMesReferencia(lancamento.getMesReferencia());
+			item.setUsuarioRecebimento(1L);
+			item.setValor(lancamento.getValor());
+			lancamentos.add(item);
+		}
+		
+		return lancamentos;
 	}
 	
 	/**

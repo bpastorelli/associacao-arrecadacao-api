@@ -16,10 +16,13 @@ import com.associacao.arrecadacao.api.entities.Lancamento;
 @Transactional(readOnly = true)
 @NamedQueries({
 		@NamedQuery(name = "LancamentoRepository.findByMoradorId", 
-				query = "SELECT lanc FROM Lancamento lanc WHERE lanc.morador.id = :moradorId") })
+				query = "SELECT lanc FROM Lancamento lanc WHERE lanc.morador_id = :moradorId") })
+
 public interface LancamentoRepository extends JpaRepository<Lancamento, Long> {
 
 	List<Lancamento> findByMoradorId(@Param("moradorId") Long moradorId);
 
 	Page<Lancamento> findByMoradorId(@Param("moradorId") Long moradorId, Pageable pageable);
+	
+	Page<List<Lancamento>> findByResidenciaId(@Param("residenciaId") Long residenciaId, Pageable pageable);
 }

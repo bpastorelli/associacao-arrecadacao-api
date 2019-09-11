@@ -1,5 +1,6 @@
 package com.associacao.arrecadacao.api.services.impl;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -34,9 +35,9 @@ public class LancamentoServiceImpl implements LancamentoService {
 	}
 
 	@Override
-	public Lancamento persistir(Lancamento lancamento) {
-		log.info("Persistindo o lançamento {}", lancamento);
-		return this.lancamentoRepository.save(lancamento);
+	public List<Lancamento> persistir(List<Lancamento> lancamentos) {
+		log.info("Persistindo o lançamento {}", lancamentos);
+		return this.lancamentoRepository.save(lancamentos);
 	}
 
 	@Override
@@ -45,6 +46,9 @@ public class LancamentoServiceImpl implements LancamentoService {
 		this.lancamentoRepository.delete(id);
 	}
 
-	
-	
+	@Override
+	public Page<List<Lancamento>> buscarPorResidenciaId(Long residenciaId, PageRequest pageRequest) {
+		log.info("Buscar lançamentos por residencia ID {}", residenciaId);
+		return this.lancamentoRepository.findByResidenciaId(residenciaId, pageRequest);
+	}
 }

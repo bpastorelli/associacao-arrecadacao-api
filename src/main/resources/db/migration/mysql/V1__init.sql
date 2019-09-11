@@ -34,7 +34,8 @@ CREATE TABLE `lancamento` (
   `data_criacao` datetime NOT NULL, 
   `data_atualizacao` datetime NOT NULL,
   `usuario_recebimento` bigint(20) DEFAULT NULL,
-  `morador_id` bigint(20) DEFAULT NULL
+  `morador_id` bigint(20) DEFAULT NULL,
+  `residencia_id` bigint(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --

@@ -5,6 +5,7 @@ import java.util.List;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import com.associacao.arrecadacao.api.entities.Lancamento;
 import com.associacao.arrecadacao.api.entities.Morador;
 
 public class CadastroResidenciaDto {
@@ -18,6 +19,7 @@ public class CadastroResidenciaDto {
 	private String cidade;
 	private String uf;
 	private List<Morador> moradores;
+	private List<Lancamento> lancamentos;
 	
 	public CadastroResidenciaDto() {
 		
@@ -94,11 +96,12 @@ public class CadastroResidenciaDto {
 	public String getUf() {
 		return uf;
 	}
-
+	
 	public void setUf(String uf) {
 		this.uf = uf;
 	}	
 
+	@NotEmpty(message = "O campo moradores deve conter ao menos um morador.")
 	public List<Morador> getMoradores(){
 		return moradores;
 	}
@@ -106,4 +109,13 @@ public class CadastroResidenciaDto {
 	public void setMoradores(List<Morador> moradores) {
 		this.moradores = moradores;
 	}
+	
+	@NotEmpty(message = "O campo moradores deve conter ao menos um morador.")
+	public List<Lancamento> getLancamentos(){
+		return lancamentos;
+	}
+	
+	public void setLancamentos(List<Lancamento> lancamentos) {
+		this.lancamentos = lancamentos;
+	}	
 }

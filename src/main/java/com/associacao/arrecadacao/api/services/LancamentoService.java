@@ -1,5 +1,6 @@
 package com.associacao.arrecadacao.api.services;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -32,7 +33,15 @@ public interface LancamentoService {
 	 * @param lancamento
 	 * @return Lancamento
 	 */
-	Lancamento persistir(Lancamento lancamento);
+	List<Lancamento> persistir(List<Lancamento> lancamentos);
+	
+	/**
+	 * Retorna todos os lancamentos de uma residência
+	 * 
+	 * @param residenciaId
+	 * @return
+	 */
+	Page<List<Lancamento>> buscarPorResidenciaId(Long residenciaId, PageRequest pageRequest);
 	
 	/**
 	 * Remove um lancamento da base de dados.

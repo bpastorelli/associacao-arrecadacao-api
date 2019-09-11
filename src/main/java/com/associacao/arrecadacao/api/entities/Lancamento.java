@@ -30,7 +30,8 @@ public class Lancamento implements Serializable {
 	private Date dataCriacao;
 	private Date dataAtualizacao;
 	private Long usuarioRecebimento;
-	private Morador morador;
+	private Long moradorId;
+	private Long residenciaId;
 
 	public Lancamento() {
 	}
@@ -92,12 +93,12 @@ public class Lancamento implements Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.EAGER)
-	public Morador getMorador() {
-		return morador;
+	public Long getMoradorId() {
+		return moradorId;
 	}
 
-	public void setMorador(Morador morador) {
-		this.morador = morador;
+	public void setMoradorId(Long moradorId) {
+		this.moradorId = moradorId;
 	}
 	
 	@Column(name = "usuario_recebimento", nullable = false)
@@ -107,6 +108,15 @@ public class Lancamento implements Serializable {
 
 	public void setUsuarioRecebimento(Long usuarioRecebimento) {
 		this.usuarioRecebimento = usuarioRecebimento;
+	}
+	
+	@Column(name = "residencia_id", nullable = false)
+	public Long getResidencia() {
+		return residenciaId;
+	}
+
+	public void setResidencia(Long residenciaId) {
+		this.residenciaId = residenciaId;
 	}
 	
 	@PreUpdate
@@ -124,7 +134,7 @@ public class Lancamento implements Serializable {
 	@Override
 	public String toString() {
 		return "Lancamento [id=" + id + ", dataPagamento=" + dataPagamento + ", mesReferencia=" + mesReferencia + ", valor=" + valor
-				+ ", dataCriacao=" + dataCriacao + ", dataAtualizacao=" + dataAtualizacao + ", morador=" + morador + ", usuarioRecebimento=" + usuarioRecebimento + "]";
+				+ ", dataCriacao=" + dataCriacao + ", dataAtualizacao=" + dataAtualizacao + ", moradorId=" + moradorId + ", usuarioRecebimento=" + usuarioRecebimento + "]";
 	}
 
 }
