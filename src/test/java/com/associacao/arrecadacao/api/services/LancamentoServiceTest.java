@@ -4,6 +4,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.Before;
@@ -39,6 +40,9 @@ public class LancamentoServiceTest {
 		BDDMockito
 			.given(this.lancamentoRepository.findByMoradorId(Mockito.anyLong(), Mockito.any(PageRequest.class)))
 			.willReturn(new PageImpl<Lancamento>(new ArrayList<Lancamento>()));
+		BDDMockito
+			.given(this.lancamentoRepository.findByResidenciaId(Mockito.anyLong(), Mockito.any(PageRequest.class)))
+			.willReturn(new PageImpl<Lancamento>(new ArrayList<Lancamento>()));
 		BDDMockito.given(this.lancamentoRepository.findOne(Mockito.anyLong())).willReturn(new Lancamento());
 		BDDMockito.given(this.lancamentoRepository.save(Mockito.any(Lancamento.class))).willReturn(new Lancamento());
 	}
@@ -46,6 +50,20 @@ public class LancamentoServiceTest {
 	@Test
 	public void testBuscarLancamentoPorMoradorId() {
 		Page<Lancamento> lancamento = this.lancamentoService.buscarPorMoradorId(1L, new PageRequest(0, 10));
+		
+		assertNotNull(lancamento);
+	}
+	
+	@Test
+	public void testBuscarLancamentoPorResidenciaIdPaginado() {
+		Page<Lancamento> lancamento = this.lancamentoService.buscarPorResidenciaId(1L, new PageRequest(0, 10));
+		
+		assertNotNull(lancamento);
+	}
+	
+	@Test
+	public void testBuscarLancamentoPorResidenciaId() {
+		List<Lancamento> lancamento = this.lancamentoService.buscarPorResidenciaId(1L);
 		
 		assertNotNull(lancamento);
 	}

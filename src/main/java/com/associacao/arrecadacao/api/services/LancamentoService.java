@@ -20,6 +20,23 @@ public interface LancamentoService {
 	Page<Lancamento> buscarPorMoradorId(Long moradorId, PageRequest pageRequest);
 	
 	/**
+	 * Retorna um lancamento por ID da residencia.
+	 * 
+	 * @param residenciaId
+	 * @param pageRequest
+	 * @return Page<List<Lancamento>>
+	 */
+	Page<Lancamento> buscarPorResidenciaId(Long residenciaId, PageRequest pageRequest);
+	
+	/**
+	 * Retorna um lancamento por ID da residencia.
+	 * 
+	 * @param residenciaId
+	 * @return Page<Lancamento>
+	 */
+	List<Lancamento> buscarPorResidenciaId(Long residenciaId);
+	
+	/**
 	 * Retorna um lancamento por ID.
 	 * 
 	 * @param id
@@ -33,15 +50,7 @@ public interface LancamentoService {
 	 * @param lancamento
 	 * @return Lancamento
 	 */
-	List<Lancamento> persistir(List<Lancamento> lancamentos);
-	
-	/**
-	 * Retorna todos os lancamentos de uma residência
-	 * 
-	 * @param residenciaId
-	 * @return
-	 */
-	Page<List<Lancamento>> buscarPorResidenciaId(Long residenciaId, PageRequest pageRequest);
+	Lancamento persistir(Lancamento lancamento);
 	
 	/**
 	 * Remove um lancamento da base de dados.

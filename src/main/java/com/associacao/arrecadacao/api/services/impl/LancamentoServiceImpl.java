@@ -35,9 +35,9 @@ public class LancamentoServiceImpl implements LancamentoService {
 	}
 
 	@Override
-	public List<Lancamento> persistir(List<Lancamento> lancamentos) {
-		log.info("Persistindo o lançamento {}", lancamentos);
-		return this.lancamentoRepository.save(lancamentos);
+	public Lancamento persistir(Lancamento lancamento) {
+		log.info("Persistindo o lançamento {}", lancamento);
+		return this.lancamentoRepository.save(lancamento);
 	}
 
 	@Override
@@ -47,8 +47,14 @@ public class LancamentoServiceImpl implements LancamentoService {
 	}
 
 	@Override
-	public Page<List<Lancamento>> buscarPorResidenciaId(Long residenciaId, PageRequest pageRequest) {
-		log.info("Buscar lançamentos por residencia ID {}", residenciaId);
+	public Page<Lancamento> buscarPorResidenciaId(Long residenciaId, PageRequest pageRequest) {
+		log.info("Buscar lançamento por ID da residencia paginado {}", residenciaId);
 		return this.lancamentoRepository.findByResidenciaId(residenciaId, pageRequest);
+	}
+
+	@Override
+	public List<Lancamento> buscarPorResidenciaId(Long residenciaId) {
+		log.info("Buscar lançamento por ID da residencia {}", residenciaId);
+		return this.lancamentoRepository.findByResidenciaId(residenciaId);
 	}
 }

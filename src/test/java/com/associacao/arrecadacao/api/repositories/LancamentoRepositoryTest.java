@@ -39,6 +39,7 @@ public class LancamentoRepositoryTest {
 	private ResidenciaRepository residenciaRepository;
 	
 	private Long moradorId;
+	private Long residenciaId;
 	private static final String EMAIL = "email@email.com";
 	private static final String MATRICULA = "789765";
 	private static final String CPF = "24291173474";
@@ -47,6 +48,7 @@ public class LancamentoRepositoryTest {
 	@Before
 	public void setUp() throws Exception {
 		Residencia residencia = this.residenciaRepository.save(obterDadosResidencia());
+		this.residenciaId = residencia.getId();
 		
 		Morador morador = this.moradorRepository.save(obterDadosMorador(residencia));
 		this.moradorId = morador.getId();
@@ -75,6 +77,14 @@ public class LancamentoRepositoryTest {
 		assertEquals(2, lancamentos.getTotalElements());
 	}
 	
+	@Test
+	public void testBuscarLancamentosPorResidenciaIdPaginado() {
+		PageRequest page = new PageRequest(0, 10);
+		Page<Lancamento> lancamentos = this.lancamentoRepository.findByResidenciaId(residenciaId, page);
+		
+		assertEquals(2, lancamentos.getTotalElements());
+	}
+	
 	@SuppressWarnings("deprecation")
 	private Lancamento obterDadosLancamentos(Morador morador) {
 		
@@ -86,6 +96,7 @@ public class LancamentoRepositoryTest {
 		lancamento.setValor(valor);
 		lancamento.setMorador(morador);
 		lancamento.setUsuarioRecebimento(1L);
+		lancamento.setResidenciaId(1L);
 		return lancamento;
 	}
 
