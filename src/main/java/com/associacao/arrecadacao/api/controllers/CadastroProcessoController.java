@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.associacao.arrecadacao.api.dtos.CadastroResidenciaDto;
+import com.associacao.arrecadacao.api.entities.Lancamento;
 import com.associacao.arrecadacao.api.entities.Morador;
 import com.associacao.arrecadacao.api.entities.Residencia;
 import com.associacao.arrecadacao.api.enums.PerfilEnum;
@@ -50,7 +51,9 @@ public class CadastroProcessoController {
 		
 		Residencia residencia = this.converterDtoParaResidencia(cadastroResidenciaDto);
 		List<Morador> moradores = this.converterDtoParaMorador(cadastroResidenciaDto);
+		List<Lancamento> lancamentos = this.converterDtoParaLancamento(cadastroResidenciaDto);
 		cadastroResidenciaDto.setMoradores(moradores);
+		cadastroResidenciaDto.setLancamentos(lancamentos);
 		validarDadosExistentes(cadastroResidenciaDto, result);
 		
 		if(result.hasErrors()) {
@@ -63,7 +66,7 @@ public class CadastroProcessoController {
 		moradores.forEach(p -> p.setResidencia(residencia.getId()));
 		this.moradorService.persistir(moradores);
 		
-		response.setData(this.converterCadastroProcessoDto(residencia, moradores));
+		response.setData(this.converterCadastroProcessoDto(residencia, moradores, lancamentos));
 		return ResponseEntity.ok(response);
 	}
 	
@@ -98,6 +101,17 @@ public class CadastroProcessoController {
 				result.addError(new ObjectError("morador", "O campo Perfi é obrigatório."));
 		}
 		
+		if(cadastroResidenciaDto.getLancamentos().size() > 0) {
+			for(Lancamento lancamento : cadastroResidenciaDto.getLancamentos()) {
+				if(lancamento.getPeriodo().isEmpty())
+					result.addError(new ObjectError("lancamento", "O campo Periodo é obrigatório."));
+				
+				if(lancamento.getPeriodo().length() < 7)
+					result.addError(new ObjectError("lancamento", "O campo Periodo deve conter 7 caracteres (MM/YYYY) Exemplo: 09/2019."));			
+				
+			}
+		}
+		
 		for(Morador morador : cadastroResidenciaDto.getMoradores()) {
 			this.moradorService.buscarPorCpf(morador.getCpf())
 					.ifPresent(res -> result.addError(new ObjectError("morador", "CPF " + morador.getCpf() + " já existente")));
@@ -130,10 +144,15 @@ public class CadastroProcessoController {
 		residencia.setCep(cadastroResidenciaDto.getCep());
 		residencia.setCidade(cadastroResidenciaDto.getCidade());
 		residencia.setUf(cadastroResidenciaDto.getUf());
-		//residencia.setMoradores(cadastroResidenciaDto.getMoradores());
 		return residencia;
 	}
 	
+	/**
+	 * Converter o CadastroResidenciaDto para Morador.
+	 * 
+	 * @param cadastroResidenciaDto
+	 * @return Morador
+	 */
 	public List<Morador> converterDtoParaMorador(CadastroResidenciaDto cadastroResidenciaDto){
 		
 		List<Morador> moradores = new ArrayList<Morador>();
@@ -155,12 +174,34 @@ public class CadastroProcessoController {
 	}
 	
 	/**
+	 * Converter o CadastroResidenciaDto para Lancamento.
+	 * 
+	 * @param cadastroResidenciaDto
+	 * @return Lancamento
+	 */
+	public List<Lancamento> converterDtoParaLancamento(CadastroResidenciaDto cadastroResidenciaDto){
+		
+		List<Lancamento> lancamentos = new ArrayList<Lancamento>();
+		for(Lancamento lancamento : cadastroResidenciaDto.getLancamentos()) {
+			Lancamento item = new Lancamento();
+			item.setPeriodo(lancamento.getPeriodo());
+			item.setMorador(lancamento.getMorador());
+			item.setValor(lancamento.getValor());
+			item.setUsuarioRecebimento(lancamento.getUsuarioRecebimento());
+			item.setResidenciaId(lancamento.getResidenciaId());
+			lancamentos.add(item);
+		}
+		
+		return lancamentos;
+	}
+	
+	/**
 	 * Converter o objeto tipo Residencia para o tipo CadastroResidenciaDto.
 	 * 
 	 * @param residencia
 	 * @return CadastroResidenciaDto
 	 */
-	private CadastroResidenciaDto converterCadastroProcessoDto(Residencia residencia, List<Morador> moradores) {
+	private CadastroResidenciaDto converterCadastroProcessoDto(Residencia residencia, List<Morador> moradores, List<Lancamento> lancamentos) {
 		
 		CadastroResidenciaDto cadastroResidenciaDto = new CadastroResidenciaDto();
 		cadastroResidenciaDto.setId(residencia.getId());
@@ -173,6 +214,7 @@ public class CadastroProcessoController {
 		cadastroResidenciaDto.setUf(residencia.getUf());
 		cadastroResidenciaDto.setCidade(residencia.getCidade());
 		cadastroResidenciaDto.setMoradores(moradores);
+		cadastroResidenciaDto.setLancamentos(lancamentos);
 		return cadastroResidenciaDto;
 	}
 	

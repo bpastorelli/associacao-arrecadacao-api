@@ -92,7 +92,7 @@ public class LancamentoRepositoryTest {
 		
 		Lancamento lancamento = new Lancamento();
 		lancamento.setDataPagamento(new Date());
-		lancamento.setMesReferencia(new Date().getMonth());
+		lancamento.setPeriodo(new Date().getMonth() + "/" + new Date().getYear());
 		lancamento.setValor(valor);
 		lancamento.setMorador(morador);
 		lancamento.setUsuarioRecebimento(1L);

@@ -25,7 +25,7 @@ public class Lancamento implements Serializable {
 
 	private Long id;
 	private Date dataPagamento;
-	private Integer mesReferencia;
+	private String periodo;
 	private BigDecimal valor;
 	private Date dataCriacao;
 	private Date dataAtualizacao;
@@ -55,14 +55,14 @@ public class Lancamento implements Serializable {
 	public void setDataPagamento(Date dataPagamento) {
 		this.dataPagamento = dataPagamento;
 	}
-
-	@Column(name = "mes_referencia", nullable = false)
-	public Integer getMesReferencia() {
-		return mesReferencia;
+	
+	@Column(name = "periodo", nullable = false)
+	public String getPeriodo() {
+		return periodo;
 	}
 
-	public void setMesReferencia(Integer mesReferencia) {
-		this.mesReferencia = mesReferencia;
+	public void setPeriodo(String periodo) {
+		this.periodo = periodo;
 	}
 	
 	@Column(name = "valor", nullable = false)
@@ -133,7 +133,7 @@ public class Lancamento implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Lancamento [id=" + id + ", dataPagamento=" + dataPagamento + ", mesReferencia=" + mesReferencia + ", valor=" + valor
+		return "Lancamento [id=" + id + ", dataPagamento=" + dataPagamento + ", periodo=" + periodo + ", valor=" + valor
 				+ ", dataCriacao=" + dataCriacao + ", dataAtualizacao=" + dataAtualizacao + ", morador=" + morador + ", residenciaId=" + residenciaId + ", usuarioRecebimento=" + usuarioRecebimento + "]";
 	}
 

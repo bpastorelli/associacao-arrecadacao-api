@@ -110,7 +110,6 @@ public class CadastroResidenciaDto {
 		this.moradores = moradores;
 	}
 	
-	@NotEmpty(message = "O campo moradores deve conter ao menos um morador.")
 	public List<Lancamento> getLancamentos(){
 		return lancamentos;
 	}
