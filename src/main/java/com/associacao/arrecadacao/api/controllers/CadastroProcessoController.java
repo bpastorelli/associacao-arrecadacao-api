@@ -24,6 +24,7 @@ import com.associacao.arrecadacao.api.entities.Morador;
 import com.associacao.arrecadacao.api.entities.Residencia;
 import com.associacao.arrecadacao.api.enums.PerfilEnum;
 import com.associacao.arrecadacao.api.response.Response;
+import com.associacao.arrecadacao.api.services.LancamentoService;
 import com.associacao.arrecadacao.api.services.MoradorService;
 import com.associacao.arrecadacao.api.services.ResidenciaService;
 
@@ -39,6 +40,9 @@ public class CadastroProcessoController {
 	
 	@Autowired
 	private ResidenciaService residenciaService;
+	
+	@Autowired
+	private LancamentoService lancamentoService;
 	
 	public CadastroProcessoController() {
 	}
@@ -65,6 +69,7 @@ public class CadastroProcessoController {
 		this.residenciaService.persistir(residencia);
 		moradores.forEach(p -> p.setResidencia(residencia.getId()));
 		this.moradorService.persistir(moradores);
+		this.lancamentoService.persistir(lancamentos);
 		
 		response.setData(this.converterCadastroProcessoDto(residencia, moradores, lancamentos));
 		return ResponseEntity.ok(response);

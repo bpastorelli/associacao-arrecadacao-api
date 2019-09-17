@@ -77,9 +77,9 @@ public class LancamentoServiceTest {
 	
 	@Test
 	public void testPersistirLancamento() {
-		Lancamento lancamento = this.lancamentoService.persistir(new Lancamento());
+		List<Lancamento> lancamentos = this.lancamentoService.persistir(new ArrayList<Lancamento>());
 		
-		assertNotNull(lancamento);
+		assertNotNull(lancamentos);
 	}
 
 }
