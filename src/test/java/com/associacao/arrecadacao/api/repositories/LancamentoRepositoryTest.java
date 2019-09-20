@@ -2,6 +2,8 @@ package com.associacao.arrecadacao.api.repositories;
 
 import static org.junit.Assert.assertEquals;
 
+import java.math.BigDecimal;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,7 +16,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.associacao.arrecadacao.api.entities.Lancamento;
-import com.associacao.arrecadacao.api.entities.Residencia;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -28,12 +29,11 @@ public class LancamentoRepositoryTest {
 	private ResidenciaRepository residenciaRepository;
 	
 	private Long residenciaId;
-	private static final String MATRICULA = "789765";
 
 	@Before
 	public void setUp() throws Exception {
-		Residencia residencia = this.residenciaRepository.save(obterDadosResidencia());
-		this.residenciaId = residencia.getId();
+		Lancamento lancamento = this.lancamentoRepository.save(obterDadosLancamento());
+		this.residenciaId = lancamento.getResidenciaId();
 	}
 
 	@After
@@ -46,19 +46,16 @@ public class LancamentoRepositoryTest {
 		PageRequest page = new PageRequest(0, 10);
 		Page<Lancamento> lancamentos = this.lancamentoRepository.findByResidenciaId(residenciaId, page);
 		
-		assertEquals(2, lancamentos.getTotalElements());
+		assertEquals(1, lancamentos.getTotalElements());
 	}
 
-	private Residencia obterDadosResidencia() {
-		Residencia residencia = new Residencia();
-		residencia.setMatricula(MATRICULA);
-		residencia.setEndereco("Rua Antonio Candido de Oliveira");
-		residencia.setNumero("5");
-		residencia.setBairro("Chacara Tres Marias");
-		residencia.setCep("04475492");
-		residencia.setCidade("Sorocaba");
-		residencia.setUf("SP");
-		return residencia;
+	private Lancamento obterDadosLancamento() {
+		
+		Lancamento lancamento = new Lancamento();
+		lancamento.setPeriodo("09/2019");
+		lancamento.setResidenciaId(1L);
+		lancamento.setValor(new BigDecimal(80.00));
+		return lancamento;
 	}
 
 }
