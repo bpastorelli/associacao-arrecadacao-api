@@ -36,6 +36,14 @@ public interface LancamentoService {
 	Optional<Lancamento> buscarPorId(Long id);
 	
 	/**
+	 * Retorna um lancamento por Periodo.
+	 * 
+	 * @param periodo
+	 * @return Optional<Lancamento>
+	 */	
+	Optional<Lancamento> buscarPorPeriodo(String periodo);
+	
+	/**
 	 * Persiste um lancamento na base de dados.
 	 * 
 	 * @param lancamento

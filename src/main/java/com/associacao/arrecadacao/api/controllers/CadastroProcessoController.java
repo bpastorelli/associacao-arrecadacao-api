@@ -139,6 +139,11 @@ public class CadastroProcessoController {
 			this.moradorService.bucarPorEmail(morador.getEmail())
 					.ifPresent(res -> result.addError(new ObjectError("morador", "E-mail " + morador.getEmail() + " já existente")));
 		}
+		
+		for(Lancamento lancamento : cadastroResidenciaDto.getLancamentos()) {
+			this.lancamentoService.buscarPorPeriodo(lancamento.getPeriodo())
+					.ifPresent(res -> result.addError(new ObjectError("lancamento", "Periodo " + lancamento.getPeriodo() + " já existente")));
+		}
 	}
 	
 	/**
