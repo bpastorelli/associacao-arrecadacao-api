@@ -1,5 +1,6 @@
 package com.associacao.arrecadacao.api.controllers;
 
+import java.math.BigDecimal;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
@@ -69,6 +70,7 @@ public class CadastroProcessoController {
 		this.residenciaService.persistir(residencia);
 		moradores.forEach(p -> p.setResidencia(residencia.getId()));
 		this.moradorService.persistir(moradores);
+		lancamentos.forEach(p -> p.setResidenciaId(residencia.getId()));
 		this.lancamentoService.persistir(lancamentos);
 		
 		response.setData(this.converterCadastroProcessoDto(residencia, moradores, lancamentos));
@@ -112,8 +114,14 @@ public class CadastroProcessoController {
 					result.addError(new ObjectError("lancamento", "O campo Periodo é obrigatório."));
 				
 				if(lancamento.getPeriodo().length() < 7)
-					result.addError(new ObjectError("lancamento", "O campo Periodo deve conter 7 caracteres (MM/YYYY) Exemplo: 09/2019."));			
+					result.addError(new ObjectError("lancamento", "O campo Periodo deve conter 7 caracteres (MM/YYYY) Exemplo: 09/2019."));	
 				
+				if(lancamento.getPeriodo().length() > 7)
+					result.addError(new ObjectError("lancamento", "O campo Periodo deve conter 7 caracteres (MM/YYYY) Exemplo: 09/2019."));
+				
+				if(lancamento.getValor() == new BigDecimal(0L)) 
+					result.addError(new ObjectError("lancamento", "O campo Valor não pode ser zero."));
+
 			}
 		}
 		
@@ -190,9 +198,7 @@ public class CadastroProcessoController {
 		for(Lancamento lancamento : cadastroResidenciaDto.getLancamentos()) {
 			Lancamento item = new Lancamento();
 			item.setPeriodo(lancamento.getPeriodo());
-			item.setMorador(lancamento.getMorador());
 			item.setValor(lancamento.getValor());
-			item.setUsuarioRecebimento(lancamento.getUsuarioRecebimento());
 			item.setResidenciaId(lancamento.getResidenciaId());
 			lancamentos.add(item);
 		}

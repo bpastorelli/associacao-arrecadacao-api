@@ -38,20 +38,10 @@ public class LancamentoServiceTest {
 	@Before
 	public void setUp() {
 		BDDMockito
-			.given(this.lancamentoRepository.findByMoradorId(Mockito.anyLong(), Mockito.any(PageRequest.class)))
-			.willReturn(new PageImpl<Lancamento>(new ArrayList<Lancamento>()));
-		BDDMockito
 			.given(this.lancamentoRepository.findByResidenciaId(Mockito.anyLong(), Mockito.any(PageRequest.class)))
 			.willReturn(new PageImpl<Lancamento>(new ArrayList<Lancamento>()));
 		BDDMockito.given(this.lancamentoRepository.findOne(Mockito.anyLong())).willReturn(new Lancamento());
 		BDDMockito.given(this.lancamentoRepository.save(Mockito.any(Lancamento.class))).willReturn(new Lancamento());
-	}
-	
-	@Test
-	public void testBuscarLancamentoPorMoradorId() {
-		Page<Lancamento> lancamento = this.lancamentoService.buscarPorMoradorId(1L, new PageRequest(0, 10));
-		
-		assertNotNull(lancamento);
 	}
 	
 	@Test

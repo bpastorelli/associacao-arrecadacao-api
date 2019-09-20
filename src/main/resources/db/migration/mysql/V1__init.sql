@@ -29,12 +29,10 @@ CREATE TABLE `morador` (
 CREATE TABLE `lancamento` (
   `id` bigint(20) NOT NULL,
   `data_pagamento` datetime NOT NULL,
-  `mes_referencia` bigint(20),
+  `mes_referencia` varchar(7),
   `valor` decimal(19,2),
   `data_criacao` datetime NOT NULL, 
   `data_atualizacao` datetime NOT NULL,
-  `usuario_recebimento` bigint(20) DEFAULT NULL,
-  `morador_id` bigint(20) DEFAULT NULL,
   `residencia_id` bigint(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -56,7 +54,7 @@ ALTER TABLE `morador`
 --
 ALTER TABLE `lancamento`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `FK46i4k5vl8wah7feutye9kbpi4` (`morador_id`);
+  ADD KEY `FK46i4k5vl8wah7feutye9kbpi4` (`residencia_id`);
 
 --
 -- AUTO_INCREMENT for table `residencia`
@@ -87,4 +85,4 @@ ALTER TABLE `morador`
 -- Constraints for table `lancamento`
 --
 ALTER TABLE `lancamento`
-  ADD CONSTRAINT `FK46i4k5vl8wah7feutye9kbpi4` FOREIGN KEY (`morador_id`) REFERENCES `morador` (`id`);
+  ADD CONSTRAINT `FK46i4k5vl8wah7feutye9kbpi4` FOREIGN KEY (`residencia_id`) REFERENCES `residencia` (`id`);

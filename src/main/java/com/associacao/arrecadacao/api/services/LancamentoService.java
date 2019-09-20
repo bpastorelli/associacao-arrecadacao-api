@@ -9,15 +9,6 @@ import org.springframework.data.domain.PageRequest;
 import com.associacao.arrecadacao.api.entities.Lancamento;
 
 public interface LancamentoService {
-
-	/**
-	 * Retorna um lancamento por ID do morador.
-	 * 
-	 * @param moradorId
-	 * @param pageRequest
-	 * @return Page<Lancamento>
-	 */
-	Page<Lancamento> buscarPorMoradorId(Long moradorId, PageRequest pageRequest);
 	
 	/**
 	 * Retorna um lancamento por ID da residencia.

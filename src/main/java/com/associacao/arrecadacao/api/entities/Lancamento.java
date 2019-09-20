@@ -6,16 +6,12 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "lancamento")
@@ -29,8 +25,6 @@ public class Lancamento implements Serializable {
 	private BigDecimal valor;
 	private Date dataCriacao;
 	private Date dataAtualizacao;
-	private Long usuarioRecebimento;
-	private Morador morador;
 	private Long residenciaId;
 	
 	public Lancamento() {
@@ -46,7 +40,6 @@ public class Lancamento implements Serializable {
 		this.id = id;
 	}
 
-	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "data_pagamento", nullable = false)
 	public Date getDataPagamento() {
 		return dataPagamento;
@@ -56,7 +49,7 @@ public class Lancamento implements Serializable {
 		this.dataPagamento = dataPagamento;
 	}
 	
-	@Column(name = "periodo", nullable = false)
+	@Column(name = "mes_referencia", nullable = false)
 	public String getPeriodo() {
 		return periodo;
 	}
@@ -91,24 +84,6 @@ public class Lancamento implements Serializable {
 	public void setDataAtualizacao(Date dataAtualizacao) {
 		this.dataAtualizacao = dataAtualizacao;
 	}
-
-	@ManyToOne(fetch = FetchType.EAGER)
-	public Morador getMorador() {
-		return morador;
-	}
-
-	public void setMorador(Morador morador) {
-		this.morador = morador;
-	}
-	
-	@Column(name = "usuario_recebimento", nullable = false)
-	public Long getUsuarioRecebimento() {
-		return usuarioRecebimento;
-	}
-
-	public void setUsuarioRecebimento(Long usuarioRecebimento) {
-		this.usuarioRecebimento = usuarioRecebimento;
-	}
 	
 	@Column(name = "residencia_id", nullable = false)
 	public Long getResidenciaId() {
@@ -129,12 +104,13 @@ public class Lancamento implements Serializable {
         final Date atual = new Date();
         dataCriacao = atual;
         dataAtualizacao = atual;
+        dataPagamento = atual;
     }
 
 	@Override
 	public String toString() {
 		return "Lancamento [id=" + id + ", dataPagamento=" + dataPagamento + ", periodo=" + periodo + ", valor=" + valor
-				+ ", dataCriacao=" + dataCriacao + ", dataAtualizacao=" + dataAtualizacao + ", morador=" + morador + ", residenciaId=" + residenciaId + ", usuarioRecebimento=" + usuarioRecebimento + "]";
+				+ ", dataCriacao=" + dataCriacao + ", dataAtualizacao=" + dataAtualizacao + ", residenciaId=" + residenciaId + "]";
 	}
 
 }

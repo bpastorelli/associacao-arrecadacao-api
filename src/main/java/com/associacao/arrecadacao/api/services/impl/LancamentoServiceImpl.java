@@ -21,12 +21,6 @@ public class LancamentoServiceImpl implements LancamentoService {
 	
 	@Autowired
 	private LancamentoRepository lancamentoRepository;
-	
-	@Override
-	public Page<Lancamento> buscarPorMoradorId(Long moradorId, PageRequest pageRequest) {
-		log.info("Buscar lançamento para o morador ID {}", moradorId);
-		return this.lancamentoRepository.findByMoradorId(moradorId, pageRequest);
-	}
 
 	@Override
 	public Optional<Lancamento> buscarPorId(Long id) {
