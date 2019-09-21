@@ -122,7 +122,13 @@ public class CadastroProcessoController {
 				if(lancamento.getValor() == new BigDecimal(0L)) 
 					result.addError(new ObjectError("lancamento", "O campo Valor não pode ser zero."));
 
+				if(cadastroResidenciaDto.getLancamentos().stream()
+						.filter(p -> p.getPeriodo().equals(lancamento.getPeriodo()))
+						.filter(x -> x.getValor().equals(lancamento.getValor()))
+						.count() > 1) 
+					result.addError(new ObjectError("lancamento", "O lancamento para o periodo " + lancamento.getPeriodo() + " no valor de " + lancamento.getValor() + " está duplicado."));
 			}
+			
 		}
 		
 		for(Morador morador : cadastroResidenciaDto.getMoradores()) {
@@ -140,10 +146,11 @@ public class CadastroProcessoController {
 					.ifPresent(res -> result.addError(new ObjectError("morador", "E-mail " + morador.getEmail() + " já existente")));
 		}
 		
-		for(Lancamento lancamento : cadastroResidenciaDto.getLancamentos()) {
+		/*for(Lancamento lancamento : cadastroResidenciaDto.getLancamentos()) {
 			this.lancamentoService.buscarPorPeriodo(lancamento.getPeriodo())
-					.ifPresent(res -> result.addError(new ObjectError("lancamento", "Periodo " + lancamento.getPeriodo() + " já existente")));
-		}
+			.ifPresent(res -> result.addError(new ObjectError("lancamento", "Periodo " + lancamento.getPeriodo() + " já existente")));
+		}*/
+		
 	}
 	
 	/**

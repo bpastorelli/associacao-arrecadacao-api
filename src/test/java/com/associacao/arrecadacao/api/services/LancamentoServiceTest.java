@@ -35,6 +35,8 @@ public class LancamentoServiceTest {
 	@Autowired
 	private LancamentoService lancamentoService;
 	
+	private static final String periodo = "09/2019";
+	
 	@Before
 	public void setUp() {
 		BDDMockito
@@ -61,6 +63,13 @@ public class LancamentoServiceTest {
 	@Test
 	public void testBuscarLancamentoPorId() {
 		Optional<Lancamento> lancamento = this.lancamentoService.buscarPorId(1L);
+		
+		assertTrue(lancamento.isPresent());
+	}
+	
+	@Test
+	public void testBuscarLancamentoPorPeriodo() {
+		Optional<Lancamento> lancamento = this.lancamentoService.buscarPorPeriodo(periodo);
 		
 		assertTrue(lancamento.isPresent());
 	}
