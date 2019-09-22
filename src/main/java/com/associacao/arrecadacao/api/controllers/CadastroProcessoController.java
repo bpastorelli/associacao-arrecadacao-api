@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.associacao.arrecadacao.api.commons.ValidaCPF;
 import com.associacao.arrecadacao.api.dtos.CadastroResidenciaDto;
 import com.associacao.arrecadacao.api.entities.Lancamento;
 import com.associacao.arrecadacao.api.entities.Morador;
@@ -51,6 +52,7 @@ public class CadastroProcessoController {
 	@PostMapping
 	public ResponseEntity<Response<CadastroResidenciaDto>> cadastrar(@Valid @RequestBody CadastroResidenciaDto cadastroResidenciaDto,
 			BindingResult result) throws NoSuchAlgorithmException{
+		
 		log.info("Cadastrando processo de associado: {}", cadastroResidenciaDto.toString());
 		Response<CadastroResidenciaDto> response = new Response<CadastroResidenciaDto>();
 		
@@ -91,6 +93,9 @@ public class CadastroProcessoController {
 			
 			if(morador.getCpf().isEmpty())
 				result.addError(new ObjectError("morador", "O campo CPF é obrigatório."));
+			
+			if(!ValidaCPF.isCPF(morador.getCpf()))
+				result.addError(new ObjectError("morador", "CPF inválido."));
 			
 			if(morador.getSenha().isEmpty())
 				result.addError(new ObjectError("morador", "O campo Senha é obrigatório."));
@@ -145,11 +150,6 @@ public class CadastroProcessoController {
 			this.moradorService.bucarPorEmail(morador.getEmail())
 					.ifPresent(res -> result.addError(new ObjectError("morador", "E-mail " + morador.getEmail() + " já existente")));
 		}
-		
-		/*for(Lancamento lancamento : cadastroResidenciaDto.getLancamentos()) {
-			this.lancamentoService.buscarPorPeriodo(lancamento.getPeriodo())
-			.ifPresent(res -> result.addError(new ObjectError("lancamento", "Periodo " + lancamento.getPeriodo() + " já existente")));
-		}*/
 		
 	}
 	
