@@ -1,9 +1,14 @@
 package com.associacao.arrecadacao.api.dtos;
 
+import java.util.List;
+
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
-public class CadastroResidenciaDto {
+import com.associacao.arrecadacao.api.entities.Lancamento;
+import com.associacao.arrecadacao.api.entities.Morador;
+
+public class CadastroProcessoDto {
 	
 	private Long   id;
 	private String matricula;
@@ -13,8 +18,10 @@ public class CadastroResidenciaDto {
 	private String cep;
 	private String cidade;
 	private String uf;
+	private List<Morador> moradores;
+	private List<Lancamento> lancamentos;
 	
-	public CadastroResidenciaDto() {
+	public CadastroProcessoDto() {
 		
 	}
 	
@@ -94,4 +101,20 @@ public class CadastroResidenciaDto {
 		this.uf = uf;
 	}	
 
+	@NotEmpty(message = "O campo moradores deve conter ao menos um morador.")
+	public List<Morador> getMoradores(){
+		return moradores;
+	}
+	
+	public void setMoradores(List<Morador> moradores) {
+		this.moradores = moradores;
+	}
+	
+	public List<Lancamento> getLancamentos(){
+		return lancamentos;
+	}
+	
+	public void setLancamentos(List<Lancamento> lancamentos) {
+		this.lancamentos = lancamentos;
+	}	
 }
