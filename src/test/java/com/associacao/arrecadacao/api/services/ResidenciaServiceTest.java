@@ -47,7 +47,7 @@ public class ResidenciaServiceTest {
 	
 	@Test
 	public void testPersistirResidencia() {
-		Residencia residencia = this.residenciaService.persistir(new Residencia());
+		Optional<Residencia> residencia = this.residenciaService.persistir(new Residencia());
 		
 		assertNotNull(residencia);
 	}

@@ -26,9 +26,9 @@ public class ResidenciaServiceImpl implements ResidenciaService {
 	}
 
 	@Override
-	public Residencia persistir(Residencia residencia) {
+	public Optional<Residencia> persistir(Residencia residencia) {
 		log.info("Persistindo a residência: {}", residencia);
-		return this.residenciaRepository.save(residencia);
+		return Optional.ofNullable(this.residenciaRepository.save(residencia));
 	}
 
 	@Override

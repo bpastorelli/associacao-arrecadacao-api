@@ -28,6 +28,6 @@ public interface ResidenciaService {
 	 * @param residencia
 	 * @return Residencia
 	 */
-	Residencia persistir(Residencia residencia);
+	Optional<Residencia> persistir(Residencia residencia);
 
 }
