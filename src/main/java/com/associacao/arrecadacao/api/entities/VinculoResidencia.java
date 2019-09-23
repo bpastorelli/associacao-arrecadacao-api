@@ -39,7 +39,7 @@ public class VinculoResidencia implements Serializable {
 		this.id = id;
 	}
 	
-	@Column(name = "", nullable = false)
+	@Column(name = "morador_id", nullable = false)
 	public Long getMoradorId() {
 		
 		return moradorId;
