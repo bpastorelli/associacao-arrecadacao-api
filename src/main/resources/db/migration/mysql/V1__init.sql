@@ -106,3 +106,12 @@ ALTER TABLE `morador`
 --
 ALTER TABLE `lancamento`
   ADD CONSTRAINT `FK46i4k5vl8wah7feutye9kbpi4` FOREIGN KEY (`residencia_id`) REFERENCES `residencia` (`id`);
+  
+--
+-- Constraints for table `vinculo_residencia`
+--
+ALTER TABLE `vinculo_residencia`
+  ADD CONSTRAINT `FK46i4k5vl8wah7feutye9kbpi45` FOREIGN KEY (`residencia_id`) REFERENCES `residencia` (`id`);
+  
+ALTER TABLE `vinculo_residencia`
+  ADD CONSTRAINT `FK46i4k5vl8wah7feutye9kbpi56` FOREIGN KEY (`morador_id`) REFERENCES `morador` (`id`);
