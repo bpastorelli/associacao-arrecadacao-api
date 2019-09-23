@@ -36,6 +36,13 @@ CREATE TABLE `lancamento` (
   `residencia_id` bigint(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `vinculo_residencia` (
+	`id` bigint(20) NOT NULL,
+	`morador_id` bigint(20) NOT NULL,
+	`residencia_id` bigint(20) NOT NULL,
+	`data_vinculo` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 --
 -- Indexes for table `residencia`
 --
@@ -55,6 +62,13 @@ ALTER TABLE `morador`
 ALTER TABLE `lancamento`
   ADD PRIMARY KEY (`id`),
   ADD KEY `FK46i4k5vl8wah7feutye9kbpi4` (`residencia_id`);
+  
+ --
+-- Indexes for table `vinculo_residencia`
+--
+ALTER TABLE `vinculo_residencia`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `FK46i4k5vl8wah7feutye9kbpi4` (`residencia_id`, `morador_id`);
 
 --
 -- AUTO_INCREMENT for table `residencia`
@@ -70,6 +84,12 @@ ALTER TABLE `morador`
 -- AUTO_INCREMENT for table `lancamento`
 --
 ALTER TABLE `lancamento`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+  
+--
+-- AUTO_INCREMENT for table `vinculo_residencia`
+--
+ALTER TABLE `vinculo_residencia`
   MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
 --
 -- Constraints for dumped tables
