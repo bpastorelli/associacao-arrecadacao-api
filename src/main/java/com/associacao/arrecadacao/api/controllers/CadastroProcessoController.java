@@ -70,7 +70,7 @@ public class CadastroProcessoController {
 		}
 		
 		this.residenciaService.persistir(residencia);
-		moradores.forEach(p -> p.setResidencia(residencia.getId()));
+		moradores.forEach(p -> p.setResidenciaId(residencia.getId()));
 		this.moradorService.persistir(moradores);
 		lancamentos.forEach(p -> p.setResidenciaId(residencia.getId()));
 		this.lancamentoService.persistir(lancamentos);
@@ -142,7 +142,7 @@ public class CadastroProcessoController {
 		}
 		
 		for(Morador morador : cadastroResidenciaDto.getMoradores()) {
-			this.moradorService.buscarPorCpf(morador.getRg())
+			this.moradorService.buscarPorRg(morador.getRg())
 					.ifPresent(res -> result.addError(new ObjectError("morador", "RG " + morador.getRg() + " já existente")));
 		}
 		
@@ -191,7 +191,7 @@ public class CadastroProcessoController {
 			item.setPerfil(PerfilEnum.ROLE_USUARIO);
 			item.setTelefone(morador.getTelefone());
 			item.setCelular(morador.getCelular());
-			item.setResidencia(null);
+			item.setResidenciaId(null);
 			moradores.add(item);
 		}
 		

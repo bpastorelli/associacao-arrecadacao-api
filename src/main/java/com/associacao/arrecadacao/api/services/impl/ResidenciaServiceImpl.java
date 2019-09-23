@@ -30,4 +30,10 @@ public class ResidenciaServiceImpl implements ResidenciaService {
 		log.info("Persistindo a residência: {}", residencia);
 		return this.residenciaRepository.save(residencia);
 	}
+
+	@Override
+	public Optional<Residencia> buscarPorResidenciaId(Long residenciaId) {
+		log.info("Buscando uma residência para o ID {}", residenciaId);
+		return this.residenciaRepository.findById(residenciaId);
+	}
 }

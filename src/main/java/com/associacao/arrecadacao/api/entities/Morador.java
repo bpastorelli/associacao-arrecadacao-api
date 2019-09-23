@@ -140,11 +140,11 @@ public class Morador implements Serializable {
 	}
 
 	@Column(name = "residencia_id", nullable = false)
-	public Long getResidencia() {
+	public Long getResidenciaId() {
 		return residenciaId;
 	}
 
-	public void setResidencia(Long residenciaId) {
+	public void setResidenciaId(Long residenciaId) {
 		this.residenciaId = residenciaId;
 	}
 	

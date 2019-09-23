@@ -15,6 +15,14 @@ public interface ResidenciaService {
 	Optional<Residencia> bucarPorMatricula(String matricula);
 	
 	/**
+	 * Retorna uma residência dado um ID.
+	 * 
+	 * @param residenciaId
+	 * @return Optional<Residencia>
+	 */	
+	Optional<Residencia> buscarPorResidenciaId(Long residenciaId);
+	
+	/**
 	 * Cadastra uma nova residencia na base de dados.
 	 * 
 	 * @param residencia
