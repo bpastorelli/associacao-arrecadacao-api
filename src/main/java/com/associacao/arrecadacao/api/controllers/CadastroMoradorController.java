@@ -65,7 +65,6 @@ public class CadastroMoradorController {
 		
 		this.moradorService.persistir(moradores);
 		this.vinculoResidenciaService.persistir(this.converterDtoParaVinculoResidencia(cadastroMoradorDto));
-		
 		response.setData(this.converterCadastroMoradorDto(moradores));
 		return ResponseEntity.ok(response);
 		
@@ -73,11 +72,13 @@ public class CadastroMoradorController {
 	
 	private void validarDadosExistentes(CadastroMoradorDto cadastroMoradorDto, BindingResult result) {
 		
-		if(!residenciaService.buscarPorId(cadastroMoradorDto.getResidenciaId()).isPresent())
-			result.addError(new ObjectError("residencia", "O imóvel (" + cadastroMoradorDto.getResidenciaId() + ") não está cadastrado."));
+		cadastroMoradorDto.getMoradores().forEach(p -> {
+			if(!residenciaService.buscarPorId(p.getResidenciaId()).isPresent())
+				result.addError(new ObjectError("residencia", "O imóvel (" + p.getResidenciaId() + ") não está cadastrado."));
+		});
 		
 		cadastroMoradorDto.getMoradores().forEach(p -> {
-			if(this.vinculoResidenciaService.buscarPorResidenciaIdAndMoradorId(cadastroMoradorDto.getResidenciaId(), p.getId()).isPresent())
+			if(this.vinculoResidenciaService.buscarPorResidenciaIdAndMoradorId(p.getResidenciaId(), p.getId()).isPresent())
 				result.addError(new ObjectError("residencia", "O morador já está vinculado a este imóvel."));			
 		});
 		
@@ -180,7 +181,7 @@ public class CadastroMoradorController {
 		cadastroMoradorDto.getMoradores().forEach(m -> {
 			VinculoResidencia vinculo = new VinculoResidencia();
 			vinculo.setMoradorId(m.getId());
-			vinculo.setResidenciaId(cadastroMoradorDto.getResidenciaId());
+			vinculo.setResidenciaId(m.getResidenciaId());
 			vinculos.add(vinculo);
 		});
 		return vinculos;

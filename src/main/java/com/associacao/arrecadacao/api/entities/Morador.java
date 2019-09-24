@@ -1,5 +1,6 @@
 package com.associacao.arrecadacao.api.entities;
 
+import java.beans.Transient;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -33,6 +34,7 @@ public class Morador implements Serializable {
 	private PerfilEnum perfil;
 	private Date dataCriacao;
 	private Date dataAtualizacao;
+	private Long residenciaId;
 
 	public Morador() {
 	}
@@ -148,6 +150,17 @@ public class Morador implements Serializable {
         final Date atual = new Date();
         dataCriacao = atual;
         dataAtualizacao = atual;
+    }
+    
+    @Transient
+    public Long getResidenciaId() {
+    	
+    	return residenciaId;
+    }
+    
+    public void setResidenciaId(Long residenciaId) {
+    	
+    	this.residenciaId = residenciaId;
     }
 
 	@Override
