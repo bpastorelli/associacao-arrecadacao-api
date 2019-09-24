@@ -20,7 +20,7 @@ public class ResidenciaServiceImpl implements ResidenciaService {
 	private ResidenciaRepository residenciaRepository;
 	
 	@Override
-	public Optional<Residencia> bucarPorMatricula(String matricula) {
+	public Optional<Residencia> buscarPorMatricula(String matricula) {
 		log.info("Buscando uma residência para a matricula {}", matricula);
 		return Optional.ofNullable(residenciaRepository.findByMatricula(matricula));
 	}
@@ -32,8 +32,8 @@ public class ResidenciaServiceImpl implements ResidenciaService {
 	}
 
 	@Override
-	public Optional<Residencia> buscarPorResidenciaId(Long residenciaId) {
-		log.info("Buscando uma residência para o ID {}", residenciaId);
-		return this.residenciaRepository.findById(residenciaId);
+	public Optional<Residencia> buscarPorId(Long id) {
+		log.info("Buscando uma residência para o ID {}", id);
+		return this.residenciaRepository.findById(id);
 	}
 }

@@ -21,9 +21,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.associacao.arrecadacao.api.commons.ValidaCPF;
 import com.associacao.arrecadacao.api.dtos.CadastroMoradorDto;
 import com.associacao.arrecadacao.api.entities.Morador;
+import com.associacao.arrecadacao.api.entities.VinculoResidencia;
 import com.associacao.arrecadacao.api.response.Response;
 import com.associacao.arrecadacao.api.services.MoradorService;
 import com.associacao.arrecadacao.api.services.ResidenciaService;
+import com.associacao.arrecadacao.api.services.VinculoResidenciaService;
 
 @RestController
 @RequestMapping("/associados/morador")
@@ -37,6 +39,9 @@ public class CadastroMoradorController {
 	
 	@Autowired
 	private ResidenciaService residenciaService;
+	
+	@Autowired
+	private VinculoResidenciaService vinculoResidenciaService;
 	
 	public CadastroMoradorController() {
 		
@@ -59,6 +64,7 @@ public class CadastroMoradorController {
 		}
 		
 		this.moradorService.persistir(moradores);
+		this.vinculoResidenciaService.persistir(this.converterDtoParaVinculoResidencia(cadastroMoradorDto));
 		
 		response.setData(this.converterCadastroMoradorDto(moradores));
 		return ResponseEntity.ok(response);
@@ -67,8 +73,13 @@ public class CadastroMoradorController {
 	
 	private void validarDadosExistentes(CadastroMoradorDto cadastroMoradorDto, BindingResult result) {
 		
-		if(!this.residenciaService.buscarPorResidenciaId(cadastroMoradorDto.getMoradores().get(0).getResidenciaId()).isPresent())
-			result.addError(new ObjectError("residencia", "Residência não existente."));
+		if(!residenciaService.buscarPorId(cadastroMoradorDto.getResidenciaId()).isPresent())
+			result.addError(new ObjectError("residencia", "O imóvel (" + cadastroMoradorDto.getResidenciaId() + ") não está cadastrado."));
+		
+		cadastroMoradorDto.getMoradores().forEach(p -> {
+			if(this.vinculoResidenciaService.buscarPorResidenciaIdAndMoradorId(cadastroMoradorDto.getResidenciaId(), p.getId()).isPresent())
+				result.addError(new ObjectError("residencia", "O morador já está vinculado a este imóvel."));			
+		});
 		
 		if(cadastroMoradorDto.getMoradores().size() == 0) {
 			result.addError(new ObjectError("morador", "Você deve informar ao menos um morador."));
@@ -136,7 +147,6 @@ public class CadastroMoradorController {
 			item.setPerfil(morador.getPerfil());
 			item.setTelefone(morador.getTelefone());
 			item.setCelular(morador.getCelular());
-			item.setResidenciaId(morador.getResidenciaId());
 			moradores.add(item);
 		}
 		
@@ -154,5 +164,25 @@ public class CadastroMoradorController {
 		CadastroMoradorDto cadastroMoradorDto = new CadastroMoradorDto();
 		cadastroMoradorDto.setMoradores(moradores);
 		return cadastroMoradorDto;
+	}
+	
+	/**
+	 * Converter o CadastroProcessoDto para VinculoResidencia.
+	 * 
+	 * @param moradores
+	 * @param residenciaId
+	 * @return VinculoResidencia
+	 */
+	public List<VinculoResidencia> converterDtoParaVinculoResidencia(CadastroMoradorDto cadastroMoradorDto){
+		
+		List<VinculoResidencia> vinculos = new ArrayList<VinculoResidencia>();
+		
+		cadastroMoradorDto.getMoradores().forEach(m -> {
+			VinculoResidencia vinculo = new VinculoResidencia();
+			vinculo.setMoradorId(m.getId());
+			vinculo.setResidenciaId(cadastroMoradorDto.getResidenciaId());
+			vinculos.add(vinculo);
+		});
+		return vinculos;
 	}
 }

@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.math.BigDecimal;
-import java.util.Optional;
+import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
@@ -56,7 +56,7 @@ public class LancamentoRepositoryTest {
 	@Test
 	public void testBuscarLancamentoPorPeriodo() {
 		
-		Optional<Lancamento> lancamento = this.lancamentoRepository.findByPeriodo(periodo);
+		List<Lancamento> lancamento = this.lancamentoRepository.findByPeriodoAndResidenciaId(periodo, residenciaId);
 		
 		assertNotNull(lancamento);
 	}

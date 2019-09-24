@@ -33,7 +33,6 @@ public class Morador implements Serializable {
 	private PerfilEnum perfil;
 	private Date dataCriacao;
 	private Date dataAtualizacao;
-	private Long residenciaId;
 
 	public Morador() {
 	}
@@ -138,15 +137,6 @@ public class Morador implements Serializable {
 	public void setSenha(String senha) {
 		this.senha = senha;
 	}
-
-	@Column(name = "residencia_id", nullable = false)
-	public Long getResidenciaId() {
-		return residenciaId;
-	}
-
-	public void setResidenciaId(Long residenciaId) {
-		this.residenciaId = residenciaId;
-	}
 	
 	@PreUpdate
     public void preUpdate() {
@@ -164,7 +154,7 @@ public class Morador implements Serializable {
 	public String toString() {
 		return "Morador [id=" + id + ", nome=" + nome + ", email=" + email + ", senha=" + senha + ", cpf=" + cpf
 				+ ", rg=" + rg + ", telefone=" + telefone + ", celular=" + celular + ", perfil=" + perfil + ", dataCriacao="
-				+ dataCriacao + ", dataAtualizacao=" + dataAtualizacao + ", residenciaId=" + residenciaId + "]";
+				+ dataCriacao + ", dataAtualizacao=" + dataAtualizacao + "]";
 	}
 
 }

@@ -53,8 +53,8 @@ public class LancamentoServiceImpl implements LancamentoService {
 	}
 
 	@Override
-	public Optional<Lancamento> buscarPorPeriodo(String periodo) {
-		log.info("Buscar lançamento por Periodo {}", periodo);
-		return this.lancamentoRepository.findByPeriodo(periodo);
+	public List<Lancamento> buscarPorPeriodoAndResidenciaId(String periodo, Long residenciaId) {
+		log.info("Buscar lançamento por Periodo {}", periodo, residenciaId);
+		return this.lancamentoRepository.findByPeriodoAndResidenciaId(periodo, residenciaId);
 	}
 }

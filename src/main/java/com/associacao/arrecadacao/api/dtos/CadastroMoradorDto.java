@@ -8,6 +8,7 @@ import com.associacao.arrecadacao.api.entities.Morador;
 
 public class CadastroMoradorDto {
 	
+	private Long residenciaId;
 	private List<Morador> moradores;
 	
 	public CadastroMoradorDto() {
@@ -21,6 +22,12 @@ public class CadastroMoradorDto {
 	
 	public void setMoradores(List<Morador> moradores) {
 		this.moradores = moradores;
+	}
+	
+	@NotEmpty(message = "O campo residencia ID é obrigatório")
+	public Long getResidenciaId() {
+		
+		return residenciaId;
 	}
 	
 }

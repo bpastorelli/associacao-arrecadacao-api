@@ -2,16 +2,12 @@ package com.associacao.arrecadacao.api.entities;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
@@ -32,7 +28,6 @@ public class Residencia implements Serializable {
 	private String uf;
 	private Date   dataCriacao;
 	private Date   dataAtualizacao;
-	private List<Morador> moradores;
 	
 	public Residencia() {
 	}
@@ -126,15 +121,6 @@ public class Residencia implements Serializable {
 
 	public void setDataAtualizacao(Date dataAtualizacao) {
 		this.dataAtualizacao = dataAtualizacao;
-	}
-
-	@OneToMany(mappedBy = "residenciaId", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	public List<Morador> getMoradores() {
-		return moradores;
-	}
-
-	public void setMoradores(List<Morador> moradores) {
-		this.moradores = moradores;
 	}
 	
 	@PreUpdate

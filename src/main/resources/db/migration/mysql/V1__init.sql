@@ -22,8 +22,7 @@ CREATE TABLE `morador` (
   `celular` varchar(255) NOT NULL,
   `perfil` varchar(255) NOT NULL,
   `data_atualizacao` datetime NOT NULL,
-  `data_criacao` datetime NOT NULL,
-  `residencia_id` bigint(20) DEFAULT NULL
+  `data_criacao` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `lancamento` (
@@ -54,7 +53,7 @@ ALTER TABLE `residencia`
 --
 ALTER TABLE `morador`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `FK4cm1kg523jlopyexjbmi6y54j` (`residencia_id`);
+  ADD KEY `FK4cm1kg523jlopyexjbmi6y54j` (`cpf`);
 
 --
 -- Indexes for table `lancamento`
@@ -94,12 +93,6 @@ ALTER TABLE `vinculo_residencia`
 --
 -- Constraints for dumped tables
 --
-
---
--- Constraints for table `morador`
---
-ALTER TABLE `morador`
-  ADD CONSTRAINT `FK4cm1kg523jlopyexjbmi6y54j` FOREIGN KEY (`residencia_id`) REFERENCES `residencia` (`id`);
 
 --
 -- Constraints for table `lancamento`

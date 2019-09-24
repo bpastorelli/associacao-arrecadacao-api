@@ -24,11 +24,13 @@ import com.associacao.arrecadacao.api.dtos.CadastroProcessoDto;
 import com.associacao.arrecadacao.api.entities.Lancamento;
 import com.associacao.arrecadacao.api.entities.Morador;
 import com.associacao.arrecadacao.api.entities.Residencia;
+import com.associacao.arrecadacao.api.entities.VinculoResidencia;
 import com.associacao.arrecadacao.api.enums.PerfilEnum;
 import com.associacao.arrecadacao.api.response.Response;
 import com.associacao.arrecadacao.api.services.LancamentoService;
 import com.associacao.arrecadacao.api.services.MoradorService;
 import com.associacao.arrecadacao.api.services.ResidenciaService;
+import com.associacao.arrecadacao.api.services.VinculoResidenciaService;
 
 @RestController
 @RequestMapping("/associados/processo")
@@ -42,6 +44,9 @@ public class CadastroProcessoController {
 	
 	@Autowired
 	private ResidenciaService residenciaService;
+	
+	@Autowired
+	private VinculoResidenciaService vinculoResidenciaService;
 	
 	@Autowired
 	private LancamentoService lancamentoService;
@@ -59,6 +64,7 @@ public class CadastroProcessoController {
 		Residencia residencia = this.converterDtoParaResidencia(cadastroProcessoDto);
 		List<Morador> moradores = this.converterDtoParaMorador(cadastroProcessoDto);
 		List<Lancamento> lancamentos = this.converterDtoParaLancamento(cadastroProcessoDto);
+		List<VinculoResidencia> vinculos = new ArrayList<VinculoResidencia>();
 		cadastroProcessoDto.setMoradores(moradores);
 		cadastroProcessoDto.setLancamentos(lancamentos);
 		validarDadosExistentes(cadastroProcessoDto, result);
@@ -70,8 +76,9 @@ public class CadastroProcessoController {
 		}
 		
 		this.residenciaService.persistir(residencia);
-		moradores.forEach(p -> p.setResidenciaId(residencia.getId()));
 		this.moradorService.persistir(moradores);
+		vinculos = this.converterDtoParaVinculoResidencia(moradores, residencia.getId());
+		this.vinculoResidenciaService.persistir(vinculos);
 		lancamentos.forEach(p -> p.setResidenciaId(residencia.getId()));
 		this.lancamentoService.persistir(lancamentos);
 		
@@ -80,7 +87,8 @@ public class CadastroProcessoController {
 	}
 	
 	private void validarDadosExistentes(CadastroProcessoDto cadastroResidenciaDto, BindingResult result) {
-		this.residenciaService.bucarPorMatricula(cadastroResidenciaDto.getMatricula())
+		
+		this.residenciaService.buscarPorMatricula(cadastroResidenciaDto.getMatricula())
 				.ifPresent(res -> result.addError(new ObjectError("residencia", "Residência já existente")));
 		
 		if(cadastroResidenciaDto.getMoradores().size() == 0) {
@@ -191,7 +199,6 @@ public class CadastroProcessoController {
 			item.setPerfil(PerfilEnum.ROLE_USUARIO);
 			item.setTelefone(morador.getTelefone());
 			item.setCelular(morador.getCelular());
-			item.setResidenciaId(null);
 			moradores.add(item);
 		}
 		
@@ -216,6 +223,26 @@ public class CadastroProcessoController {
 		}
 		
 		return lancamentos;
+	}
+	
+	/**
+	 * Converter o CadastroProcessoDto para VinculoResidencia.
+	 * 
+	 * @param moradores
+	 * @param residenciaId
+	 * @return VinculoResidencia
+	 */
+	public List<VinculoResidencia> converterDtoParaVinculoResidencia(List<Morador> moradores, Long residenciaId){
+		
+		List<VinculoResidencia> vinculos = new ArrayList<VinculoResidencia>();
+		
+		moradores.forEach(m -> {
+			VinculoResidencia vinculo = new VinculoResidencia();
+			vinculo.setMoradorId(m.getId());
+			vinculo.setResidenciaId(residenciaId);
+			vinculos.add(vinculo);
+		});
+		return vinculos;
 	}
 	
 	/**

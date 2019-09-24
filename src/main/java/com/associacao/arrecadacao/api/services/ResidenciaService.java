@@ -12,7 +12,7 @@ public interface ResidenciaService {
 	 * @param matricula
 	 * @return Optional<Residencia>
 	 */
-	Optional<Residencia> bucarPorMatricula(String matricula);
+	Optional<Residencia> buscarPorMatricula(String matricula);
 	
 	/**
 	 * Retorna uma residência dado um ID.
@@ -20,7 +20,7 @@ public interface ResidenciaService {
 	 * @param residenciaId
 	 * @return Optional<Residencia>
 	 */	
-	Optional<Residencia> buscarPorResidenciaId(Long residenciaId);
+	Optional<Residencia> buscarPorId(Long id);
 	
 	/**
 	 * Cadastra uma nova residencia na base de dados.

@@ -3,6 +3,8 @@ package com.associacao.arrecadacao.api.services;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.Before;
@@ -50,7 +52,7 @@ public class VinculoResidenciaServiceTest {
 	
 	@Test
 	public void testPersistirResidencia() {
-		Optional<VinculoResidencia> vinculo = this.vinculoResidenciaService.persistir(new VinculoResidencia());
+		List<VinculoResidencia> vinculo = this.vinculoResidenciaService.persistir(new ArrayList<VinculoResidencia>());
 		
 		assertNotNull(vinculo);
 	}

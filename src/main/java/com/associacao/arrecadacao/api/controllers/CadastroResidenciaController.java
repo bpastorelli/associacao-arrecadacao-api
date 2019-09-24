@@ -78,7 +78,7 @@ class CadastroResidenciaController {
 	
 	private void validarDadosExistentes(CadastroResidenciaDto cadastroResidenciaDto, BindingResult result) {
 		
-		this.residenciaService.bucarPorMatricula(cadastroResidenciaDto.getMatricula())
+		this.residenciaService.buscarPorMatricula(cadastroResidenciaDto.getMatricula())
 				.ifPresent(res -> result.addError(new ObjectError("residencia", "Residência já existente")));
 		
 	}
