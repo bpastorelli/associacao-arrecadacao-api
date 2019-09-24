@@ -23,6 +23,7 @@ import com.associacao.arrecadacao.api.dtos.CadastroLancamentoDto;
 import com.associacao.arrecadacao.api.entities.Lancamento;
 import com.associacao.arrecadacao.api.response.Response;
 import com.associacao.arrecadacao.api.services.LancamentoService;
+import com.associacao.arrecadacao.api.services.ResidenciaService;
 
 @RestController
 @RequestMapping("/associados/lancamento")
@@ -30,6 +31,9 @@ import com.associacao.arrecadacao.api.services.LancamentoService;
 public class CadastroLancamentoController {
 	
 	private static final Logger log = LoggerFactory.getLogger(CadastroLancamentoController.class);
+	
+	@Autowired
+	private ResidenciaService residenciaService;
 	
 	@Autowired
 	private LancamentoService lancamentoService;
@@ -97,9 +101,11 @@ public class CadastroLancamentoController {
 	}
 	
 	private void validarDadosExistentes(CadastroLancamentoDto cadastroLancamentoDto, BindingResult result) {
-		
 
 		for(Lancamento lancamento : cadastroLancamentoDto.getLancamentos()) {
+			
+			if(!residenciaService.buscarPorId(lancamento.getResidenciaId()).isPresent())
+				result.addError(new ObjectError("lancamento", "O código de residencia " + lancamento.getResidenciaId() + " não existe."));			
 			
 			if(lancamentoService.buscarPorPeriodoAndResidenciaId(lancamento.getPeriodo(), lancamento.getResidenciaId()).size() > 0)
 				result.addError(new ObjectError("lancamento", "O lançamento para o Periodo " + lancamento.getPeriodo() + " já existe."));
