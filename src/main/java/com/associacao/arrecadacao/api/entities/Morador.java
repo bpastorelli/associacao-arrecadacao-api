@@ -1,8 +1,8 @@
 package com.associacao.arrecadacao.api.entities;
 
-import java.beans.Transient;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Optional;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,6 +14,9 @@ import javax.persistence.Id;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import com.associacao.arrecadacao.api.enums.PerfilEnum;
 
@@ -113,6 +116,7 @@ public class Morador implements Serializable {
 		this.perfil = perfil;
 	}
 
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "data_criacao", nullable = false)
 	public Date getDataCriacao() {
 		return dataCriacao;
@@ -122,6 +126,7 @@ public class Morador implements Serializable {
 		this.dataCriacao = dataCriacao;
 	}
 
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "data_atualizacao", nullable = false)
 	public Date getDataAtualizacao() {
 		return dataAtualizacao;
@@ -153,9 +158,9 @@ public class Morador implements Serializable {
     }
     
     @Transient
-    public Long getResidenciaId() {
+    public Optional<Long> getResidenciaId() {
     	
-    	return residenciaId;
+    	return Optional.ofNullable(residenciaId);
     }
     
     public void setResidenciaId(Long residenciaId) {

@@ -64,8 +64,8 @@ public class CadastroMoradorController {
 		}
 		
 		this.moradorService.persistir(moradores);
-		this.vinculoResidenciaService.persistir(this.converterDtoParaVinculoResidencia(cadastroMoradorDto));
-		response.setData(this.converterCadastroMoradorDto(moradores));
+		this.vinculoResidenciaService.persistir(this.converterDtoParaVinculoResidencia(cadastroMoradorDto, moradores));
+		response.setData(this.converterCadastroMoradorDto(cadastroMoradorDto, moradores));
 		return ResponseEntity.ok(response);
 		
 	}
@@ -73,12 +73,12 @@ public class CadastroMoradorController {
 	private void validarDadosExistentes(CadastroMoradorDto cadastroMoradorDto, BindingResult result) {
 		
 		cadastroMoradorDto.getMoradores().forEach(p -> {
-			if(!residenciaService.buscarPorId(p.getResidenciaId()).isPresent())
-				result.addError(new ObjectError("residencia", "O imóvel (" + p.getResidenciaId() + ") não está cadastrado."));
+			if(!residenciaService.buscarPorId(p.getResidenciaId().get()).isPresent())
+				result.addError(new ObjectError("residencia", "O imóvel (" + p.getResidenciaId().get() + ") não está cadastrado."));
 		});
 		
 		cadastroMoradorDto.getMoradores().forEach(p -> {
-			if(this.vinculoResidenciaService.buscarPorResidenciaIdAndMoradorId(p.getResidenciaId(), p.getId()).isPresent())
+			if(this.vinculoResidenciaService.buscarPorResidenciaIdAndMoradorId(p.getResidenciaId().get(), p.getId()).isPresent())
 				result.addError(new ObjectError("residencia", "O morador já está vinculado a este imóvel."));			
 		});
 		
@@ -114,17 +114,17 @@ public class CadastroMoradorController {
 		
 		for(Morador morador : cadastroMoradorDto.getMoradores()) {
 			this.moradorService.buscarPorCpf(morador.getCpf())
-					.ifPresent(res -> result.addError(new ObjectError("morador", "CPF " + morador.getCpf() + " já existente")));
+				.ifPresent(res -> result.addError(new ObjectError("morador", "CPF " + morador.getCpf() + " já existente")));
 		}
 		
 		for(Morador morador : cadastroMoradorDto.getMoradores()) {
 			this.moradorService.buscarPorRg(morador.getRg())
-					.ifPresent(res -> result.addError(new ObjectError("morador", "RG " + morador.getRg() + " já existente")));
+				.ifPresent(res -> result.addError(new ObjectError("morador", "RG " + morador.getRg() + " já existente")));
 		}
 		
 		for(Morador morador : cadastroMoradorDto.getMoradores()) {
 			this.moradorService.bucarPorEmail(morador.getEmail())
-					.ifPresent(res -> result.addError(new ObjectError("morador", "E-mail " + morador.getEmail() + " já existente")));
+				.ifPresent(res -> result.addError(new ObjectError("morador", "E-mail " + morador.getEmail() + " já existente")));
 		}
 		
 	}
@@ -160,11 +160,32 @@ public class CadastroMoradorController {
 	 * @param residencia
 	 * @return CadastroMoradorDto
 	 */
-	private CadastroMoradorDto converterCadastroMoradorDto(List<Morador> moradores) {
+	private CadastroMoradorDto converterCadastroMoradorDto(CadastroMoradorDto cadastroMoradorDto, List<Morador> moradores) {
 		
-		CadastroMoradorDto cadastroMoradorDto = new CadastroMoradorDto();
-		cadastroMoradorDto.setMoradores(moradores);
-		return cadastroMoradorDto;
+		CadastroMoradorDto dto = new CadastroMoradorDto();
+		List<Morador> lista = new ArrayList<Morador>();
+		
+		cadastroMoradorDto.getMoradores().forEach(m ->{
+			moradores.forEach(p ->{
+				Morador morador = new Morador();
+				morador.setId(p.getId());
+				morador.setNome(p.getNome());
+				morador.setCpf(p.getCpf());
+				morador.setRg(p.getRg());
+				morador.setEmail(p.getEmail());
+				morador.setSenha(p.getSenha());
+				morador.setPerfil(p.getPerfil());
+				morador.setTelefone(p.getTelefone());
+				morador.setCelular(p.getCelular());
+				morador.setDataAtualizacao(p.getDataAtualizacao());
+				morador.setDataCriacao(p.getDataCriacao());
+				morador.setResidenciaId(m.getResidenciaId().get());
+				lista.add(morador);
+			});
+		});
+		
+		dto.setMoradores(lista);
+		return dto;
 	}
 	
 	/**
@@ -174,15 +195,16 @@ public class CadastroMoradorController {
 	 * @param residenciaId
 	 * @return VinculoResidencia
 	 */
-	public List<VinculoResidencia> converterDtoParaVinculoResidencia(CadastroMoradorDto cadastroMoradorDto){
+	public List<VinculoResidencia> converterDtoParaVinculoResidencia(CadastroMoradorDto cadastroMoradorDto, List<Morador> moradores){
 		
 		List<VinculoResidencia> vinculos = new ArrayList<VinculoResidencia>();
-		
 		cadastroMoradorDto.getMoradores().forEach(m -> {
-			VinculoResidencia vinculo = new VinculoResidencia();
-			vinculo.setMoradorId(m.getId());
-			vinculo.setResidenciaId(m.getResidenciaId());
-			vinculos.add(vinculo);
+			moradores.forEach(p -> {				
+				VinculoResidencia vinculo = new VinculoResidencia();
+				vinculo.setMoradorId(p.getId());
+				vinculo.setResidenciaId(m.getResidenciaId().get());
+				vinculos.add(vinculo);
+			});
 		});
 		return vinculos;
 	}

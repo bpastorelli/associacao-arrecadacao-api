@@ -34,6 +34,6 @@ public class ResidenciaServiceImpl implements ResidenciaService {
 	@Override
 	public Optional<Residencia> buscarPorId(Long id) {
 		log.info("Buscando uma residência para o ID {}", id);
-		return this.residenciaRepository.findById(id);
+		return Optional.ofNullable(this.residenciaRepository.findById(id));
 	}
 }
