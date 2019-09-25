@@ -51,6 +51,14 @@ public class VinculoResidenciaServiceTest {
 	}
 	
 	@Test
+	public void testBuscarPorMoradorId() {
+		
+		Optional<VinculoResidencia> vinculo = this.vinculoResidenciaService.buscarPorMoradorId(MORADOR_ID);
+		
+		assertNotNull(vinculo);
+	}
+	
+	@Test
 	public void testPersistirResidencia() {
 		List<VinculoResidencia> vinculo = this.vinculoResidenciaService.persistir(new ArrayList<VinculoResidencia>());
 		

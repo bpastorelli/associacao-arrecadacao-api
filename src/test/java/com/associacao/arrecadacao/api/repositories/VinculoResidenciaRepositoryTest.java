@@ -42,18 +42,25 @@ public class VinculoResidenciaRepositoryTest {
 		residencia.setCidade("Sorocaba");
 		residencia.setUf("SP");
 		this.residenciaRepository.save(residencia);
-	}
-	
-	@Test
-	public void testVincularResidencia() {
 		
 		VinculoResidencia vinculo = new VinculoResidencia();
 		vinculo.setMoradorId(MORADOR_ID);
 		vinculo.setResidenciaId(RESIDENCIA_ID);
 		this.vinculoResidenciaRepository.save(vinculo);
+	}
+	
+	@Test
+	public void testVincularResidencia() {
 		
 		VinculoResidencia response = this.vinculoResidenciaRepository.findByResidenciaIdAndMoradorId(RESIDENCIA_ID, MORADOR_ID);
 		assertEquals(MORADOR_ID, response.getMoradorId());
+	}
+	
+	@Test
+	public void testBuscarPorMoradorId() {
+		
+		VinculoResidencia response = this.vinculoResidenciaRepository.findByMoradorId(MORADOR_ID);
+		assertEquals(RESIDENCIA_ID, response.getResidenciaId());
 	}
 	
 	@After

@@ -34,6 +34,10 @@ public class CadastroMoradorController {
 	
 	private static final Logger log = LoggerFactory.getLogger(CadastroMoradorController.class);
 	
+	private static Long moradorId = 0L;
+	
+	private static Long residenciaId = 0L;
+	
 	@Autowired
 	private MoradorService moradorService;
 	
@@ -199,12 +203,12 @@ public class CadastroMoradorController {
 		
 		List<VinculoResidencia> vinculos = new ArrayList<VinculoResidencia>();
 		cadastroMoradorDto.getMoradores().forEach(m -> {
-			moradores.forEach(p -> {				
-				VinculoResidencia vinculo = new VinculoResidencia();
-				vinculo.setMoradorId(p.getId());
-				vinculo.setResidenciaId(m.getResidenciaId().get());
-				vinculos.add(vinculo);
-			});
+			VinculoResidencia vinculo = new VinculoResidencia();
+			moradorId = this.moradorService.buscarPorCpf(m.getCpf()).get().getId();
+			residenciaId = this.vinculoResidenciaService.buscarPorMoradorId(moradorId).get().getResidenciaId();
+			vinculo.setMoradorId(moradorId);
+			vinculo.setResidenciaId(residenciaId);
+			vinculos.add(vinculo);
 		});
 		return vinculos;
 	}

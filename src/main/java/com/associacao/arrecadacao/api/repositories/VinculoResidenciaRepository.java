@@ -15,5 +15,7 @@ public interface VinculoResidenciaRepository extends JpaRepository<VinculoReside
 	Optional<VinculoResidencia> findById(Long id);
 	
 	VinculoResidencia findByResidenciaIdAndMoradorId(Long residenciaId, Long moradorId);
+	
+	VinculoResidencia findByMoradorId(Long moradorId);
 
 }

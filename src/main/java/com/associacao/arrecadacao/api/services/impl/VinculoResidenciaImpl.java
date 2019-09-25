@@ -31,4 +31,10 @@ public class VinculoResidenciaImpl implements VinculoResidenciaService {
 		log.info("Persistir vinculo de Residência {}", vinculoResidencia);
 		return this.vinculoResidenciaRepository.save(vinculoResidencia);
 	}
+
+	@Override
+	public Optional<VinculoResidencia> buscarPorMoradorId(Long moradorId) {
+		log.info("Buscar vinculo por morador ID {}", moradorId);
+		return Optional.ofNullable(this.vinculoResidenciaRepository.findByMoradorId(moradorId));
+	}
 }

@@ -17,6 +17,14 @@ public interface VinculoResidenciaService {
 	Optional<VinculoResidencia> buscarPorResidenciaIdAndMoradorId(Long residenciaID, Long moradorId);
 	
 	/**
+	 * Buscar por Morador ID
+	 * 
+	 * @param MoradorId
+	 * @return Optional<VinculoResidencia>
+	 */
+	Optional<VinculoResidencia> buscarPorMoradorId(Long moradorId);
+	
+	/**
 	 * Persistir um vínculo de residência
 	 * 
 	 * @param vinculoResidencia
