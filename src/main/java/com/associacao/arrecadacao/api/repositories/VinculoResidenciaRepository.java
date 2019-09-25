@@ -2,6 +2,7 @@ package com.associacao.arrecadacao.api.repositories;
 
 
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,5 +18,7 @@ public interface VinculoResidenciaRepository extends JpaRepository<VinculoReside
 	VinculoResidencia findByResidenciaIdAndMoradorId(Long residenciaId, Long moradorId);
 	
 	VinculoResidencia findByMoradorId(Long moradorId);
+	
+	List<VinculoResidencia> findByResidenciaId(Long residenciaId);
 
 }
