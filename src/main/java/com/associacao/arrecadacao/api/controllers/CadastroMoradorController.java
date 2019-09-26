@@ -167,20 +167,24 @@ public class CadastroMoradorController {
 		
 		cadastroMoradorDto.getMoradores().forEach(m ->{
 			moradores.forEach(p ->{
-				Morador morador = new Morador();
-				morador.setId(p.getId());
-				morador.setNome(p.getNome());
-				morador.setCpf(p.getCpf());
-				morador.setRg(p.getRg());
-				morador.setEmail(p.getEmail());
-				morador.setSenha(p.getSenha());
-				morador.setPerfil(p.getPerfil());
-				morador.setTelefone(p.getTelefone());
-				morador.setCelular(p.getCelular());
-				morador.setDataAtualizacao(p.getDataAtualizacao());
-				morador.setDataCriacao(p.getDataCriacao());
-				morador.setResidenciaId(m.getResidenciaId().get());
-				lista.add(morador);
+				if(m.getCpf().equals(p.getCpf())) {					
+					Morador morador = new Morador();
+					morador.setId(p.getId());
+					morador.setNome(p.getNome());
+					morador.setCpf(p.getCpf());
+					morador.setRg(p.getRg());
+					morador.setEmail(p.getEmail());
+					morador.setSenha(p.getSenha());
+					morador.setPerfil(p.getPerfil());
+					morador.setTelefone(p.getTelefone());
+					morador.setCelular(p.getCelular());
+					morador.setDataAtualizacao(p.getDataAtualizacao());
+					morador.setDataCriacao(p.getDataCriacao());
+					morador.setResidenciaId(m.getResidenciaId().get());
+					
+					if(!lista.contains(morador))
+						lista.add(morador);
+				}
 			});
 		});
 		
