@@ -65,7 +65,7 @@ public class CadastroMoradorController {
 		
 		this.moradorService.persistir(moradores);
 		this.vinculoResidenciaService.persistir(this.converterDtoParaVinculoResidencia(cadastroMoradorDto));
-		response.setData(this.converterCadastroMoradorDto(cadastroMoradorDto, moradores));
+		response.setData(this.converterCadastroMoradorDto(moradores));
 		return ResponseEntity.ok(response);
 		
 	}
@@ -160,28 +160,26 @@ public class CadastroMoradorController {
 	 * @param residencia
 	 * @return CadastroMoradorDto
 	 */
-	private CadastroMoradorDto converterCadastroMoradorDto(CadastroMoradorDto cadastroMoradorDto, List<Morador> moradores) {
+	private CadastroMoradorDto converterCadastroMoradorDto(List<Morador> moradores) {
 		
 		CadastroMoradorDto dto = new CadastroMoradorDto();
 		List<Morador> lista = new ArrayList<Morador>();
 		
-		cadastroMoradorDto.getMoradores().forEach(m ->{
-			moradores.forEach(p ->{
-				Morador morador = new Morador();
-				morador.setId(p.getId());
-				morador.setNome(p.getNome());
-				morador.setCpf(p.getCpf());
-				morador.setRg(p.getRg());
-				morador.setEmail(p.getEmail());
-				morador.setSenha(p.getSenha());
-				morador.setPerfil(p.getPerfil());
-				morador.setTelefone(p.getTelefone());
-				morador.setCelular(p.getCelular());
-				morador.setDataAtualizacao(p.getDataAtualizacao());
-				morador.setDataCriacao(p.getDataCriacao());
-				morador.setResidenciaId(m.getResidenciaId().get());
-				lista.add(morador);
-			});
+		moradores.forEach(m ->{
+			Morador morador = new Morador();
+			morador.setId(m.getId());
+			morador.setNome(m.getNome());
+			morador.setCpf(m.getCpf());
+			morador.setRg(m.getRg());
+			morador.setEmail(m.getEmail());
+			morador.setSenha(m.getSenha());
+			morador.setPerfil(m.getPerfil());
+			morador.setTelefone(m.getTelefone());
+			morador.setCelular(m.getCelular());
+			morador.setDataAtualizacao(m.getDataAtualizacao());
+			morador.setDataCriacao(m.getDataCriacao());
+			morador.setResidenciaId(m.getResidenciaId().get());
+			lista.add(morador);
 		});
 		
 		dto.setMoradores(lista);
