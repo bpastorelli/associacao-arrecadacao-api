@@ -165,21 +165,27 @@ public class CadastroMoradorController {
 		CadastroMoradorDto dto = new CadastroMoradorDto();
 		List<Morador> lista = new ArrayList<Morador>();
 		
-		moradores.forEach(m ->{
-			Morador morador = new Morador();
-			morador.setId(m.getId());
-			morador.setNome(m.getNome());
-			morador.setCpf(m.getCpf());
-			morador.setRg(m.getRg());
-			morador.setEmail(m.getEmail());
-			morador.setSenha(m.getSenha());
-			morador.setPerfil(m.getPerfil());
-			morador.setTelefone(m.getTelefone());
-			morador.setCelular(m.getCelular());
-			morador.setDataAtualizacao(m.getDataAtualizacao());
-			morador.setDataCriacao(m.getDataCriacao());
-			morador.setResidenciaId(m.getResidenciaId().get());
-			lista.add(morador);
+		dto.getMoradores().forEach(m ->{
+			moradores.forEach(p ->{
+				if(m.getCpf().equals(p.getCpf())) {					
+					Morador morador = new Morador();
+					morador.setId(p.getId());
+					morador.setNome(p.getNome());
+					morador.setCpf(p.getCpf());
+					morador.setRg(p.getRg());
+					morador.setEmail(p.getEmail());
+					morador.setSenha(p.getSenha());
+					morador.setPerfil(p.getPerfil());
+					morador.setTelefone(p.getTelefone());
+					morador.setCelular(p.getCelular());
+					morador.setDataAtualizacao(p.getDataAtualizacao());
+					morador.setDataCriacao(p.getDataCriacao());
+					morador.setResidenciaId(m.getResidenciaId().get());
+					
+					if(!lista.contains(morador))
+						lista.add(morador);
+				}
+			});
 		});
 		
 		dto.setMoradores(lista);

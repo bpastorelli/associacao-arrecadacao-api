@@ -104,7 +104,7 @@ public class CadastroProcessoController {
 		Response<CadastroProcessoDto> response = new Response<CadastroProcessoDto>();
 		
 		Optional<Residencia> residencia = this.residenciaService.buscarPorId(residenciaId);
-		//List<Lancamento> lancamentos = this.lancamentoService.buscarPorResidenciaId(residenciaId, pageRequest);
+		List<Lancamento> lancamentos = this.lancamentoService.buscarPorResidenciaId(residenciaId);
 		
 		//response.setData(this.converterCadastroProcessoDto(residencia, moradores, lancamentos));
 		return ResponseEntity.ok(response);

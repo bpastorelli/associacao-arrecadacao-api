@@ -40,8 +40,6 @@ public class VinculoResidenciaRepositoryTest {
 	
 	private static final String MATRICULA = "789765";
 	
-	private static final Long RESIDENCIA_ID = 1L;
-	
 	private static final Long MORADOR_ID = 1L;
 	
 	private static final String EMAIL = "email@email.com";
