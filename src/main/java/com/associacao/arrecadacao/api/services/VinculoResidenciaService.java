@@ -20,9 +20,9 @@ public interface VinculoResidenciaService {
 	 * Buscar por Morador ID
 	 * 
 	 * @param MoradorId
-	 * @return Optional<VinculoResidencia>
+	 * @return List<VinculoResidencia>
 	 */
-	Optional<VinculoResidencia> buscarPorMoradorId(Long moradorId);
+	List<VinculoResidencia> buscarPorMoradorId(Long moradorId);
 	
 	/**
 	 * Buscar por Residencia ID

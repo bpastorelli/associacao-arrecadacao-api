@@ -83,7 +83,7 @@ public class VinculoResidenciaController {
 		
 		vinculoResidenciaDto.getVinculoResidencia().forEach(p -> {
 			this.vinculoResidenciaService.buscarPorResidenciaIdAndMoradorId(p.getResidenciaId(), p.getMoradorId())
-				.ifPresent(res -> result.addError(new ObjectError("vinculor residencia", "Vinculo para residência já existente")));			
+				.ifPresent(res -> result.addError(new ObjectError("vinculor residencia", "Vinculo para residência já existente.")));			
 		});
 	}
 	

@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
@@ -14,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -54,6 +57,14 @@ public class CadastroProcessoController {
 	public CadastroProcessoController() {
 	}
 	
+	/**
+	 * Adiciona um novo processo de cadastro.
+	 * 
+	 * @param cadastroProcessoDto
+	 * @param result
+	 * @return ResponseEnity<Response<CadastroProcessoDto>>
+	 * @throws NoSuchAlgorithmException
+	 */
 	@PostMapping
 	public ResponseEntity<Response<CadastroProcessoDto>> cadastrar(@Valid @RequestBody CadastroProcessoDto cadastroProcessoDto,
 			BindingResult result) throws NoSuchAlgorithmException{
@@ -84,6 +95,20 @@ public class CadastroProcessoController {
 		
 		response.setData(this.converterCadastroProcessoDto(residencia, moradores, lancamentos));
 		return ResponseEntity.ok(response);
+	}
+	
+	@GetMapping(value = "/{residenciaId}")
+	public ResponseEntity<Response<CadastroProcessoDto>> buscarPorId(@PathVariable("residenciaId") Long residenciaId){
+		
+		log.info("Buscar Processo de cadastro por ID: {}", residenciaId);
+		Response<CadastroProcessoDto> response = new Response<CadastroProcessoDto>();
+		
+		Optional<Residencia> residencia = this.residenciaService.buscarPorId(residenciaId);
+		//List<Lancamento> lancamentos = this.lancamentoService.buscarPorResidenciaId(residenciaId, pageRequest);
+		
+		//response.setData(this.converterCadastroProcessoDto(residencia, moradores, lancamentos));
+		return ResponseEntity.ok(response);
+		
 	}
 	
 	private void validarDadosExistentes(CadastroProcessoDto cadastroResidenciaDto, BindingResult result) {

@@ -53,7 +53,7 @@ public class VinculoResidenciaServiceTest {
 	@Test
 	public void testBuscarPorMoradorId() {
 		
-		Optional<VinculoResidencia> vinculo = this.vinculoResidenciaService.buscarPorMoradorId(MORADOR_ID);
+		List<VinculoResidencia> vinculo = this.vinculoResidenciaService.buscarPorMoradorId(MORADOR_ID);
 		
 		assertNotNull(vinculo);
 	}
