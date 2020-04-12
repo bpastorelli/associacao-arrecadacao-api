@@ -3,6 +3,7 @@ package com.associacao.arrecadacao.api.controllers;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
@@ -13,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -62,6 +65,35 @@ public class CadastroMoradorController {
 		this.moradorService.persistir(moradores);
 		this.vinculoResidenciaService.persistir(this.converterDtoParaVinculoResidencia(cadastroMoradorDto));
 		response.setData(this.converterCadastroMoradorDto(moradores));
+		return ResponseEntity.ok(response);
+		
+	}
+	
+	/**
+	 * Atualiza os dados de uma residência.
+	 * 
+	 * @param id
+	 * @param moradorDto
+	 * @param result
+	 * @return ResponseEntity<Response<CadastroMoradorDto>>
+	 * @throws NoSuchAlgorithmException
+	 */
+	@GetMapping(value = "/{id}")
+	public ResponseEntity<Response<CadastroMoradorDto>> buscarPorId(@PathVariable("id") Long id) throws NoSuchAlgorithmException {
+		
+		log.info("Buscando residência: {}", id);
+		Response<CadastroMoradorDto> response = new Response<CadastroMoradorDto>();
+		
+		Optional<Morador> morador = this.moradorService.buscarPorId(id);
+		if (!morador.isPresent()) {
+			log.info("Morador não encontrada para o ID: {}", id);
+			response.getErrors().add("Morador não encontrada para o ID " + id);
+			return ResponseEntity.badRequest().body(response);
+		}
+		
+		List<Morador> list = new ArrayList<Morador>();
+		list.add(morador.get());
+		response.setData(this.converterCadastroMoradorDto(list));
 		return ResponseEntity.ok(response);
 		
 	}
