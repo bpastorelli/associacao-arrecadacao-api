@@ -93,6 +93,8 @@ public class CadastroMoradorController {
 		
 		List<Morador> list = new ArrayList<Morador>();
 		list.add(morador.get());
+		Long moradorId = vinculoResidenciaService.buscarPorMoradorId(morador.get().getId()).get(0).getResidenciaId();
+		list.forEach(p -> p.setResidenciaId(moradorId));
 		response.setData(this.converterCadastroMoradorDto(list));
 		return ResponseEntity.ok(response);
 		
