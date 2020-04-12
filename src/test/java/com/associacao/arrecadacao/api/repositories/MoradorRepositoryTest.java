@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
@@ -49,9 +50,9 @@ public class MoradorRepositoryTest {
 
 	@Test
 	public void testBuscarMoradorPorEmail() {
-		Morador morador = this.moradorRepository.findByEmail(EMAIL);
+		List<Morador> morador = this.moradorRepository.findByEmail(EMAIL);
 
-		assertEquals(EMAIL, morador.getEmail());
+		assertEquals(EMAIL, morador.parallelStream().filter(p-> p.getEmail().length() > 0));
 	}
 
 	@Test

@@ -67,7 +67,6 @@ public class VinculoResidenciaRepositoryTest {
 		morador.setCpf(CPF);
 		morador.setEmail(EMAIL);
 		morador.setRg(RG);
-		morador.setResidenciaId(residencia.getId());
 		morador.setTelefone("1167897856");
 		morador.setPerfil(PerfilEnum.ROLE_USUARIO);
 		morador.setSenha("123456");

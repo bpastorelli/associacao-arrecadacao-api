@@ -97,20 +97,6 @@ public class CadastroProcessoController {
 		return ResponseEntity.ok(response);
 	}
 	
-	@GetMapping(value = "/{residenciaId}")
-	public ResponseEntity<Response<CadastroProcessoDto>> buscarPorId(@PathVariable("residenciaId") Long residenciaId){
-		
-		log.info("Buscar Processo de cadastro por ID: {}", residenciaId);
-		Response<CadastroProcessoDto> response = new Response<CadastroProcessoDto>();
-		
-		Optional<Residencia> residencia = this.residenciaService.buscarPorId(residenciaId);
-		List<Lancamento> lancamentos = this.lancamentoService.buscarPorResidenciaId(residenciaId);
-		
-		//response.setData(this.converterCadastroProcessoDto(residencia, moradores, lancamentos));
-		return ResponseEntity.ok(response);
-		
-	}
-	
 	private void validarDadosExistentes(CadastroProcessoDto cadastroResidenciaDto, BindingResult result) {
 		
 		this.residenciaService.buscarPorMatricula(cadastroResidenciaDto.getMatricula())
@@ -180,8 +166,8 @@ public class CadastroProcessoController {
 		}
 		
 		for(Morador morador : cadastroResidenciaDto.getMoradores()) {
-			this.moradorService.bucarPorEmail(morador.getEmail())
-					.ifPresent(res -> result.addError(new ObjectError("morador", "E-mail " + morador.getEmail() + " já existente")));
+			if(this.moradorService.bucarPorEmail(morador.getEmail()).size() > 0)
+				result.addError(new ObjectError("morador", "E-mail " + morador.getEmail() + " já existente"));
 		}
 		
 	}

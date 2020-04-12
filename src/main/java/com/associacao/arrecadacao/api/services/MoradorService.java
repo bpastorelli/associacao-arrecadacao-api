@@ -37,7 +37,7 @@ public interface MoradorService {
 	 * @param email
 	 * @return Optional<Morador>
 	 */
-	Optional<Morador> bucarPorEmail(String email);
+	List<Morador> bucarPorEmail(String email);
 
 	/**
 	 * Busca e retorna um morador dado o id.

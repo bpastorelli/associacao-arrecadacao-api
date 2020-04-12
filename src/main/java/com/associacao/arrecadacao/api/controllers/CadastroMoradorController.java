@@ -72,16 +72,6 @@ public class CadastroMoradorController {
 	
 	private void validarDadosExistentes(CadastroMoradorDto cadastroMoradorDto, BindingResult result) {
 		
-		cadastroMoradorDto.getMoradores().forEach(p -> {
-			if(!residenciaService.buscarPorId(p.getResidenciaId().get()).isPresent())
-				result.addError(new ObjectError("residencia", "O imóvel (" + p.getResidenciaId().get() + ") não está cadastrado."));
-		});
-		
-		cadastroMoradorDto.getMoradores().forEach(p -> {
-			if(this.vinculoResidenciaService.buscarPorResidenciaIdAndMoradorId(p.getResidenciaId().get(), p.getId()).isPresent())
-				result.addError(new ObjectError("residencia", "O morador já está vinculado a este imóvel."));			
-		});
-		
 		if(cadastroMoradorDto.getMoradores().size() == 0) {
 			result.addError(new ObjectError("morador", "Você deve informar ao menos um morador."));
 		}
@@ -123,8 +113,8 @@ public class CadastroMoradorController {
 		}
 		
 		for(Morador morador : cadastroMoradorDto.getMoradores()) {
-			this.moradorService.bucarPorEmail(morador.getEmail())
-				.ifPresent(res -> result.addError(new ObjectError("morador", "E-mail " + morador.getEmail() + " já existente")));
+			if(this.moradorService.bucarPorEmail(morador.getEmail()).size() > 0)
+				result.addError(new ObjectError("morador", "E-mail " + morador.getEmail() + " já existente"));
 		}
 		
 	}
@@ -180,7 +170,6 @@ public class CadastroMoradorController {
 					morador.setCelular(p.getCelular());
 					morador.setDataAtualizacao(p.getDataAtualizacao());
 					morador.setDataCriacao(p.getDataCriacao());
-					morador.setResidenciaId(m.getResidenciaId().get());
 					
 					if(!lista.contains(morador))
 						lista.add(morador);
@@ -205,7 +194,6 @@ public class CadastroMoradorController {
 		cadastroMoradorDto.getMoradores().forEach(m -> {
 			VinculoResidencia vinculo = new VinculoResidencia();
 			vinculo.setMoradorId(this.moradorService.buscarPorCpf(m.getCpf()).get().getId());
-			vinculo.setResidenciaId(m.getResidenciaId().get());
 			vinculos.add(vinculo);
 		});
 		return vinculos;

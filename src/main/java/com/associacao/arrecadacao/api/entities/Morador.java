@@ -41,8 +41,6 @@ public class Morador implements Serializable {
 	private PerfilEnum perfil;
 	private Date dataCriacao;
 	private Date dataAtualizacao;
-	private Long residenciaId;
-	private List<Lancamento> lancamentos;
 
 	public Morador() {
 	}
@@ -160,26 +158,6 @@ public class Morador implements Serializable {
         final Date atual = new Date();
         dataCriacao = atual;
         dataAtualizacao = atual;
-    }
-    
-	@OneToMany(mappedBy = "morador", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	public List<Lancamento> getLancamentos() {
-		return lancamentos;
-	}
-
-	public void setLancamentos(List<Lancamento> lancamentos) {
-		this.lancamentos = lancamentos;
-	}
-    
-    @Transient
-    public Optional<Long> getResidenciaId() {
-    	
-    	return Optional.ofNullable(residenciaId);
-    }
-    
-    public void setResidenciaId(Long residenciaId) {
-    	
-    	this.residenciaId = residenciaId;
     }
 
 	@Override

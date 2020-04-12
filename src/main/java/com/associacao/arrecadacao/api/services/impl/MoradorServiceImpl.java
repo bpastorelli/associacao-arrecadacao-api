@@ -39,9 +39,9 @@ public class MoradorServiceImpl implements MoradorService {
 	}
 
 	@Override
-	public Optional<Morador> bucarPorEmail(String email) {
+	public List<Morador> bucarPorEmail(String email) {
 		log.info("Buscando morador pelo E-mail {}", email);
-		return Optional.ofNullable(this.moradorRepository.findByEmail(email));
+		return this.moradorRepository.findByEmail(email);
 	}
 
 	@Override
