@@ -32,7 +32,8 @@ public class Residencia implements Serializable {
 	private String uf;
 	private Date   dataCriacao;
 	private Date   dataAtualizacao;
-	private List<Morador> moradores;
+	private List<Lancamento> lancamentos;
+	private List<VinculoResidencia> vinculosResidencia;
 	
 	public Residencia() {
 	}
@@ -127,14 +128,23 @@ public class Residencia implements Serializable {
 	public void setDataAtualizacao(Date dataAtualizacao) {
 		this.dataAtualizacao = dataAtualizacao;
 	}
-
-	@OneToMany(mappedBy = "residencia", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	public List<Morador> getMoradores() {
-		return moradores;
+	
+	@OneToMany(mappedBy = "residenciaId", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	public List<Lancamento> getLancamentos() {
+		return lancamentos;
 	}
 
-	public void setMoradores(List<Morador> moradores) {
-		this.moradores = moradores;
+	public void setLancamentos(List<Lancamento> lancamentos) {
+		this.lancamentos = lancamentos;
+	}
+	
+	@OneToMany(mappedBy = "residenciaId", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	public List<VinculoResidencia> getVinculosResidencia() {
+		return vinculosResidencia;
+	}
+
+	public void setVinculosResidencia(List<VinculoResidencia> vinculosResidencia) {
+		this.vinculosResidencia = vinculosResidencia;
 	}
 	
 	@PreUpdate

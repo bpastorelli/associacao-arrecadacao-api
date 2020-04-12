@@ -1,8 +1,10 @@
 package com.associacao.arrecadacao.api.repositories;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
@@ -29,10 +31,12 @@ public class LancamentoRepositoryTest {
 	private ResidenciaRepository residenciaRepository;
 	
 	private Long residenciaId;
+	private String periodo;
 
 	@Before
 	public void setUp() throws Exception {
 		Lancamento lancamento = this.lancamentoRepository.save(obterDadosLancamento());
+		this.periodo = lancamento.getPeriodo();
 		this.residenciaId = lancamento.getResidenciaId();
 	}
 
@@ -49,6 +53,14 @@ public class LancamentoRepositoryTest {
 		assertEquals(1, lancamentos.getTotalElements());
 	}
 
+	@Test
+	public void testBuscarLancamentoPorPeriodo() {
+		
+		List<Lancamento> lancamento = this.lancamentoRepository.findByPeriodoAndResidenciaId(periodo, residenciaId);
+		
+		assertNotNull(lancamento);
+	}
+	
 	private Lancamento obterDadosLancamento() {
 		
 		Lancamento lancamento = new Lancamento();

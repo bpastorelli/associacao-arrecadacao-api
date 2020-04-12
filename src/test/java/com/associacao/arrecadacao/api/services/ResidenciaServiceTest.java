@@ -40,7 +40,7 @@ public class ResidenciaServiceTest {
 	
 	@Test
 	public void testBuscarResidenciaPorMatricula() {
-		Optional<Residencia> residencia = this.residenciaService.bucarPorMatricula(MATRICULA);
+		Optional<Residencia> residencia = this.residenciaService.buscarPorMatricula(MATRICULA);
 		
 		assertTrue(residencia.isPresent());
 	}

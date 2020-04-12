@@ -14,5 +14,7 @@ public interface LancamentoRepository extends JpaRepository<Lancamento, Long> {
 	
 	List<Lancamento> findByResidenciaId(Long residenciaId);
 	
+	List<Lancamento> findByPeriodoAndResidenciaId(String periodo, Long residenciaId);
+	
 	Page<Lancamento> findByResidenciaId(Long residenciaId, Pageable pageable);
 }

@@ -2,17 +2,25 @@ package com.associacao.arrecadacao.api.entities;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import com.associacao.arrecadacao.api.enums.PerfilEnum;
 
@@ -34,6 +42,7 @@ public class Morador implements Serializable {
 	private Date dataCriacao;
 	private Date dataAtualizacao;
 	private Long residenciaId;
+	private List<Lancamento> lancamentos;
 
 	public Morador() {
 	}
@@ -112,6 +121,7 @@ public class Morador implements Serializable {
 		this.perfil = perfil;
 	}
 
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "data_criacao", nullable = false)
 	public Date getDataCriacao() {
 		return dataCriacao;
@@ -121,6 +131,7 @@ public class Morador implements Serializable {
 		this.dataCriacao = dataCriacao;
 	}
 
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "data_atualizacao", nullable = false)
 	public Date getDataAtualizacao() {
 		return dataAtualizacao;
@@ -138,15 +149,6 @@ public class Morador implements Serializable {
 	public void setSenha(String senha) {
 		this.senha = senha;
 	}
-
-	@Column(name = "residencia_id", nullable = false)
-	public Long getResidencia() {
-		return residenciaId;
-	}
-
-	public void setResidencia(Long residenciaId) {
-		this.residenciaId = residenciaId;
-	}
 	
 	@PreUpdate
     public void preUpdate() {
@@ -159,12 +161,32 @@ public class Morador implements Serializable {
         dataCriacao = atual;
         dataAtualizacao = atual;
     }
+    
+	@OneToMany(mappedBy = "morador", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	public List<Lancamento> getLancamentos() {
+		return lancamentos;
+	}
+
+	public void setLancamentos(List<Lancamento> lancamentos) {
+		this.lancamentos = lancamentos;
+	}
+    
+    @Transient
+    public Optional<Long> getResidenciaId() {
+    	
+    	return Optional.ofNullable(residenciaId);
+    }
+    
+    public void setResidenciaId(Long residenciaId) {
+    	
+    	this.residenciaId = residenciaId;
+    }
 
 	@Override
 	public String toString() {
 		return "Morador [id=" + id + ", nome=" + nome + ", email=" + email + ", senha=" + senha + ", cpf=" + cpf
 				+ ", rg=" + rg + ", telefone=" + telefone + ", celular=" + celular + ", perfil=" + perfil + ", dataCriacao="
-				+ dataCriacao + ", dataAtualizacao=" + dataAtualizacao + ", residenciaId=" + residenciaId + "]";
+				+ dataCriacao + ", dataAtualizacao=" + dataAtualizacao + "]";
 	}
 
 }

@@ -1,5 +1,6 @@
 package com.associacao.arrecadacao.api.services.impl;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -26,8 +27,20 @@ public class VinculoResidenciaImpl implements VinculoResidenciaService {
 	} 
 
 	@Override
-	public Optional<VinculoResidencia> persistir(VinculoResidencia vinculoResidencia) {
+	public List<VinculoResidencia> persistir(List<VinculoResidencia> vinculoResidencia) {
 		log.info("Persistir vinculo de Residência {}", vinculoResidencia);
-		return Optional.ofNullable(this.vinculoResidenciaRepository.save(vinculoResidencia));
+		return this.vinculoResidenciaRepository.save(vinculoResidencia);
+	}
+
+	@Override
+	public List<VinculoResidencia> buscarPorMoradorId(Long moradorId) {
+		log.info("Buscar vinculo por morador ID {}", moradorId);
+		return this.vinculoResidenciaRepository.findByMoradorId(moradorId);
+	}
+
+	@Override
+	public List<VinculoResidencia> buscarPorResidenciaId(Long residenciaId) {
+		log.info("Buscar vinculo por residencia ID {}", residenciaId);
+		return this.vinculoResidenciaRepository.findByResidenciaId(residenciaId);
 	}
 }

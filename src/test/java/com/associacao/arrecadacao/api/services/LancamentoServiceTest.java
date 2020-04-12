@@ -3,8 +3,10 @@ package com.associacao.arrecadacao.api.services;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.junit.Before;
@@ -34,6 +36,10 @@ public class LancamentoServiceTest {
 	
 	@Autowired
 	private LancamentoService lancamentoService;
+	
+	private static final String periodo = "09/2019";
+	
+	private static final Long residenciaId = 1L;
 	
 	@Before
 	public void setUp() {
@@ -66,10 +72,31 @@ public class LancamentoServiceTest {
 	}
 	
 	@Test
+	public void testBuscarLancamentoPorPeriodo() {
+		
+		this.lancamentoService.persistir(obterDadosLancamento());
+		List<Lancamento> lancamento = this.lancamentoService.buscarPorPeriodoAndResidenciaId(periodo, residenciaId);
+		
+		assertTrue(!Objects.isNull(lancamento.size() > 0));
+	}
+	
+	@Test
 	public void testPersistirLancamento() {
 		List<Lancamento> lancamentos = this.lancamentoService.persistir(new ArrayList<Lancamento>());
 		
 		assertNotNull(lancamentos);
+	}
+	
+	private List<Lancamento> obterDadosLancamento() {
+		
+		List<Lancamento> lista = new ArrayList<Lancamento>();
+		
+		Lancamento lancamento = new Lancamento();
+		lancamento.setPeriodo(periodo);
+		lancamento.setResidenciaId(residenciaId);
+		lancamento.setValor(new BigDecimal(80.00));
+		lista.add(lancamento);
+		return lista;
 	}
 
 }

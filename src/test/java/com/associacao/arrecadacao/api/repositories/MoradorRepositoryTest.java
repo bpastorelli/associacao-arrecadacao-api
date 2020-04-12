@@ -99,7 +99,6 @@ public class MoradorRepositoryTest {
 		morador.setTelefone("1156789087");
 		morador.setCelular("11978653456");
 		morador.setEmail(EMAIL);
-		morador.setResidencia(residencia.getId());
 		return morador;
 	}
 

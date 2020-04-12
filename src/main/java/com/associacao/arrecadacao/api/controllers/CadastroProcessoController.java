@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
@@ -14,20 +15,25 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.associacao.arrecadacao.api.dtos.CadastroResidenciaDto;
+import com.associacao.arrecadacao.api.commons.ValidaCPF;
+import com.associacao.arrecadacao.api.dtos.CadastroProcessoDto;
 import com.associacao.arrecadacao.api.entities.Lancamento;
 import com.associacao.arrecadacao.api.entities.Morador;
 import com.associacao.arrecadacao.api.entities.Residencia;
+import com.associacao.arrecadacao.api.entities.VinculoResidencia;
 import com.associacao.arrecadacao.api.enums.PerfilEnum;
 import com.associacao.arrecadacao.api.response.Response;
 import com.associacao.arrecadacao.api.services.LancamentoService;
 import com.associacao.arrecadacao.api.services.MoradorService;
 import com.associacao.arrecadacao.api.services.ResidenciaService;
+import com.associacao.arrecadacao.api.services.VinculoResidenciaService;
 
 @RestController
 @RequestMapping("/associados/processo")
@@ -43,23 +49,36 @@ public class CadastroProcessoController {
 	private ResidenciaService residenciaService;
 	
 	@Autowired
+	private VinculoResidenciaService vinculoResidenciaService;
+	
+	@Autowired
 	private LancamentoService lancamentoService;
 	
 	public CadastroProcessoController() {
 	}
 	
+	/**
+	 * Adiciona um novo processo de cadastro.
+	 * 
+	 * @param cadastroProcessoDto
+	 * @param result
+	 * @return ResponseEnity<Response<CadastroProcessoDto>>
+	 * @throws NoSuchAlgorithmException
+	 */
 	@PostMapping
-	public ResponseEntity<Response<CadastroResidenciaDto>> cadastrar(@Valid @RequestBody CadastroResidenciaDto cadastroResidenciaDto,
+	public ResponseEntity<Response<CadastroProcessoDto>> cadastrar(@Valid @RequestBody CadastroProcessoDto cadastroProcessoDto,
 			BindingResult result) throws NoSuchAlgorithmException{
-		log.info("Cadastrando processo de associado: {}", cadastroResidenciaDto.toString());
-		Response<CadastroResidenciaDto> response = new Response<CadastroResidenciaDto>();
 		
-		Residencia residencia = this.converterDtoParaResidencia(cadastroResidenciaDto);
-		List<Morador> moradores = this.converterDtoParaMorador(cadastroResidenciaDto);
-		List<Lancamento> lancamentos = this.converterDtoParaLancamento(cadastroResidenciaDto);
-		cadastroResidenciaDto.setMoradores(moradores);
-		cadastroResidenciaDto.setLancamentos(lancamentos);
-		validarDadosExistentes(cadastroResidenciaDto, result);
+		log.info("Cadastrando processo de associado: {}", cadastroProcessoDto.toString());
+		Response<CadastroProcessoDto> response = new Response<CadastroProcessoDto>();
+		
+		Residencia residencia = this.converterDtoParaResidencia(cadastroProcessoDto);
+		List<Morador> moradores = this.converterDtoParaMorador(cadastroProcessoDto);
+		List<Lancamento> lancamentos = this.converterDtoParaLancamento(cadastroProcessoDto);
+		List<VinculoResidencia> vinculos = new ArrayList<VinculoResidencia>();
+		cadastroProcessoDto.setMoradores(moradores);
+		cadastroProcessoDto.setLancamentos(lancamentos);
+		validarDadosExistentes(cadastroProcessoDto, result);
 		
 		if(result.hasErrors()) {
 			log.error("Erro validando dados para cadastro do processo: {}", result.getAllErrors());
@@ -68,8 +87,9 @@ public class CadastroProcessoController {
 		}
 		
 		this.residenciaService.persistir(residencia);
-		moradores.forEach(p -> p.setResidencia(residencia.getId()));
 		this.moradorService.persistir(moradores);
+		vinculos = this.converterDtoParaVinculoResidencia(moradores, residencia.getId());
+		this.vinculoResidenciaService.persistir(vinculos);
 		lancamentos.forEach(p -> p.setResidenciaId(residencia.getId()));
 		this.lancamentoService.persistir(lancamentos);
 		
@@ -77,8 +97,23 @@ public class CadastroProcessoController {
 		return ResponseEntity.ok(response);
 	}
 	
-	private void validarDadosExistentes(CadastroResidenciaDto cadastroResidenciaDto, BindingResult result) {
-		this.residenciaService.bucarPorMatricula(cadastroResidenciaDto.getMatricula())
+	@GetMapping(value = "/{residenciaId}")
+	public ResponseEntity<Response<CadastroProcessoDto>> buscarPorId(@PathVariable("residenciaId") Long residenciaId){
+		
+		log.info("Buscar Processo de cadastro por ID: {}", residenciaId);
+		Response<CadastroProcessoDto> response = new Response<CadastroProcessoDto>();
+		
+		Optional<Residencia> residencia = this.residenciaService.buscarPorId(residenciaId);
+		List<Lancamento> lancamentos = this.lancamentoService.buscarPorResidenciaId(residenciaId);
+		
+		//response.setData(this.converterCadastroProcessoDto(residencia, moradores, lancamentos));
+		return ResponseEntity.ok(response);
+		
+	}
+	
+	private void validarDadosExistentes(CadastroProcessoDto cadastroResidenciaDto, BindingResult result) {
+		
+		this.residenciaService.buscarPorMatricula(cadastroResidenciaDto.getMatricula())
 				.ifPresent(res -> result.addError(new ObjectError("residencia", "Residência já existente")));
 		
 		if(cadastroResidenciaDto.getMoradores().size() == 0) {
@@ -91,6 +126,9 @@ public class CadastroProcessoController {
 			
 			if(morador.getCpf().isEmpty())
 				result.addError(new ObjectError("morador", "O campo CPF é obrigatório."));
+			
+			if(!ValidaCPF.isCPF(morador.getCpf()))
+				result.addError(new ObjectError("morador", "CPF inválido."));
 			
 			if(morador.getSenha().isEmpty())
 				result.addError(new ObjectError("morador", "O campo Senha é obrigatório."));
@@ -122,7 +160,13 @@ public class CadastroProcessoController {
 				if(lancamento.getValor() == new BigDecimal(0L)) 
 					result.addError(new ObjectError("lancamento", "O campo Valor não pode ser zero."));
 
+				if(cadastroResidenciaDto.getLancamentos().stream()
+						.filter(p -> p.getPeriodo().equals(lancamento.getPeriodo()))
+						.filter(x -> x.getValor().equals(lancamento.getValor()))
+						.count() > 1) 
+					result.addError(new ObjectError("lancamento", "O lancamento para o periodo " + lancamento.getPeriodo() + " no valor de " + lancamento.getValor() + " está duplicado."));
 			}
+			
 		}
 		
 		for(Morador morador : cadastroResidenciaDto.getMoradores()) {
@@ -131,7 +175,7 @@ public class CadastroProcessoController {
 		}
 		
 		for(Morador morador : cadastroResidenciaDto.getMoradores()) {
-			this.moradorService.buscarPorCpf(morador.getRg())
+			this.moradorService.buscarPorRg(morador.getRg())
 					.ifPresent(res -> result.addError(new ObjectError("morador", "RG " + morador.getRg() + " já existente")));
 		}
 		
@@ -139,37 +183,38 @@ public class CadastroProcessoController {
 			this.moradorService.bucarPorEmail(morador.getEmail())
 					.ifPresent(res -> result.addError(new ObjectError("morador", "E-mail " + morador.getEmail() + " já existente")));
 		}
+		
 	}
 	
 	/**
-	 * Converter o CadastroResidenciaDto para Residencia.
+	 * Converter o CadastroProcessoDto para Residencia.
 	 * 
-	 * @param cadastroResidenciaDto
+	 * @param cadastroProcessoDto
 	 * @return Residencia
 	 */
-	private Residencia converterDtoParaResidencia(CadastroResidenciaDto cadastroResidenciaDto) {
+	private Residencia converterDtoParaResidencia(CadastroProcessoDto cadastroProcessoDto) {
 		
 		Residencia residencia = new Residencia();
-		residencia.setMatricula(cadastroResidenciaDto.getMatricula());
-		residencia.setEndereco(cadastroResidenciaDto.getEndereco());
-		residencia.setNumero(cadastroResidenciaDto.getNumero());
-		residencia.setBairro(cadastroResidenciaDto.getBairro());
-		residencia.setCep(cadastroResidenciaDto.getCep());
-		residencia.setCidade(cadastroResidenciaDto.getCidade());
-		residencia.setUf(cadastroResidenciaDto.getUf());
+		residencia.setMatricula(cadastroProcessoDto.getMatricula());
+		residencia.setEndereco(cadastroProcessoDto.getEndereco());
+		residencia.setNumero(cadastroProcessoDto.getNumero());
+		residencia.setBairro(cadastroProcessoDto.getBairro());
+		residencia.setCep(cadastroProcessoDto.getCep());
+		residencia.setCidade(cadastroProcessoDto.getCidade());
+		residencia.setUf(cadastroProcessoDto.getUf());
 		return residencia;
 	}
 	
 	/**
-	 * Converter o CadastroResidenciaDto para Morador.
+	 * Converter o CadastroProcessoDto para Morador.
 	 * 
 	 * @param cadastroResidenciaDto
 	 * @return Morador
 	 */
-	public List<Morador> converterDtoParaMorador(CadastroResidenciaDto cadastroResidenciaDto){
+	public List<Morador> converterDtoParaMorador(CadastroProcessoDto cadastroProcessoDto){
 		
 		List<Morador> moradores = new ArrayList<Morador>();
-		for(Morador morador : cadastroResidenciaDto.getMoradores()) {
+		for(Morador morador : cadastroProcessoDto.getMoradores()) {
 			Morador item = new Morador();
 			item.setNome(morador.getNome());
 			item.setCpf(morador.getCpf());
@@ -179,7 +224,6 @@ public class CadastroProcessoController {
 			item.setPerfil(PerfilEnum.ROLE_USUARIO);
 			item.setTelefone(morador.getTelefone());
 			item.setCelular(morador.getCelular());
-			item.setResidencia(null);
 			moradores.add(item);
 		}
 		
@@ -187,15 +231,15 @@ public class CadastroProcessoController {
 	}
 	
 	/**
-	 * Converter o CadastroResidenciaDto para Lancamento.
+	 * Converter o CadastroProcessoDto para Lancamento.
 	 * 
 	 * @param cadastroResidenciaDto
 	 * @return Lancamento
 	 */
-	public List<Lancamento> converterDtoParaLancamento(CadastroResidenciaDto cadastroResidenciaDto){
+	public List<Lancamento> converterDtoParaLancamento(CadastroProcessoDto cadastroProcessoDto){
 		
 		List<Lancamento> lancamentos = new ArrayList<Lancamento>();
-		for(Lancamento lancamento : cadastroResidenciaDto.getLancamentos()) {
+		for(Lancamento lancamento : cadastroProcessoDto.getLancamentos()) {
 			Lancamento item = new Lancamento();
 			item.setPeriodo(lancamento.getPeriodo());
 			item.setValor(lancamento.getValor());
@@ -207,26 +251,46 @@ public class CadastroProcessoController {
 	}
 	
 	/**
-	 * Converter o objeto tipo Residencia para o tipo CadastroResidenciaDto.
+	 * Converter o CadastroProcessoDto para VinculoResidencia.
+	 * 
+	 * @param moradores
+	 * @param residenciaId
+	 * @return VinculoResidencia
+	 */
+	public List<VinculoResidencia> converterDtoParaVinculoResidencia(List<Morador> moradores, Long residenciaId){
+		
+		List<VinculoResidencia> vinculos = new ArrayList<VinculoResidencia>();
+		
+		moradores.forEach(m -> {
+			VinculoResidencia vinculo = new VinculoResidencia();
+			vinculo.setMoradorId(m.getId());
+			vinculo.setResidenciaId(residenciaId);
+			vinculos.add(vinculo);
+		});
+		return vinculos;
+	}
+	
+	/**
+	 * Converter o objeto tipo Residencia para o tipo CadastroProcessoDto.
 	 * 
 	 * @param residencia
-	 * @return CadastroResidenciaDto
+	 * @return CadastroProcessoDto
 	 */
-	private CadastroResidenciaDto converterCadastroProcessoDto(Residencia residencia, List<Morador> moradores, List<Lancamento> lancamentos) {
+	private CadastroProcessoDto converterCadastroProcessoDto(Residencia residencia, List<Morador> moradores, List<Lancamento> lancamentos) {
 		
-		CadastroResidenciaDto cadastroResidenciaDto = new CadastroResidenciaDto();
-		cadastroResidenciaDto.setId(residencia.getId());
-		cadastroResidenciaDto.setMatricula(residencia.getMatricula());
-		cadastroResidenciaDto.setEndereco(residencia.getEndereco());
-		cadastroResidenciaDto.setNumero(residencia.getNumero());
-		cadastroResidenciaDto.setBairro(residencia.getBairro());
-		cadastroResidenciaDto.setCep(residencia.getCep());
-		cadastroResidenciaDto.setCidade(residencia.getCidade());
-		cadastroResidenciaDto.setUf(residencia.getUf());
-		cadastroResidenciaDto.setCidade(residencia.getCidade());
-		cadastroResidenciaDto.setMoradores(moradores);
-		cadastroResidenciaDto.setLancamentos(lancamentos);
-		return cadastroResidenciaDto;
+		CadastroProcessoDto cadastroProcessoDto = new CadastroProcessoDto();
+		cadastroProcessoDto.setId(residencia.getId());
+		cadastroProcessoDto.setMatricula(residencia.getMatricula());
+		cadastroProcessoDto.setEndereco(residencia.getEndereco());
+		cadastroProcessoDto.setNumero(residencia.getNumero());
+		cadastroProcessoDto.setBairro(residencia.getBairro());
+		cadastroProcessoDto.setCep(residencia.getCep());
+		cadastroProcessoDto.setCidade(residencia.getCidade());
+		cadastroProcessoDto.setUf(residencia.getUf());
+		cadastroProcessoDto.setCidade(residencia.getCidade());
+		cadastroProcessoDto.setMoradores(moradores);
+		cadastroProcessoDto.setLancamentos(lancamentos);
+		return cadastroProcessoDto;
 	}
 	
 }

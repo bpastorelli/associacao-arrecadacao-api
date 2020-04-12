@@ -51,4 +51,10 @@ public class LancamentoServiceImpl implements LancamentoService {
 		log.info("Buscar lançamento por ID da residencia {}", residenciaId);
 		return this.lancamentoRepository.findByResidenciaId(residenciaId);
 	}
+
+	@Override
+	public List<Lancamento> buscarPorPeriodoAndResidenciaId(String periodo, Long residenciaId) {
+		log.info("Buscar lançamento por Periodo {}", periodo, residenciaId);
+		return this.lancamentoRepository.findByPeriodoAndResidenciaId(periodo, residenciaId);
+	}
 }
