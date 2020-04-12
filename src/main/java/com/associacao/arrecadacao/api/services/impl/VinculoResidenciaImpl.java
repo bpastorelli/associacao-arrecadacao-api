@@ -33,9 +33,9 @@ public class VinculoResidenciaImpl implements VinculoResidenciaService {
 	}
 
 	@Override
-	public Optional<VinculoResidencia> buscarPorMoradorId(Long moradorId) {
+	public List<VinculoResidencia> buscarPorMoradorId(Long moradorId) {
 		log.info("Buscar vinculo por morador ID {}", moradorId);
-		return Optional.ofNullable(this.vinculoResidenciaRepository.findByMoradorId(moradorId));
+		return this.vinculoResidenciaRepository.findByMoradorId(moradorId);
 	}
 
 	@Override

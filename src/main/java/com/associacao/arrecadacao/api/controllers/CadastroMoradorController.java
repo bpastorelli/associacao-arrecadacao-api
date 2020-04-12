@@ -65,7 +65,7 @@ public class CadastroMoradorController {
 		
 		this.moradorService.persistir(moradores);
 		this.vinculoResidenciaService.persistir(this.converterDtoParaVinculoResidencia(cadastroMoradorDto));
-		response.setData(this.converterCadastroMoradorDto(cadastroMoradorDto, moradores));
+		response.setData(this.converterCadastroMoradorDto(moradores));
 		return ResponseEntity.ok(response);
 		
 	}
@@ -160,12 +160,12 @@ public class CadastroMoradorController {
 	 * @param residencia
 	 * @return CadastroMoradorDto
 	 */
-	private CadastroMoradorDto converterCadastroMoradorDto(CadastroMoradorDto cadastroMoradorDto, List<Morador> moradores) {
+	private CadastroMoradorDto converterCadastroMoradorDto(List<Morador> moradores) {
 		
 		CadastroMoradorDto dto = new CadastroMoradorDto();
 		List<Morador> lista = new ArrayList<Morador>();
 		
-		cadastroMoradorDto.getMoradores().forEach(m ->{
+		dto.getMoradores().forEach(m ->{
 			moradores.forEach(p ->{
 				if(m.getCpf().equals(p.getCpf())) {					
 					Morador morador = new Morador();

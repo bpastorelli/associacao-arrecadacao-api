@@ -3,12 +3,17 @@ package com.associacao.arrecadacao.api.entities;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
@@ -26,6 +31,8 @@ public class Lancamento implements Serializable {
 	private Date dataCriacao;
 	private Date dataAtualizacao;
 	private Long residenciaId;
+	private Morador morador;
+	private List<Lancamento> lancamentos;
 	
 	public Lancamento() {
 	}
@@ -98,7 +105,25 @@ public class Lancamento implements Serializable {
     public void preUpdate() {
         dataAtualizacao = new Date();
     }
-     
+    
+	@OneToMany(mappedBy = "residenciaId", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	public List<Lancamento> getLancamentos() {
+		return lancamentos;
+	}
+
+	public void setLancamentos(List<Lancamento> lancamentos) {
+		this.lancamentos = lancamentos;
+	}
+	
+	@ManyToOne(fetch = FetchType.EAGER)
+	public Morador getMorador() {
+		return morador;
+	}
+
+	public void setMorador(Morador morador) {
+		this.morador = morador;
+	}
+	
     @PrePersist
     public void prePersist() {
         final Date atual = new Date();
