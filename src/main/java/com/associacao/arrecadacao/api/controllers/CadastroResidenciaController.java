@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -95,6 +96,33 @@ class CadastroResidenciaController {
 		this.residenciaService.persistir(residencia.get());
 		response.setData(this.converterCadastroResidenciaDto(residencia.get()));
 
+		return ResponseEntity.ok(response);
+		
+	}
+	
+	/**
+	 * Atualiza os dados de uma residência.
+	 * 
+	 * @param id
+	 * @param residenciaDto
+	 * @param result
+	 * @return ResponseEntity<Response<CadastroResidenciaDto>>
+	 * @throws NoSuchAlgorithmException
+	 */
+	@GetMapping(value = "/{id}")
+	public ResponseEntity<Response<CadastroResidenciaDto>> buscarPorId(@PathVariable("id") Long id) throws NoSuchAlgorithmException {
+		
+		log.info("Buscando residência: {}", id);
+		Response<CadastroResidenciaDto> response = new Response<CadastroResidenciaDto>();
+		
+		Optional<Residencia> residencia = this.residenciaService.buscarPorId(id);
+		if (!residencia.isPresent()) {
+			log.info("Residência não encontrada para o ID: {}", id);
+			response.getErrors().add("Residência não encontrada para o ID " + id);
+			return ResponseEntity.badRequest().body(response);
+		}
+		
+		response.setData(this.converterCadastroResidenciaDto(residencia.get()));
 		return ResponseEntity.ok(response);
 		
 	}
