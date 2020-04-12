@@ -14,7 +14,7 @@ public class CadastroLancamentoDto {
 		
 	}
 	
-	@Size(min = 1, message = "Você deve incluir ao menos um lançamento.")
+	//@Size(min = 1, message = "Você deve incluir ao menos um lançamento.")
 	public List<Lancamento> getLancamentos(){
 		return lancamentos;
 	}

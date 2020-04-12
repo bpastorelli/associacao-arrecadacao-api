@@ -75,9 +75,9 @@ public class LancamentoServiceTest {
 	public void testBuscarLancamentoPorPeriodo() {
 		
 		this.lancamentoService.persistir(obterDadosLancamento());
-		List<Lancamento> lancamento = this.lancamentoService.buscarPorPeriodoAndResidenciaId(periodo, residenciaId);
+		Optional<Lancamento> lancamento = this.lancamentoService.buscarPorPeriodoAndResidenciaId(periodo, residenciaId);
 		
-		assertTrue(!Objects.isNull(lancamento.size() > 0));
+		assertTrue(!Objects.isNull(lancamento.isPresent()));
 	}
 	
 	@Test

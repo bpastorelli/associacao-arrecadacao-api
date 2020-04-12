@@ -107,7 +107,7 @@ public class CadastroLancamentoController {
 			if(!residenciaService.buscarPorId(lancamento.getResidenciaId()).isPresent())
 				result.addError(new ObjectError("lancamento", "O código de residencia " + lancamento.getResidenciaId() + " não existe."));			
 			
-			if(lancamentoService.buscarPorPeriodoAndResidenciaId(lancamento.getPeriodo(), lancamento.getResidenciaId()).size() > 0)
+			if(lancamentoService.buscarPorPeriodoAndResidenciaId(lancamento.getPeriodo(), lancamento.getResidenciaId()).isPresent())
 				result.addError(new ObjectError("lancamento", "O lançamento para o Periodo " + lancamento.getPeriodo() + " já existe."));
 				
 			if(lancamento.getPeriodo().isEmpty())

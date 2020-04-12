@@ -2,19 +2,15 @@ package com.associacao.arrecadacao.api.entities;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
@@ -42,7 +38,6 @@ public class Morador implements Serializable {
 	private Date dataCriacao;
 	private Date dataAtualizacao;
 	private Long residenciaId;
-	private List<Lancamento> lancamentos;
 
 	public Morador() {
 	}
@@ -161,16 +156,7 @@ public class Morador implements Serializable {
         dataCriacao = atual;
         dataAtualizacao = atual;
     }
-    
-	@OneToMany(mappedBy = "morador", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	public List<Lancamento> getLancamentos() {
-		return lancamentos;
-	}
 
-	public void setLancamentos(List<Lancamento> lancamentos) {
-		this.lancamentos = lancamentos;
-	}
-    
     @Transient
     public Optional<Long> getResidenciaId() {
     	
@@ -181,7 +167,7 @@ public class Morador implements Serializable {
     	
     	this.residenciaId = residenciaId;
     }
-
+    
 	@Override
 	public String toString() {
 		return "Morador [id=" + id + ", nome=" + nome + ", email=" + email + ", senha=" + senha + ", cpf=" + cpf

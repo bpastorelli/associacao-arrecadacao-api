@@ -36,8 +36,8 @@ public class MoradorServiceTest {
 	public void setUp() {
 		BDDMockito.given(this.moradorRepository.save(Mockito.any(Morador.class))).willReturn(new Morador());
 		BDDMockito.given(this.moradorRepository.findByCpf(Mockito.anyString())).willReturn(new Morador());
-		BDDMockito.given(this.moradorRepository.findByRg(Mockito.anyString())).willReturn(new Morador());
-		BDDMockito.given(this.moradorRepository.findByEmail(Mockito.anyString())).willReturn(new Morador());
+		//BDDMockito.given(this.moradorRepository.findByRg(Mockito.anyString())).willReturn(new Morador());
+		//BDDMockito.given(this.moradorRepository.findByEmail(Mockito.anyString())).willReturn(new  );
 		BDDMockito.given(this.moradorRepository.findOne(Mockito.anyLong())).willReturn(new Morador());
 	}
 	
@@ -57,9 +57,9 @@ public class MoradorServiceTest {
 	
 	@Test
 	public void testBuscarMoradorPorEmail() {
-		Optional<Morador> morador = this.moradorService.bucarPorEmail("email@email.com");
+		List<Morador> morador = this.moradorService.bucarPorEmail("email@email.com");
 		
-		assertTrue(morador.isPresent());
+		assertTrue(morador.size() > 0);
 	}
 
 	@Test
@@ -71,8 +71,8 @@ public class MoradorServiceTest {
 	
 	@Test
 	public void testBuscarMoradorPorRg() {
-		Optional<Morador> morador = this.moradorService.buscarPorRg("352739980");
+		List<Morador> morador = this.moradorService.buscarPorRg("352739980");
 		
-		assertTrue(morador.isPresent());		
+		assertTrue(morador.size() > 0);		
 	}
 }

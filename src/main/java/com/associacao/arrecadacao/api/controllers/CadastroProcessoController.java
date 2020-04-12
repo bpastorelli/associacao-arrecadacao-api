@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import javax.validation.Valid;
 
@@ -15,8 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -87,6 +84,7 @@ public class CadastroProcessoController {
 		}
 		
 		this.residenciaService.persistir(residencia);
+		moradores.forEach(p -> p.setResidenciaId(residencia.getId()));
 		this.moradorService.persistir(moradores);
 		vinculos = this.converterDtoParaVinculoResidencia(moradores, residencia.getId());
 		this.vinculoResidenciaService.persistir(vinculos);
@@ -95,20 +93,6 @@ public class CadastroProcessoController {
 		
 		response.setData(this.converterCadastroProcessoDto(residencia, moradores, lancamentos));
 		return ResponseEntity.ok(response);
-	}
-	
-	@GetMapping(value = "/{residenciaId}")
-	public ResponseEntity<Response<CadastroProcessoDto>> buscarPorId(@PathVariable("residenciaId") Long residenciaId){
-		
-		log.info("Buscar Processo de cadastro por ID: {}", residenciaId);
-		Response<CadastroProcessoDto> response = new Response<CadastroProcessoDto>();
-		
-		Optional<Residencia> residencia = this.residenciaService.buscarPorId(residenciaId);
-		List<Lancamento> lancamentos = this.lancamentoService.buscarPorResidenciaId(residenciaId);
-		
-		//response.setData(this.converterCadastroProcessoDto(residencia, moradores, lancamentos));
-		return ResponseEntity.ok(response);
-		
 	}
 	
 	private void validarDadosExistentes(CadastroProcessoDto cadastroResidenciaDto, BindingResult result) {
@@ -175,13 +159,13 @@ public class CadastroProcessoController {
 		}
 		
 		for(Morador morador : cadastroResidenciaDto.getMoradores()) {
-			this.moradorService.buscarPorRg(morador.getRg())
-					.ifPresent(res -> result.addError(new ObjectError("morador", "RG " + morador.getRg() + " já existente")));
+			if(this.moradorService.buscarPorRg(morador.getRg()).size() > 0)
+				result.addError(new ObjectError("morador", "RG " + morador.getRg() + " já existente"));
 		}
 		
 		for(Morador morador : cadastroResidenciaDto.getMoradores()) {
-			this.moradorService.bucarPorEmail(morador.getEmail())
-					.ifPresent(res -> result.addError(new ObjectError("morador", "E-mail " + morador.getEmail() + " já existente")));
+			if(this.moradorService.bucarPorEmail(morador.getEmail()).size() > 0)
+				result.addError(new ObjectError("morador", "E-mail " + morador.getEmail() + " já existente"));
 		}
 		
 	}
