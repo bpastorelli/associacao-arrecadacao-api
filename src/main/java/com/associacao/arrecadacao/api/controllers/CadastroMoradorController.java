@@ -24,7 +24,6 @@ import com.associacao.arrecadacao.api.entities.Morador;
 import com.associacao.arrecadacao.api.entities.VinculoResidencia;
 import com.associacao.arrecadacao.api.response.Response;
 import com.associacao.arrecadacao.api.services.MoradorService;
-import com.associacao.arrecadacao.api.services.ResidenciaService;
 import com.associacao.arrecadacao.api.services.VinculoResidenciaService;
 
 @RestController
@@ -38,16 +37,13 @@ public class CadastroMoradorController {
 	private MoradorService moradorService;
 	
 	@Autowired
-	private ResidenciaService residenciaService;
-	
-	@Autowired
 	private VinculoResidenciaService vinculoResidenciaService;
 	
 	public CadastroMoradorController() {
 		
 	}
 	
-	@PostMapping
+	@PostMapping()
 	public ResponseEntity<Response<CadastroMoradorDto>> cadastrar(@Valid @RequestBody CadastroMoradorDto cadastroMoradorDto, 
 			BindingResult result) throws NoSuchAlgorithmException{
 		
@@ -108,8 +104,8 @@ public class CadastroMoradorController {
 		}
 		
 		for(Morador morador : cadastroMoradorDto.getMoradores()) {
-			this.moradorService.buscarPorRg(morador.getRg())
-				.ifPresent(res -> result.addError(new ObjectError("morador", "RG " + morador.getRg() + " já existente")));
+			if(this.moradorService.buscarPorRg(morador.getRg()).size() > 0)
+				result.addError(new ObjectError("morador", "RG " + morador.getRg() + " já existente"));
 		}
 		
 		for(Morador morador : cadastroMoradorDto.getMoradores()) {
@@ -138,6 +134,7 @@ public class CadastroMoradorController {
 			item.setPerfil(morador.getPerfil());
 			item.setTelefone(morador.getTelefone());
 			item.setCelular(morador.getCelular());
+			item.setResidenciaId(morador.getResidenciaId().get());
 			moradores.add(item);
 		}
 		
@@ -153,31 +150,8 @@ public class CadastroMoradorController {
 	private CadastroMoradorDto converterCadastroMoradorDto(List<Morador> moradores) {
 		
 		CadastroMoradorDto dto = new CadastroMoradorDto();
-		List<Morador> lista = new ArrayList<Morador>();
 		
-		dto.getMoradores().forEach(m ->{
-			moradores.forEach(p ->{
-				if(m.getCpf().equals(p.getCpf())) {					
-					Morador morador = new Morador();
-					morador.setId(p.getId());
-					morador.setNome(p.getNome());
-					morador.setCpf(p.getCpf());
-					morador.setRg(p.getRg());
-					morador.setEmail(p.getEmail());
-					morador.setSenha(p.getSenha());
-					morador.setPerfil(p.getPerfil());
-					morador.setTelefone(p.getTelefone());
-					morador.setCelular(p.getCelular());
-					morador.setDataAtualizacao(p.getDataAtualizacao());
-					morador.setDataCriacao(p.getDataCriacao());
-					
-					if(!lista.contains(morador))
-						lista.add(morador);
-				}
-			});
-		});
-		
-		dto.setMoradores(lista);
+		dto.setMoradores(moradores);
 		return dto;
 	}
 	
@@ -194,6 +168,7 @@ public class CadastroMoradorController {
 		cadastroMoradorDto.getMoradores().forEach(m -> {
 			VinculoResidencia vinculo = new VinculoResidencia();
 			vinculo.setMoradorId(this.moradorService.buscarPorCpf(m.getCpf()).get().getId());
+			vinculo.setResidenciaId(m.getResidenciaId().get());
 			vinculos.add(vinculo);
 		});
 		return vinculos;

@@ -33,9 +33,9 @@ public class MoradorServiceImpl implements MoradorService {
 	}
 
 	@Override
-	public Optional<Morador> buscarPorRg(String rg) {
+	public List<Morador> buscarPorRg(String rg) {
 		log.info("Buscando morador pelo RG {}", rg);
-		return Optional.ofNullable(this.moradorRepository.findByRg(rg));
+		return this.moradorRepository.findByRg(rg);
 	}
 
 	@Override

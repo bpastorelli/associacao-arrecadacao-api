@@ -12,7 +12,7 @@ public interface MoradorRepository extends JpaRepository<Morador, Long> {
 	
 	Morador findByCpf(String cpf);
 	
-	Morador findByRg(String rg);
+	List<Morador> findByRg(String rg);
 	
 	List<Morador> findByEmail(String email);
 	

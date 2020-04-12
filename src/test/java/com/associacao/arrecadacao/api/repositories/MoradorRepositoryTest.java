@@ -64,9 +64,9 @@ public class MoradorRepositoryTest {
 	
 	@Test
 	public void testBuscarMoradorPorRg() {
-		Morador morador = this.moradorRepository.findByRg(RG);
+		List<Morador> morador = this.moradorRepository.findByRg(RG);
 
-		assertEquals(CPF, morador.getCpf());
+		assertEquals(CPF, morador.get(0).getCpf());
 	}
 
 	@Test
