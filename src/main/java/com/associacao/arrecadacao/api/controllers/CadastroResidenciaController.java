@@ -1,5 +1,8 @@
 package com.associacao.arrecadacao.api.controllers;
 
+import java.security.NoSuchAlgorithmException;
+import java.util.Optional;
+
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
@@ -9,7 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -53,6 +58,43 @@ class CadastroResidenciaController {
 		this.residenciaService.persistir(residencia);
 		
 		response.setData(this.converterCadastroResidenciaDto(residencia));
+		return ResponseEntity.ok(response);
+		
+	}
+	
+	
+	/**
+	 * Atualiza os dados de uma residência.
+	 * 
+	 * @param id
+	 * @param residenciaDto
+	 * @param result
+	 * @return ResponseEntity<Response<CadastroResidenciaDto>>
+	 * @throws NoSuchAlgorithmException
+	 */
+	@PutMapping(value = "/{id}")
+	public ResponseEntity<Response<CadastroResidenciaDto>> atualizar(@PathVariable("id") Long id,
+			@Valid @RequestBody CadastroResidenciaDto residenciaDto, BindingResult result) throws NoSuchAlgorithmException {
+		
+		log.info("Atualizando residência: {}", residenciaDto.toString());
+		Response<CadastroResidenciaDto> response = new Response<CadastroResidenciaDto>();
+		
+		Optional<Residencia> residencia = this.residenciaService.buscarPorId(id);
+		if (!residencia.isPresent()) {
+			result.addError(new ObjectError("residencia", "Residência não encontrada."));
+		}
+		
+		this.atualizarDadosResidencia(residencia.get(), residenciaDto, result);
+		
+		if (result.hasErrors()) {
+			log.error("Erro validando residência: {}", result.getAllErrors());
+			result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
+			return ResponseEntity.badRequest().body(response);
+		}
+		
+		this.residenciaService.persistir(residencia.get());
+		response.setData(this.converterCadastroResidenciaDto(residencia.get()));
+
 		return ResponseEntity.ok(response);
 		
 	}
@@ -104,4 +146,24 @@ class CadastroResidenciaController {
 		return cadastroResidenciaDto;
 	}
 
+	/**
+	 * Atualiza os dados da residência com base nos dados encontrados no DTO.
+	 * 
+	 * @param reseidencia
+	 * @param residenciaDto
+	 * @param result
+	 * @throws NoSuchAlgorithmException
+	 */
+	private void atualizarDadosResidencia(Residencia residencia, CadastroResidenciaDto residenciaDto, BindingResult result)
+			throws NoSuchAlgorithmException {
+		
+		residencia.setMatricula(residenciaDto.getMatricula());
+		residencia.setEndereco(residenciaDto.getEndereco());
+		residencia.setNumero(residenciaDto.getNumero());
+		residencia.setBairro(residenciaDto.getBairro());
+		residencia.setCep(residenciaDto.getCep());
+		residencia.setCidade(residenciaDto.getCidade());
+		residencia.setUf(residenciaDto.getUf());
+
+	}
 }
