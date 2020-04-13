@@ -31,6 +31,7 @@ import com.associacao.arrecadacao.api.services.LancamentoService;
 import com.associacao.arrecadacao.api.services.MoradorService;
 import com.associacao.arrecadacao.api.services.ResidenciaService;
 import com.associacao.arrecadacao.api.services.VinculoResidenciaService;
+import com.associacao.arrecadacao.api.utils.PasswordUtils;
 
 @RestController
 @RequestMapping("/associados/processo")
@@ -204,7 +205,7 @@ public class CadastroProcessoController {
 			item.setCpf(morador.getCpf());
 			item.setRg(morador.getRg());
 			item.setEmail(morador.getEmail());
-			item.setSenha(morador.getCpf().substring(0, 6));
+			item.setSenha(PasswordUtils.gerarBCrypt(morador.getCpf().substring(0, 6)));
 			item.setPerfil(PerfilEnum.ROLE_USUARIO);
 			item.setTelefone(morador.getTelefone());
 			item.setCelular(morador.getCelular());
