@@ -23,11 +23,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.associacao.arrecadacao.api.commons.ValidaCPF;
 import com.associacao.arrecadacao.api.dtos.CadastroMoradorDto;
+import com.associacao.arrecadacao.api.dtos.CadastroMoradorResponseDto;
 import com.associacao.arrecadacao.api.entities.Morador;
 import com.associacao.arrecadacao.api.entities.VinculoResidencia;
 import com.associacao.arrecadacao.api.response.Response;
 import com.associacao.arrecadacao.api.services.MoradorService;
 import com.associacao.arrecadacao.api.services.VinculoResidenciaService;
+import com.associacao.arrecadacao.api.utils.Utils;
 
 @RestController
 @RequestMapping("/associados/morador")
@@ -79,10 +81,10 @@ public class CadastroMoradorController {
 	 * @throws NoSuchAlgorithmException
 	 */
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<Response<CadastroMoradorDto>> buscarPorId(@PathVariable("id") Long id) throws NoSuchAlgorithmException {
+	public ResponseEntity<Response<CadastroMoradorResponseDto>> buscarPorId(@PathVariable("id") Long id) throws NoSuchAlgorithmException {
 		
 		log.info("Buscando residência: {}", id);
-		Response<CadastroMoradorDto> response = new Response<CadastroMoradorDto>();
+		Response<CadastroMoradorResponseDto> response = new Response<CadastroMoradorResponseDto>();
 		
 		Optional<Morador> morador = this.moradorService.buscarPorId(id);
 		if (!morador.isPresent()) {
@@ -93,9 +95,9 @@ public class CadastroMoradorController {
 		
 		List<Morador> list = new ArrayList<Morador>();
 		list.add(morador.get());
-		Long moradorId = vinculoResidenciaService.buscarPorMoradorId(morador.get().getId()).get(0).getResidenciaId();
-		list.forEach(p -> p.setResidenciaId(moradorId));
-		response.setData(this.converterCadastroMoradorDto(list));
+		Long residenciaId = vinculoResidenciaService.buscarPorMoradorId(morador.get().getId()).get(0).getResidenciaId();
+		list.forEach(p -> p.setResidenciaId(residenciaId));
+		response.setData(this.converterCadastroMoradorResponseDto(list.get(0), residenciaId));
 		return ResponseEntity.ok(response);
 		
 	}
@@ -178,7 +180,7 @@ public class CadastroMoradorController {
 	/**
 	 * Converter o objeto tipo Residencia para o tipo CadastroProcessoDto.
 	 * 
-	 * @param residencia
+	 * @param List<Morador>
 	 * @return CadastroMoradorDto
 	 */
 	private CadastroMoradorDto converterCadastroMoradorDto(List<Morador> moradores) {
@@ -186,6 +188,30 @@ public class CadastroMoradorController {
 		CadastroMoradorDto dto = new CadastroMoradorDto();
 		
 		dto.setMoradores(moradores);
+		return dto;
+	}
+
+	/**
+	 * Converter o objeto tipo Morador para o tipo CadastroMoradorResponseDto.
+	 * 
+	 * @param Morador
+	 * @return CadastroMoradorResponseDto
+	 */
+	private CadastroMoradorResponseDto converterCadastroMoradorResponseDto(Morador morador, Long residenciaId) {
+		
+		CadastroMoradorResponseDto dto = new CadastroMoradorResponseDto();
+		dto.setId(morador.getId());
+		dto.setNome(morador.getNome());
+		dto.setEmail(morador.getEmail());
+		dto.setCpf(morador.getCpf());
+		dto.setRg(morador.getRg());
+		dto.setSenha(morador.getSenha());
+		dto.setTelefone(morador.getTelefone());
+		dto.setCelular(morador.getCelular());
+		dto.setPerfil(morador.getPerfil());
+		dto.setResidenciaId(residenciaId);
+		dto.setDataCriacao(Utils.dateFormat(morador.getDataCriacao(),"dd/MM/yyyy"));
+		dto.setDataAtualizacao(Utils.dateFormat(morador.getDataAtualizacao(),"dd/MM/yyyy"));
 		return dto;
 	}
 	

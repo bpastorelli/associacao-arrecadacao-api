@@ -8,11 +8,11 @@ import java.util.Date;
 
 public class Utils {
 	
-	public static String dateFormat(Date date) {
+	public static String dateFormat(Date date, String format) {
 		
 		LocalDate dateFormat = convertToLocalDate(date);
 		DateTimeFormatter formatador = 
-		  DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		  DateTimeFormatter.ofPattern(format);
 		return dateFormat.format(formatador);
 	}
 	

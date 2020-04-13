@@ -1,9 +1,7 @@
 package com.associacao.arrecadacao.api.dtos;
 
 import java.util.List;
-
 import org.hibernate.validator.constraints.NotEmpty;
-
 import com.associacao.arrecadacao.api.entities.Morador;
 
 public class CadastroMoradorDto {
