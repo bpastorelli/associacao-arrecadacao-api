@@ -3,8 +3,6 @@ package com.associacao.arrecadacao.api.dtos;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
-import com.associacao.arrecadacao.api.enums.PerfilEnum;
-
 public class CadastroMoradorResponseDto {
 
 	private Long id;

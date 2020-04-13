@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.associacao.arrecadacao.api.commons.ValidaCPF;
 import com.associacao.arrecadacao.api.dtos.CadastroMoradorDto;
 import com.associacao.arrecadacao.api.dtos.CadastroMoradorResponseDto;
+import com.associacao.arrecadacao.api.dtos.CadastroMoradorUpdtRequestDto;
 import com.associacao.arrecadacao.api.entities.Morador;
 import com.associacao.arrecadacao.api.entities.VinculoResidencia;
 import com.associacao.arrecadacao.api.response.Response;
@@ -68,6 +70,47 @@ public class CadastroMoradorController {
 		this.moradorService.persistir(moradores);
 		this.vinculoResidenciaService.persistir(this.converterDtoParaVinculoResidencia(cadastroMoradorDto));
 		response.setData(this.converterCadastroMoradorDto(moradores));
+		return ResponseEntity.ok(response);
+		
+	}
+	
+	/**
+	 * Atualiza os dados de um morador.
+	 * 
+	 * @param id
+	 * @param moradorDto
+	 * @param result
+	 * @return ResponseEntity<Response<CadastroMoradorDto>>
+	 * @throws NoSuchAlgorithmException
+	 */
+	@PutMapping(value = "/{id}")
+	public ResponseEntity<Response<CadastroMoradorUpdtRequestDto>> atualizarMorador(@PathVariable("id") Long id,
+			@Valid @RequestBody CadastroMoradorUpdtRequestDto moradorDto, BindingResult result) throws NoSuchAlgorithmException {
+		
+		log.info("Atualizando morador: {}", moradorDto.toString());
+		Response<CadastroMoradorUpdtRequestDto> response = new Response<CadastroMoradorUpdtRequestDto>();
+		
+		Optional<Morador> morador = this.moradorService.buscarPorId(id);
+		if (!morador.isPresent()) {
+			result.addError(new ObjectError("morador", "Morador não encontrada."));
+		}
+		
+		List<Morador> list = new ArrayList<Morador>();
+		list.add(morador.get());
+		Long residenciaId = vinculoResidenciaService.buscarPorMoradorId(morador.get().getId()).get(0).getResidenciaId();
+		list.forEach(p -> p.setResidenciaId(residenciaId));
+		
+		this.atualizarDadosMorador(morador.get(), moradorDto, result);
+		
+		if (result.hasErrors()) {
+			log.error("Erro validando morador: {}", result.getAllErrors());
+			result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
+			return ResponseEntity.badRequest().body(response);
+		}
+		
+		this.moradorService.persistir(list);
+		response.setData(this.converterCadastroMoradorUpdtRequestDto(list.get(0)));
+
 		return ResponseEntity.ok(response);
 		
 	}
@@ -215,6 +258,23 @@ public class CadastroMoradorController {
 	}
 	
 	/**
+	 * Converter o objeto tipo Morador para o tipo CadastroMoradorResponseDto.
+	 * 
+	 * @param Morador
+	 * @return CadastroMoradorResponseDto
+	 */
+	private CadastroMoradorUpdtRequestDto converterCadastroMoradorUpdtRequestDto(Morador morador) {
+		
+		CadastroMoradorUpdtRequestDto dto = new CadastroMoradorUpdtRequestDto();
+		dto.setNome(morador.getNome());
+		dto.setEmail(morador.getEmail());
+		dto.setRg(morador.getRg());
+		dto.setTelefone(morador.getTelefone());
+		dto.setCelular(morador.getCelular());
+		return dto;
+	}
+	
+	/**
 	 * Converter o CadastroProcessoDto para VinculoResidencia.
 	 * 
 	 * @param moradores
@@ -231,5 +291,24 @@ public class CadastroMoradorController {
 			vinculos.add(vinculo);
 		});
 		return vinculos;
+	}
+	
+	/**
+	 * Atualiza os dados de morador com base nos dados encontrados no DTO.
+	 * 
+	 * @param morador
+	 * @param moradorDto
+	 * @param result
+	 * @throws NoSuchAlgorithmException
+	 */
+	private void atualizarDadosMorador(Morador morador, CadastroMoradorUpdtRequestDto moradorDto, BindingResult result)
+			throws NoSuchAlgorithmException {
+		
+		morador.setNome(moradorDto.getNome());
+		morador.setEmail(moradorDto.getEmail());
+		morador.setRg(moradorDto.getRg());
+		morador.setTelefone(moradorDto.getTelefone());
+		morador.setCelular(moradorDto.getCelular());
+
 	}
 }
