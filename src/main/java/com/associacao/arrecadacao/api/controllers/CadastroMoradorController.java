@@ -29,6 +29,7 @@ import com.associacao.arrecadacao.api.entities.VinculoResidencia;
 import com.associacao.arrecadacao.api.response.Response;
 import com.associacao.arrecadacao.api.services.MoradorService;
 import com.associacao.arrecadacao.api.services.VinculoResidenciaService;
+import com.associacao.arrecadacao.api.utils.PasswordUtils;
 import com.associacao.arrecadacao.api.utils.Utils;
 
 @RestController
@@ -166,7 +167,7 @@ public class CadastroMoradorController {
 			item.setCpf(morador.getCpf());
 			item.setRg(morador.getRg());
 			item.setEmail(morador.getEmail());
-			item.setSenha(morador.getCpf().substring(0, 6));
+			item.setSenha(PasswordUtils.gerarBCrypt(morador.getCpf().substring(0, 6)));
 			item.setPerfil(morador.getPerfil());
 			item.setTelefone(morador.getTelefone());
 			item.setCelular(morador.getCelular());
@@ -205,10 +206,8 @@ public class CadastroMoradorController {
 		dto.setEmail(morador.getEmail());
 		dto.setCpf(morador.getCpf());
 		dto.setRg(morador.getRg());
-		dto.setSenha(morador.getSenha());
 		dto.setTelefone(morador.getTelefone());
 		dto.setCelular(morador.getCelular());
-		dto.setPerfil(morador.getPerfil());
 		dto.setResidenciaId(residenciaId);
 		dto.setDataCriacao(Utils.dateFormat(morador.getDataCriacao(),"dd/MM/yyyy"));
 		dto.setDataAtualizacao(Utils.dateFormat(morador.getDataAtualizacao(),"dd/MM/yyyy"));

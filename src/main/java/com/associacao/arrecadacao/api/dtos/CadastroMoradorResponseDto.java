@@ -1,7 +1,5 @@
 package com.associacao.arrecadacao.api.dtos;
 
-import java.util.Date;
-
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -14,10 +12,8 @@ public class CadastroMoradorResponseDto {
 	private String email;
 	private String cpf;
 	private String rg;
-	private String senha;
 	private String telefone;
 	private String celular;
-	private PerfilEnum perfil;
 	private String dataCriacao;
 	private String dataAtualizacao;
 	private Long residenciaId;
@@ -85,24 +81,6 @@ public class CadastroMoradorResponseDto {
 
 	public void setCelular(String celular) {
 		this.celular = celular;
-	}
-
-	public PerfilEnum getPerfil() {
-		return perfil;
-	}
-
-	@NotEmpty(message = "Perfil não pode ser nulo.")
-	public void setPerfil(PerfilEnum perfil) {
-		this.perfil = perfil;
-	}
-
-	public String getSenha() {
-		return senha;
-	}
-
-	@NotEmpty(message = "Senha não pode ser nulo.")
-	public void setSenha(String senha) {
-		this.senha = senha;
 	}
 
 	public String getDataCriacao() {
