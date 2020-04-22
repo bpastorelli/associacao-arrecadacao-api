@@ -3,7 +3,7 @@ package com.associacao.arrecadacao.api.dtos;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
-public class CadastroResidenciaDto {
+public class AtualizaResidenciaDto {
 	
 	private Long   id;
 	private String matricula;
@@ -14,7 +14,7 @@ public class CadastroResidenciaDto {
 	private String cidade;
 	private String uf;
 	
-	public CadastroResidenciaDto() {
+	public AtualizaResidenciaDto() {
 		
 	}
 	
@@ -26,7 +26,6 @@ public class CadastroResidenciaDto {
 		this.id = id;
 	}
 	
-	@NotEmpty(message = "Matrícula não pode ser nulo")
 	@Length(min = 3, max = 10, message = "Matricula deve conter entre 3 e 10 caracteres.")
 	public String getMatricula() {
 		return matricula;

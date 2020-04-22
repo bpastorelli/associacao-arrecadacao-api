@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.associacao.arrecadacao.api.dtos.AtualizaResidenciaDto;
 import com.associacao.arrecadacao.api.dtos.CadastroResidenciaDto;
 import com.associacao.arrecadacao.api.entities.Residencia;
 import com.associacao.arrecadacao.api.response.Response;
@@ -75,7 +76,7 @@ class CadastroResidenciaController {
 	 */
 	@PutMapping(value = "/{id}")
 	public ResponseEntity<Response<CadastroResidenciaDto>> atualizar(@PathVariable("id") Long id,
-			@Valid @RequestBody CadastroResidenciaDto residenciaDto, BindingResult result) throws NoSuchAlgorithmException {
+			@Valid @RequestBody AtualizaResidenciaDto residenciaDto, BindingResult result) throws NoSuchAlgorithmException {
 		
 		log.info("Atualizando residência: {}", residenciaDto.toString());
 		Response<CadastroResidenciaDto> response = new Response<CadastroResidenciaDto>();
@@ -101,21 +102,21 @@ class CadastroResidenciaController {
 	}
 	
 	/**
-	 * Atualiza os dados de uma residência.
+	 * Busca uma residência pelo ID ou pel Matricula.
 	 * 
 	 * @param id
-	 * @param residenciaDto
+	 * @param matricula
 	 * @param result
 	 * @return ResponseEntity<Response<CadastroResidenciaDto>>
 	 * @throws NoSuchAlgorithmException
 	 */
-	@GetMapping(value = "/{id}")
-	public ResponseEntity<Response<CadastroResidenciaDto>> buscarPorId(@PathVariable("id") Long id) throws NoSuchAlgorithmException {
+	@GetMapping(value = "/id/{id}/matricula/{matricula}")
+	public ResponseEntity<Response<CadastroResidenciaDto>> buscarPorId(@PathVariable("id") Long id, @PathVariable("matricula") String matricula) throws NoSuchAlgorithmException {
 		
 		log.info("Buscando residência: {}", id);
 		Response<CadastroResidenciaDto> response = new Response<CadastroResidenciaDto>();
 		
-		Optional<Residencia> residencia = this.residenciaService.buscarPorId(id);
+		Optional<Residencia> residencia = this.residenciaService.bucarPorIdOrMatricula(id, matricula);
 		if (!residencia.isPresent()) {
 			log.info("Residência não encontrada para o ID: {}", id);
 			response.getErrors().add("Residência não encontrada para o ID " + id);
@@ -182,10 +183,9 @@ class CadastroResidenciaController {
 	 * @param result
 	 * @throws NoSuchAlgorithmException
 	 */
-	private void atualizarDadosResidencia(Residencia residencia, CadastroResidenciaDto residenciaDto, BindingResult result)
+	private void atualizarDadosResidencia(Residencia residencia, AtualizaResidenciaDto residenciaDto, BindingResult result)
 			throws NoSuchAlgorithmException {
 		
-		residencia.setMatricula(residenciaDto.getMatricula());
 		residencia.setEndereco(residenciaDto.getEndereco());
 		residencia.setNumero(residenciaDto.getNumero());
 		residencia.setBairro(residenciaDto.getBairro());

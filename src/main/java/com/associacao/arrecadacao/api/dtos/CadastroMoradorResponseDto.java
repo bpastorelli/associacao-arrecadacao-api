@@ -1,8 +1,5 @@
 package com.associacao.arrecadacao.api.dtos;
 
-import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.NotEmpty;
-
 public class CadastroMoradorResponseDto {
 
 	private Long id;
@@ -28,7 +25,6 @@ public class CadastroMoradorResponseDto {
 		this.id = id;
 	}
 	
-	@NotEmpty(message = "Nome não pode ser nulo.")
 	public void setNome(String nome) {
 		this.nome = nome;
 	}
@@ -41,8 +37,6 @@ public class CadastroMoradorResponseDto {
 		return cpf;
 	}
 
-	@NotEmpty(message = "CPF não pode ser nulo.")
-	@Length(min = 11, max = 11, message = "CPF deve conter 11 caracteres.")
 	public void setCpf(String cpf) {
 		this.cpf = cpf;
 	}
@@ -51,7 +45,6 @@ public class CadastroMoradorResponseDto {
 		return rg;
 	}
 
-	@NotEmpty(message = "RG não pode ser nulo.")
 	public void setRg(String rg) {
 		this.rg = rg;
 	}
@@ -60,7 +53,6 @@ public class CadastroMoradorResponseDto {
 		return email;
 	}
 
-	@NotEmpty(message = "E-mail não pode ser nulo.")
 	public void setEmail(String email) {
 		this.email = email;
 	}
@@ -101,7 +93,6 @@ public class CadastroMoradorResponseDto {
 		return residenciaId;
 	}
 
-	@NotEmpty(message = "residenciaId não pode ser nulo.")
 	public void setResidenciaId(Long residenciaId) {
 		this.residenciaId = residenciaId;
 	}

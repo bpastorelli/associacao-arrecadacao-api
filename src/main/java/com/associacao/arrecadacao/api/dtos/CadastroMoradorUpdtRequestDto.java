@@ -7,7 +7,6 @@ public class CadastroMoradorUpdtRequestDto {
 	private String rg;
 	private String telefone;
 	private String celular;
-	private Long residenciaId;
 	
 	public CadastroMoradorUpdtRequestDto() {
 		

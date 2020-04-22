@@ -30,4 +30,14 @@ public interface ResidenciaService {
 	 */
 	Optional<Residencia> persistir(Residencia residencia);
 
+	
+	/**
+	 * Retorna uma residência dado um ID.
+	 * 
+	 * @param residenciaId
+	 * @param matricula
+	 * @return Optional<Residencia>
+	 */	
+	Optional<Residencia> bucarPorIdOrMatricula(Long id, String matricula);
+
 }

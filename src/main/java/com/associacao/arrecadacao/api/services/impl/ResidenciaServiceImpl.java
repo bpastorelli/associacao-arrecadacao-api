@@ -36,4 +36,10 @@ public class ResidenciaServiceImpl implements ResidenciaService {
 		log.info("Buscando uma residência para o ID {}", id);
 		return Optional.ofNullable(this.residenciaRepository.findById(id));
 	}
+	
+	@Override
+	public Optional<Residencia> bucarPorIdOrMatricula(Long id, String matricula){
+		log.info("Buscando uma residência para o ID {}", id);
+		return Optional.ofNullable(this.residenciaRepository.findByIdOrMatricula(id, matricula));
+	}
 }
