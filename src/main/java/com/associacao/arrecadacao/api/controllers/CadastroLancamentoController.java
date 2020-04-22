@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,13 +43,15 @@ public class CadastroLancamentoController {
 		
 	}
 	
-	@PostMapping
-	public ResponseEntity<Response<CadastroLancamentoDto>> cadastrar(@Valid @RequestBody CadastroLancamentoDto cadastroLancamentoDto,
+	@PostMapping("/{residenciaId}")
+	public ResponseEntity<Response<CadastroLancamentoDto>> cadastrar(@PathVariable("residenciaId") Long residenciaId, @Valid @RequestBody CadastroLancamentoDto cadastroLancamentoDto,
 			BindingResult result) throws NoSuchAlgorithmException{
 		
 		log.info("Cadastrando um lançamento: {}", cadastroLancamentoDto.toString());
 		
 		Response<CadastroLancamentoDto> response = new Response<CadastroLancamentoDto>();
+		
+		cadastroLancamentoDto.getLancamentos().forEach(p -> p.setResidenciaId(residenciaId));
 		
 		List<Lancamento> lancamentos = this.converterDtoParaLancamento(cadastroLancamentoDto);
 		validarDadosExistentes(cadastroLancamentoDto, result);
