@@ -1,6 +1,8 @@
 package com.associacao.arrecadacao.api.dtos;
 
-public class CadastroMoradorUpdtRequestDto {
+import org.hibernate.validator.constraints.NotEmpty;
+
+public class AtualizaMoradorDto {
 
 	private String nome;
 	private String email;
@@ -8,7 +10,7 @@ public class CadastroMoradorUpdtRequestDto {
 	private String telefone;
 	private String celular;
 	
-	public CadastroMoradorUpdtRequestDto() {
+	public AtualizaMoradorDto() {
 		
 	}
 	
@@ -16,10 +18,12 @@ public class CadastroMoradorUpdtRequestDto {
 		this.nome = nome;
 	}
 	
+	@NotEmpty(message = "Nome não pode ser nulo.")
 	public String getNome() {
 		return nome;
 	}
 	
+	@NotEmpty(message = "RG não pode ser nulo.")
 	public String getRg() {
 		return rg;
 	}
@@ -28,6 +32,7 @@ public class CadastroMoradorUpdtRequestDto {
 		this.rg = rg;
 	}
 	
+	@NotEmpty(message = "E-mail não pode ser nulo.")
 	public String getEmail() {
 		return email;
 	}
@@ -36,6 +41,7 @@ public class CadastroMoradorUpdtRequestDto {
 		this.email = email;
 	}
 	
+	@NotEmpty(message = "Telefone não pode ser nulo.")
 	public String getTelefone() {
 		return telefone;
 	}

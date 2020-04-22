@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.associacao.arrecadacao.api.commons.ValidaCPF;
 import com.associacao.arrecadacao.api.dtos.CadastroMoradorDto;
 import com.associacao.arrecadacao.api.dtos.CadastroMoradorResponseDto;
-import com.associacao.arrecadacao.api.dtos.CadastroMoradorUpdtRequestDto;
+import com.associacao.arrecadacao.api.dtos.AtualizaMoradorDto;
 import com.associacao.arrecadacao.api.entities.Morador;
 import com.associacao.arrecadacao.api.entities.VinculoResidencia;
 import com.associacao.arrecadacao.api.response.Response;
@@ -84,11 +84,11 @@ public class CadastroMoradorController {
 	 * @throws NoSuchAlgorithmException
 	 */
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<Response<CadastroMoradorUpdtRequestDto>> atualizarMorador(@PathVariable("id") Long id,
-			@Valid @RequestBody CadastroMoradorUpdtRequestDto moradorDto, BindingResult result) throws NoSuchAlgorithmException {
+	public ResponseEntity<Response<AtualizaMoradorDto>> atualizarMorador(@PathVariable("id") Long id,
+			@Valid @RequestBody AtualizaMoradorDto moradorDto, BindingResult result) throws NoSuchAlgorithmException {
 		
 		log.info("Atualizando morador: {}", moradorDto.toString());
-		Response<CadastroMoradorUpdtRequestDto> response = new Response<CadastroMoradorUpdtRequestDto>();
+		Response<AtualizaMoradorDto> response = new Response<AtualizaMoradorDto>();
 		
 		Optional<Morador> morador = this.moradorService.buscarPorId(id);
 		if (!morador.isPresent()) {
@@ -263,9 +263,9 @@ public class CadastroMoradorController {
 	 * @param Morador
 	 * @return CadastroMoradorResponseDto
 	 */
-	private CadastroMoradorUpdtRequestDto converterCadastroMoradorUpdtRequestDto(Morador morador) {
+	private AtualizaMoradorDto converterCadastroMoradorUpdtRequestDto(Morador morador) {
 		
-		CadastroMoradorUpdtRequestDto dto = new CadastroMoradorUpdtRequestDto();
+		AtualizaMoradorDto dto = new AtualizaMoradorDto();
 		dto.setNome(morador.getNome());
 		dto.setEmail(morador.getEmail());
 		dto.setRg(morador.getRg());
@@ -301,7 +301,7 @@ public class CadastroMoradorController {
 	 * @param result
 	 * @throws NoSuchAlgorithmException
 	 */
-	private void atualizarDadosMorador(Morador morador, CadastroMoradorUpdtRequestDto moradorDto, BindingResult result)
+	private void atualizarDadosMorador(Morador morador, AtualizaMoradorDto moradorDto, BindingResult result)
 			throws NoSuchAlgorithmException {
 		
 		morador.setNome(moradorDto.getNome());
