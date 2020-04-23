@@ -184,13 +184,13 @@ public class CadastroMoradorController {
 		}
 		
 		for(Morador morador : cadastroMoradorDto.getMoradores()) {
-			if(this.moradorService.buscarPorRg(morador.getRg()).size() > 0)
-				result.addError(new ObjectError("morador", "RG " + morador.getRg() + " já existente"));
+			this.moradorService.buscarPorRg(morador.getRg())
+				.ifPresent(res -> result.addError(new ObjectError("morador", "RG " + morador.getRg() + " já existente")));
 		}
 		
 		for(Morador morador : cadastroMoradorDto.getMoradores()) {
-			if(this.moradorService.bucarPorEmail(morador.getEmail()).size() > 0)
-				result.addError(new ObjectError("morador", "E-mail " + morador.getEmail() + " já existente"));
+			this.moradorService.bucarPorEmail(morador.getEmail())
+				.ifPresent(res -> result.addError(new ObjectError("morador", "E-mail " + morador.getEmail() + " já existente")));
 		}
 		
 	}

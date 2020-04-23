@@ -156,17 +156,17 @@ public class CadastroProcessoController {
 		
 		for(Morador morador : cadastroResidenciaDto.getMoradores()) {
 			this.moradorService.buscarPorCpf(morador.getCpf())
-					.ifPresent(res -> result.addError(new ObjectError("morador", "CPF " + morador.getCpf() + " já existente")));
+				.ifPresent(res -> result.addError(new ObjectError("morador", "CPF " + morador.getCpf() + " já existente")));
 		}
 		
 		for(Morador morador : cadastroResidenciaDto.getMoradores()) {
-			if(this.moradorService.buscarPorRg(morador.getRg()).size() > 0)
-				result.addError(new ObjectError("morador", "RG " + morador.getRg() + " já existente"));
+			this.moradorService.buscarPorRg(morador.getRg())
+				.ifPresent(res -> result.addError(new ObjectError("morador", "RG " + morador.getRg() + " já existente")));
 		}
 		
 		for(Morador morador : cadastroResidenciaDto.getMoradores()) {
-			if(this.moradorService.bucarPorEmail(morador.getEmail()).size() > 0)
-				result.addError(new ObjectError("morador", "E-mail " + morador.getEmail() + " já existente"));
+			this.moradorService.bucarPorEmail(morador.getEmail())
+				.ifPresent(res -> result.addError(new ObjectError("morador", "E-mail" + morador.getEmail() + " já existente")));
 		}
 		
 	}

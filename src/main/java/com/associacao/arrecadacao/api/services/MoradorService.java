@@ -29,7 +29,7 @@ public interface MoradorService {
 	 * @param rg
 	 * @return Optional<Morador>
 	 */	
-	List<Morador> buscarPorRg(String rg);
+	Optional<Morador> buscarPorRg(String rg);
 	
 	/**
 	 * Busca e retorna um morador dado o email.
@@ -37,7 +37,7 @@ public interface MoradorService {
 	 * @param email
 	 * @return Optional<Morador>
 	 */
-	List<Morador> bucarPorEmail(String email);
+	Optional<Morador> bucarPorEmail(String email);
 
 	/**
 	 * Busca e retorna um morador dado o id.

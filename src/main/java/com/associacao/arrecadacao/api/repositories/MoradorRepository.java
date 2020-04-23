@@ -1,7 +1,5 @@
 package com.associacao.arrecadacao.api.repositories;
 
-import java.util.List;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,9 +10,9 @@ public interface MoradorRepository extends JpaRepository<Morador, Long> {
 	
 	Morador findByCpf(String cpf);
 	
-	List<Morador> findByRg(String rg);
+	Morador findByRg(String rg);
 	
-	List<Morador> findByEmail(String email);
+	Morador findByEmail(String email);
 	
 	Morador findByCpfOrEmail(String cpf, String email);
 }
