@@ -1,18 +1,17 @@
 package com.associacao.arrecadacao.api.dtos;
 
 import java.math.BigDecimal;
-import java.util.Date;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
 public class LancamentoResponseDto {
 	
 	private Long id;
-	private Date dataPagamento;
+	private String dataPagamento;
 	private String periodo;
 	private BigDecimal valor;
-	private Date dataCriacao;
-	private Date dataAtualizacao;
+	private String dataCriacao;
+	private String dataAtualizacao;
 	private Long residenciaId;
 	
 	public LancamentoResponseDto() {
@@ -27,11 +26,11 @@ public class LancamentoResponseDto {
 		this.id = id;
 	}
 
-	public Date getDataPagamento() {
+	public String getDataPagamento() {
 		return dataPagamento;
 	}
 
-	public void setDataPagamento(Date dataPagamento) {
+	public void setDataPagamento(String dataPagamento) {
 		this.dataPagamento = dataPagamento;
 	}
 	
@@ -53,19 +52,19 @@ public class LancamentoResponseDto {
 		this.valor = valor;
 	}
 
-	public Date getDataCriacao() {
+	public String getDataCriacao() {
 		return dataCriacao;
 	}
 
-	public void setDataCriacao(Date dataCriacao) {
+	public void setDataCriacao(String dataCriacao) {
 		this.dataCriacao = dataCriacao;
 	}
 
-	public Date getDataAtualizacao() {
+	public String getDataAtualizacao() {
 		return dataAtualizacao;
 	}
 
-	public void setDataAtualizacao(Date dataAtualizacao) {
+	public void setDataAtualizacao(String dataAtualizacao) {
 		this.dataAtualizacao = dataAtualizacao;
 	}
 	

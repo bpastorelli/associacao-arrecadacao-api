@@ -35,6 +35,7 @@ import com.associacao.arrecadacao.api.entities.Lancamento;
 import com.associacao.arrecadacao.api.response.Response;
 import com.associacao.arrecadacao.api.services.LancamentoService;
 import com.associacao.arrecadacao.api.services.ResidenciaService;
+import com.associacao.arrecadacao.api.utils.Utils;
 
 @RestController
 @RequestMapping("/associados/lancamento")
@@ -159,9 +160,9 @@ public class CadastroLancamentoController {
 		item.setId(lancamento.getId());
 		item.setPeriodo(lancamento.getPeriodo());
 		item.setValor(lancamento.getValor());
-		item.setDataAtualizacao(lancamento.getDataAtualizacao());
-		item.setDataCriacao(lancamento.getDataCriacao());
-		item.setDataPagamento(lancamento.getDataPagamento());
+		item.setDataAtualizacao(Utils.dateFormat(lancamento.getDataAtualizacao(),"dd/MM/yyyy"));
+		item.setDataCriacao(Utils.dateFormat(lancamento.getDataCriacao(),"dd/MM/yyyy"));
+		item.setDataPagamento(Utils.dateFormat(lancamento.getDataPagamento(),"dd/MM/yyyy"));
 		item.setResidenciaId(lancamento.getResidenciaId());
 		
 		return item;
