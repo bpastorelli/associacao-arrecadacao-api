@@ -2,26 +2,23 @@ package com.associacao.arrecadacao.api.dtos;
 
 import java.util.List;
 
-import org.hibernate.validator.constraints.NotEmpty;
-
 import com.associacao.arrecadacao.api.entities.VinculoResidencia;
 
 public class VinculoResidenciaDto {
 	
-	private List<VinculoResidencia> vinculoResidencia;
+	private List<VinculoResidencia> vinculos;
 	
 	public VinculoResidenciaDto() {
 		
 	}
 	
-	@NotEmpty(message = "Você deve informar ao menos um vinculo.")
-	public List<VinculoResidencia> getVinculoResidencia() {
+	public List<VinculoResidencia> getVinculos() {
 		
-		return vinculoResidencia;
+		return vinculos;
 	}
 	
-	public void setVinculoReidencia(List<VinculoResidencia> vinculoResidencia) {
+	public void setVinculos(List<VinculoResidencia> vinculos) {
 		
-		this.vinculoResidencia = vinculoResidencia;
+		this.vinculos = vinculos;
 	}
 }

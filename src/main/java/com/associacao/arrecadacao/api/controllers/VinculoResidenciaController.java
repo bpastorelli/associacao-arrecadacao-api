@@ -1,5 +1,6 @@
 package com.associacao.arrecadacao.api.controllers;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,16 +38,17 @@ public class VinculoResidenciaController {
 		
 	}
 	
-	@PostMapping
-	public ResponseEntity<Response<VinculoResidenciaDto>> cadastrar(@Valid @RequestBody VinculoResidenciaDto vinculoResidenciaDto, 
-			BindingResult result){
+	@PostMapping(value = "/{residenciaId}")
+	public ResponseEntity<Response<VinculoResidenciaDto>> cadastrar(@PathVariable("residenciaId") Long residenciaId, @Valid @RequestBody VinculoResidenciaDto vinculoResidenciaDto, 
+			BindingResult result)throws NoSuchAlgorithmException{
 	
 		log.info("Vinculando um morador a uma residência: {}", vinculoResidenciaDto.toString());
 		
 		Response<VinculoResidenciaDto> response = new Response<VinculoResidenciaDto>();
 		
-		List<VinculoResidencia> vinculos = this.converterDtoParaVinculoResidencia(vinculoResidenciaDto);
+		vinculoResidenciaDto.getVinculos().forEach(p -> p.setResidenciaId(residenciaId));
 		
+		List<VinculoResidencia> vinculos = this.converterDtoParaVinculoResidencia(vinculoResidenciaDto);
 		validarDadosExistentes(vinculoResidenciaDto, result);
 		
 		if(result.hasErrors()) {
@@ -70,7 +73,7 @@ public class VinculoResidenciaController {
 		
 		List<VinculoResidencia> vinculos = new ArrayList<VinculoResidencia>();
 		
-		vinculoResidenciaDto.getVinculoResidencia().forEach(p -> {			
+		vinculoResidenciaDto.getVinculos().forEach(p -> {			
 			VinculoResidencia vinculo = new VinculoResidencia();
 			vinculo.setMoradorId(p.getMoradorId());
 			vinculo.setResidenciaId(p.getResidenciaId());
@@ -81,7 +84,7 @@ public class VinculoResidenciaController {
 	
 	private void validarDadosExistentes(VinculoResidenciaDto vinculoResidenciaDto, BindingResult result) {
 		
-		vinculoResidenciaDto.getVinculoResidencia().forEach(p -> {
+		vinculoResidenciaDto.getVinculos().forEach(p -> {
 			this.vinculoResidenciaService.buscarPorResidenciaIdAndMoradorId(p.getResidenciaId(), p.getMoradorId())
 				.ifPresent(res -> result.addError(new ObjectError("vinculor residencia", "Vinculo para residência já existente.")));			
 		});
@@ -96,7 +99,7 @@ public class VinculoResidenciaController {
 	public VinculoResidenciaDto converterVinculoResidenciaDto(List<VinculoResidencia> vinculos) {
 		
 		VinculoResidenciaDto vinculoResidenciaDto = new VinculoResidenciaDto();
-		vinculoResidenciaDto.setVinculoReidencia(vinculos);
+		vinculoResidenciaDto.setVinculos(vinculos);
 		
 		return vinculoResidenciaDto;
 	}
