@@ -24,6 +24,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.associacao.arrecadacao.api.entities.Lancamento;
+import com.associacao.arrecadacao.api.entities.Residencia;
 import com.associacao.arrecadacao.api.repositories.LancamentoRepository;
 
 @RunWith(SpringRunner.class)
@@ -37,9 +38,11 @@ public class LancamentoServiceTest {
 	@Autowired
 	private LancamentoService lancamentoService;
 	
-	private static final String periodo = "09/2019";
+	@Autowired
+	private ResidenciaService residenciaService;
 	
-	private static final Long residenciaId = 1L;
+	public static Long residenciaId;
+	public static String periodo = "09/2019";
 	
 	@Before
 	public void setUp() {
@@ -82,7 +85,11 @@ public class LancamentoServiceTest {
 	
 	@Test
 	public void testPersistirLancamento() {
-		List<Lancamento> lancamentos = this.lancamentoService.persistir(new ArrayList<Lancamento>());
+		
+		Residencia residencia = incluirResidencia();
+		residenciaId = residencia.getId();
+		
+		List<Lancamento> lancamentos = this.lancamentoService.persistir(obterDadosLancamento());
 		
 		assertNotNull(lancamentos);
 	}
@@ -97,6 +104,23 @@ public class LancamentoServiceTest {
 		lancamento.setValor(new BigDecimal(80.00));
 		lista.add(lancamento);
 		return lista;
+	}
+	
+	private Residencia incluirResidencia() {
+		
+		Residencia residencia = new Residencia();
+		residencia.setMatricula(Mockito.anyString());
+		residencia.setEndereco(Mockito.anyString());
+		residencia.setNumero(Mockito.anyString());
+		residencia.setBairro(Mockito.anyString());
+		residencia.setCep(Mockito.anyString());
+		residencia.setCidade(Mockito.anyString());
+		residencia.setUf(Mockito.anyString());
+		
+		residenciaService.persistir(residencia);
+		
+		return residencia;
+		
 	}
 
 }

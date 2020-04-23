@@ -11,19 +11,26 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.associacao.arrecadacao.api.dtos.CadastroLancamentoDto;
+import com.associacao.arrecadacao.api.dtos.LancamentoResponseDto;
 import com.associacao.arrecadacao.api.entities.Lancamento;
 import com.associacao.arrecadacao.api.response.Response;
 import com.associacao.arrecadacao.api.services.LancamentoService;
@@ -41,6 +48,9 @@ public class CadastroLancamentoController {
 	
 	@Autowired
 	private LancamentoService lancamentoService;
+	
+	@Value("${paginacao.qtd_por_pagina}")
+	private int qtdPorPagina;
 	
 	public CadastroLancamentoController() {
 		
@@ -68,6 +78,29 @@ public class CadastroLancamentoController {
 		this.lancamentoService.persistir(lancamentos);
 		response.setData(this.converterCadastroLancamentoDto(lancamentos));
 		
+		return ResponseEntity.ok(response);
+	}
+	
+	/**
+	 * Retorna a listagem de lançamentos de uma residência.
+	 * 
+	 * @param residenciaId
+	 * @return ResponseEntity<Response<CadastroLancamentoDto>>
+	 */
+	@GetMapping(value = "/residencia/{residenciaId}")
+	public ResponseEntity<Response<Page<LancamentoResponseDto>>> listarPorResidenciaId(
+			@PathVariable("residenciaId") Long residenciaId,
+			@RequestParam(value = "pag", defaultValue = "0") int pag,
+			@RequestParam(value = "ord", defaultValue = "id") String ord,
+			@RequestParam(value = "dir", defaultValue = "DESC") String dir) {
+		log.info("Buscando lançamentos por ID do funcionário: {}, página: {}", residenciaId, pag);
+		Response<Page<LancamentoResponseDto>> response = new Response<Page<LancamentoResponseDto>>();
+
+		PageRequest pageRequest = new PageRequest(pag, this.qtdPorPagina, Direction.valueOf(dir), ord);
+		Page<Lancamento> lancamentos = this.lancamentoService.buscarPorResidenciaId(residenciaId, pageRequest);
+		Page<LancamentoResponseDto> lancamentosDto = lancamentos.map(lancamento -> this.converterDtoParaLancamento(lancamento));
+
+		response.setData(lancamentosDto);
 		return ResponseEntity.ok(response);
 	}
 	
@@ -112,6 +145,26 @@ public class CadastroLancamentoController {
 		}
 		
 		return lancamentos;
+	}
+	
+	/**
+	 * Converter o LancamentoResponseDto para Lançamento.
+	 * 
+	 * @param LancamentoResponseDto
+	 * @return Lancamento
+	 */
+	private LancamentoResponseDto converterDtoParaLancamento(Lancamento lancamento) {
+	
+		LancamentoResponseDto item = new LancamentoResponseDto();
+		item.setId(lancamento.getId());
+		item.setPeriodo(lancamento.getPeriodo());
+		item.setValor(lancamento.getValor());
+		item.setDataAtualizacao(lancamento.getDataAtualizacao());
+		item.setDataCriacao(lancamento.getDataCriacao());
+		item.setDataPagamento(lancamento.getDataPagamento());
+		item.setResidenciaId(lancamento.getResidenciaId());
+		
+		return item;
 	}
 	
 	/**

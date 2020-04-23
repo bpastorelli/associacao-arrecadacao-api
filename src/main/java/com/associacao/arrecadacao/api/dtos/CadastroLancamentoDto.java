@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.validation.constraints.Size;
 
+
 import com.associacao.arrecadacao.api.entities.Lancamento;
 
 public class CadastroLancamentoDto {
