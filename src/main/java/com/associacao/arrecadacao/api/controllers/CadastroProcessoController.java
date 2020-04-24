@@ -154,20 +154,58 @@ public class CadastroProcessoController {
 			
 		}
 		
-		for(Morador morador : cadastroResidenciaDto.getMoradores()) {
+		cadastroResidenciaDto.getMoradores().forEach(morador ->{
 			this.moradorService.buscarPorCpf(morador.getCpf())
-				.ifPresent(res -> result.addError(new ObjectError("morador", "CPF " + morador.getCpf() + " já existente")));
-		}
+				.ifPresent(res -> result.addError(new ObjectError("morador", "CPF " + morador.getCpf() + " já existente")));	
+		});
 		
-		for(Morador morador : cadastroResidenciaDto.getMoradores()) {
+		cadastroResidenciaDto.getMoradores().forEach(morador ->{
 			this.moradorService.buscarPorRg(morador.getRg())
-				.ifPresent(res -> result.addError(new ObjectError("morador", "RG " + morador.getRg() + " já existente")));
-		}
-		
-		for(Morador morador : cadastroResidenciaDto.getMoradores()) {
+				.ifPresent(res -> result.addError(new ObjectError("morador", "RG " + morador.getRg() + " já existente")));	
+		});
+	
+		cadastroResidenciaDto.getMoradores().forEach(morador ->{
 			this.moradorService.bucarPorEmail(morador.getEmail())
-				.ifPresent(res -> result.addError(new ObjectError("morador", "E-mail" + morador.getEmail() + " já existente")));
-		}
+				.ifPresent(res -> result.addError(new ObjectError("morador", "E-mail " + morador.getEmail() + " já existente")));	
+		});
+		
+		//Valida se o  não está duplicado na requisição.
+		cadastroResidenciaDto.getMoradores().forEach(morador -> {
+			if(cadastroResidenciaDto.getMoradores()
+					.stream()
+					.filter(pessoa -> pessoa.getCpf()
+					.equals(morador.getCpf())).count() > 1)
+				result.addError(new ObjectError("morador", "CPF " + morador.getCpf() + " está duplicado."));
+		});		
+		
+		//Valida se o RG não está duplicado na requisição.
+		cadastroResidenciaDto.getMoradores().forEach(morador -> {
+			if(cadastroResidenciaDto.getMoradores()
+					.stream()
+					.filter(pessoa -> pessoa.getRg()
+					.equals(morador.getRg())).count() > 1)
+				result.addError(new ObjectError("morador", "RG " + morador.getRg() + " está duplicado."));
+		});
+		
+		//Valida se o RG não está duplicado na requisição.
+		cadastroResidenciaDto.getMoradores().forEach(morador -> {
+			if(cadastroResidenciaDto.getMoradores()
+					.stream()
+					.filter(pessoa -> pessoa.getEmail()
+					.equals(morador.getEmail())).count() > 1) {
+				result.addError(new ObjectError("morador", "E-mail " + morador.getEmail() + " está duplicado."));				
+			}
+		});
+		
+		//Valida se o Periodo não está duplicado na requisição.
+		cadastroResidenciaDto.getLancamentos().forEach(lance -> {
+			if(cadastroResidenciaDto.getLancamentos()
+					.stream()
+					.filter(lancamento -> lancamento.getPeriodo()
+					.equals(lance.getPeriodo())).count() > 1) {
+				result.addError(new ObjectError("lançamento", "Período " + lance.getPeriodo() + " está duplicado."));				
+			}
+		});
 		
 	}
 	
