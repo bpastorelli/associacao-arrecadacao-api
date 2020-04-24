@@ -94,12 +94,34 @@ public class CadastroLancamentoController {
 			@RequestParam(value = "pag", defaultValue = "0") int pag,
 			@RequestParam(value = "ord", defaultValue = "id") String ord,
 			@RequestParam(value = "dir", defaultValue = "DESC") String dir) {
-		log.info("Buscando lançamentos por ID do funcionário: {}, página: {}", residenciaId, pag);
+		log.info("Buscando lançamentos por ID da residência: {}, página: {}", residenciaId, pag);
 		Response<Page<LancamentoResponseDto>> response = new Response<Page<LancamentoResponseDto>>();
 
 		PageRequest pageRequest = new PageRequest(pag, this.qtdPorPagina, Direction.valueOf(dir), ord);
 		Page<Lancamento> lancamentos = this.lancamentoService.buscarPorResidenciaId(residenciaId, pageRequest);
 		Page<LancamentoResponseDto> lancamentosDto = lancamentos.map(lancamento -> this.converterDtoParaLancamento(lancamento));
+
+		response.setData(lancamentosDto);
+		return ResponseEntity.ok(response);
+	}
+	
+	/**
+	 * Retorna a listagem de lançamentos de uma residência.
+	 * 
+	 * @param periodo
+	 * @param residenciaId
+	 * @return ResponseEntity<Response<LancamentoResponseDto>>
+	 */
+	@GetMapping()
+	public ResponseEntity<Response<LancamentoResponseDto>> listarPorPeriodoAndResidenciaId(
+			@RequestParam(value = "periodo", defaultValue = "") String periodo,
+			@RequestParam(value = "residenciaId", defaultValue = "0") Long residenciaId) {
+		
+		log.info("Buscando lançamentos por ID da residencia: {}, periodo: {}", residenciaId, periodo);
+		Response<LancamentoResponseDto> response = new Response<LancamentoResponseDto>();
+
+		Optional<Lancamento> lancamentos = this.lancamentoService.buscarPorPeriodoAndResidenciaId(periodo, residenciaId);
+		LancamentoResponseDto lancamentosDto =  this.converterDtoParaLancamento(lancamentos.get());
 
 		response.setData(lancamentosDto);
 		return ResponseEntity.ok(response);

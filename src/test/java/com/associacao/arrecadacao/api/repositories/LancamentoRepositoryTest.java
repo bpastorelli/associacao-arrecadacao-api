@@ -6,7 +6,6 @@ import static org.junit.Assert.assertNotNull;
 import java.math.BigDecimal;
 import java.util.Optional;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,11 +42,6 @@ public class LancamentoRepositoryTest {
 		Lancamento lancamento = this.lancamentoRepository.save(obterDadosLancamento());
 		this.periodo = lancamento.getPeriodo();
 	}
-
-	@After
-	public void tearDown() throws Exception {
-		this.residenciaRepository.deleteAll();
-	}
 	
 	@Test
 	public void testBuscarLancamentosPorResidenciaIdPaginado() {
@@ -68,7 +62,7 @@ public class LancamentoRepositoryTest {
 	private Lancamento obterDadosLancamento() {
 		
 		Lancamento lancamento = new Lancamento();
-		lancamento.setPeriodo("04/2020");
+		lancamento.setPeriodo("09/2019");
 		lancamento.setResidenciaId(this.residenciaId);
 		lancamento.setValor(new BigDecimal(80.00));
 		
