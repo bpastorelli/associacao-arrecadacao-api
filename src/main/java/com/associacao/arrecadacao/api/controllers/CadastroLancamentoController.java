@@ -106,7 +106,7 @@ public class CadastroLancamentoController {
 	}
 	
 	/**
-	 * Retorna a listagem de lançamentos de uma residência.
+	 * Retorna um lançamento de uma residência.
 	 * 
 	 * @param periodo
 	 * @param residenciaId
@@ -121,6 +121,13 @@ public class CadastroLancamentoController {
 		Response<LancamentoResponseDto> response = new Response<LancamentoResponseDto>();
 
 		Optional<Lancamento> lancamentos = this.lancamentoService.buscarPorPeriodoAndResidenciaId(periodo, residenciaId);
+		
+		if (!lancamentos.isPresent()) {
+			log.info("Erro ao buscar um lançamento Residencia ID: {} e Periodo {}: ser inválido.", residenciaId, periodo);
+			response.getErrors().add("Erro ao buscar lançamento. Registro não encontrado para residencia ID: " + residenciaId + " e periodo: " + periodo + ".");
+			return ResponseEntity.badRequest().body(response);
+		}
+		
 		LancamentoResponseDto lancamentosDto =  this.converterDtoParaLancamento(lancamentos.get());
 
 		response.setData(lancamentosDto);
