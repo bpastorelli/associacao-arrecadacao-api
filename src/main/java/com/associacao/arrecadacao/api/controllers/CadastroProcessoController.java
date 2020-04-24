@@ -187,7 +187,7 @@ public class CadastroProcessoController {
 				result.addError(new ObjectError("morador", "RG " + morador.getRg() + " está duplicado."));
 		});
 		
-		//Valida se o RG não está duplicado na requisição.
+		//Valida se o E-mail não está duplicado na requisição.
 		cadastroResidenciaDto.getMoradores().forEach(morador -> {
 			if(cadastroResidenciaDto.getMoradores()
 					.stream()

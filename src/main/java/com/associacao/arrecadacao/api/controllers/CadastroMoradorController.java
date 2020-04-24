@@ -178,20 +178,48 @@ public class CadastroMoradorController {
 				result.addError(new ObjectError("morador", "O campo Perfi é obrigatório."));
 		}
 		
-		for(Morador morador : cadastroMoradorDto.getMoradores()) {
+		cadastroMoradorDto.getMoradores().forEach(morador ->{
 			this.moradorService.buscarPorCpf(morador.getCpf())
-				.ifPresent(res -> result.addError(new ObjectError("morador", "CPF " + morador.getCpf() + " já existente")));
-		}
+				.ifPresent(res -> result.addError(new ObjectError("morador", "CPF " + morador.getCpf() + " já existente")));	
+		});
 		
-		for(Morador morador : cadastroMoradorDto.getMoradores()) {
+		cadastroMoradorDto.getMoradores().forEach(morador ->{
 			this.moradorService.buscarPorRg(morador.getRg())
-				.ifPresent(res -> result.addError(new ObjectError("morador", "RG " + morador.getRg() + " já existente")));
-		}
-		
-		for(Morador morador : cadastroMoradorDto.getMoradores()) {
+				.ifPresent(res -> result.addError(new ObjectError("morador", "RG " + morador.getRg() + " já existente")));	
+		});
+	
+		cadastroMoradorDto.getMoradores().forEach(morador ->{
 			this.moradorService.bucarPorEmail(morador.getEmail())
-				.ifPresent(res -> result.addError(new ObjectError("morador", "E-mail " + morador.getEmail() + " já existente")));
-		}
+				.ifPresent(res -> result.addError(new ObjectError("morador", "E-mail " + morador.getEmail() + " já existente")));	
+		});
+		
+		//Valida se o CPF não está duplicado na requisição.
+		cadastroMoradorDto.getMoradores().forEach(morador -> {
+			if(cadastroMoradorDto.getMoradores()
+					.stream()
+					.filter(pessoa -> pessoa.getCpf()
+					.equals(morador.getCpf())).count() > 1)
+				result.addError(new ObjectError("morador", "CPF " + morador.getCpf() + " está duplicado."));
+		});	
+		
+		//Valida se o RG não está duplicado na requisição.
+		cadastroMoradorDto.getMoradores().forEach(morador -> {
+			if(cadastroMoradorDto.getMoradores()
+					.stream()
+					.filter(pessoa -> pessoa.getRg()
+					.equals(morador.getRg())).count() > 1)
+				result.addError(new ObjectError("morador", "RG " + morador.getRg() + " está duplicado."));
+		});
+		
+		//Valida se o E-mail não está duplicado na requisição.
+		cadastroMoradorDto.getMoradores().forEach(morador -> {
+			if(cadastroMoradorDto.getMoradores()
+					.stream()
+					.filter(pessoa -> pessoa.getEmail()
+					.equals(morador.getEmail())).count() > 1) {
+				result.addError(new ObjectError("morador", "E-mail " + morador.getEmail() + " está duplicado."));				
+			}
+		});
 		
 	}
 	
