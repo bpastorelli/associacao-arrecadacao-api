@@ -5,9 +5,11 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
@@ -19,9 +21,11 @@ public class VinculoResidencia implements Serializable {
 	private static final long serialVersionUID = 3960436649365666214L;
 	
 	private Long id;
-	private Long moradorId;
-	private Long residenciaId;
+	//private Long moradorId;
+	//private Long residenciaId;
 	private Date dataVinculo;
+	private Morador morador;
+	private Residencia residencia;
 	
 	public VinculoResidencia() {
 		
@@ -39,27 +43,27 @@ public class VinculoResidencia implements Serializable {
 		this.id = id;
 	}
 	
-	@Column(name = "morador_id", nullable = false)
-	public Long getMoradorId() {
+	//@Column(name = "morador_id", nullable = false)
+	//public Long getMoradorId() {
 		
-		return moradorId;
-	}
+	//	return moradorId;
+	//}
 	
-	public void setMoradorId(Long moradorId) {
+	//public void setMoradorId(Long moradorId) {
 		
-		this.moradorId = moradorId;
-	}
+	//	this.moradorId = moradorId;
+	//}
 	
-	@Column(name = "residencia_id", nullable = false)
-	public Long getResidenciaId() {
+	//@Column(name = "residencia_id", nullable = false)
+	//public Long getResidenciaId() {
 		
-		return residenciaId;
-	}
+		//return residenciaId;
+	//}
 
-	public void setResidenciaId(Long residenciaId) {
+	//public void setResidenciaId(Long residenciaId) {
 		
-		this.residenciaId = residenciaId;
-	}
+		//this.residenciaId = residenciaId;
+	//}
 	
 	@Column(name = "data_vinculo", nullable = false)
 	public Date getDataVinculo() {
@@ -68,6 +72,24 @@ public class VinculoResidencia implements Serializable {
 	
 	public void setDataVinculo(Date dataVinculo) {
 		this.dataVinculo = dataVinculo;
+	}
+	
+	@ManyToOne(fetch = FetchType.EAGER)
+	public Morador getMorador() {
+		return morador;
+	}
+	
+	public void setMorador(Morador morador) {
+		this.morador = morador;
+	}
+	
+	@ManyToOne(fetch = FetchType.EAGER)
+	public Residencia getResidencia() {
+		return residencia;
+	}
+	
+	public void setResidencia(Residencia residencia) {
+		this.residencia = residencia;
 	}
 	
 	@PreUpdate
@@ -83,7 +105,9 @@ public class VinculoResidencia implements Serializable {
     
 	@Override
 	public String toString() {
-		return "Vinculo [id=" + id + ", moradorId=" + moradorId + ", residenciaId=" + residenciaId + ", dataVinculo=" + dataVinculo + "]";
+		return "Vinculo [id=" + id + ", dataVinculo=" + dataVinculo + "]";
 	}
+
+
 
 }

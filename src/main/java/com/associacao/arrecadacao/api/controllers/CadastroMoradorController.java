@@ -23,13 +23,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.associacao.arrecadacao.api.commons.ValidaCPF;
+import com.associacao.arrecadacao.api.dtos.AtualizaMoradorDto;
 import com.associacao.arrecadacao.api.dtos.CadastroMoradorDto;
 import com.associacao.arrecadacao.api.dtos.CadastroMoradorResponseDto;
-import com.associacao.arrecadacao.api.dtos.AtualizaMoradorDto;
 import com.associacao.arrecadacao.api.entities.Morador;
+import com.associacao.arrecadacao.api.entities.Residencia;
 import com.associacao.arrecadacao.api.entities.VinculoResidencia;
 import com.associacao.arrecadacao.api.response.Response;
 import com.associacao.arrecadacao.api.services.MoradorService;
+import com.associacao.arrecadacao.api.services.ResidenciaService;
 import com.associacao.arrecadacao.api.services.VinculoResidenciaService;
 import com.associacao.arrecadacao.api.utils.PasswordUtils;
 import com.associacao.arrecadacao.api.utils.Utils;
@@ -45,19 +47,23 @@ public class CadastroMoradorController {
 	private MoradorService moradorService;
 	
 	@Autowired
+	private ResidenciaService residenciaService;	
+	
+	@Autowired
 	private VinculoResidenciaService vinculoResidenciaService;
 	
 	public CadastroMoradorController() {
 		
 	}
 	
-	@PostMapping()
-	public ResponseEntity<Response<CadastroMoradorDto>> cadastrar(@Valid @RequestBody CadastroMoradorDto cadastroMoradorDto, 
+	@PostMapping(value = "/{residenciaId}")
+	public ResponseEntity<Response<CadastroMoradorDto>> cadastrar(@PathVariable("residenciaId") Long residenciaId, @Valid @RequestBody CadastroMoradorDto cadastroMoradorDto, 
 			BindingResult result) throws NoSuchAlgorithmException{
 		
 		log.info("Cadastrando de morador: {}", cadastroMoradorDto.toString());
 		Response<CadastroMoradorDto> response = new Response<CadastroMoradorDto>();
 		
+		cadastroMoradorDto.getMoradores().forEach(p -> p.setResidenciaId(residenciaId));
 		List<Morador> moradores = this.converterDtoParaMorador(cadastroMoradorDto);
 		validarDadosExistentes(cadastroMoradorDto, result);
 		
@@ -97,7 +103,7 @@ public class CadastroMoradorController {
 		
 		List<Morador> list = new ArrayList<Morador>();
 		list.add(morador.get());
-		Long residenciaId = vinculoResidenciaService.buscarPorMoradorId(morador.get().getId()).get(0).getResidenciaId();
+		Long residenciaId = vinculoResidenciaService.buscarPorMoradorId(morador.get().getId()).get(0).getResidencia().getId();
 		list.forEach(p -> p.setResidenciaId(residenciaId));
 		
 		this.atualizarDadosMorador(morador.get(), moradorDto, result);
@@ -127,7 +133,7 @@ public class CadastroMoradorController {
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<Response<CadastroMoradorResponseDto>> buscarPorId(@PathVariable("id") Long id) throws NoSuchAlgorithmException {
 		
-		log.info("Buscando residência: {}", id);
+		log.info("Buscando morador: {}", id);
 		Response<CadastroMoradorResponseDto> response = new Response<CadastroMoradorResponseDto>();
 		
 		Optional<Morador> morador = this.moradorService.buscarPorId(id);
@@ -139,7 +145,7 @@ public class CadastroMoradorController {
 		
 		List<Morador> list = new ArrayList<Morador>();
 		list.add(morador.get());
-		Long residenciaId = vinculoResidenciaService.buscarPorMoradorId(morador.get().getId()).get(0).getResidenciaId();
+		Long residenciaId = vinculoResidenciaService.buscarPorMoradorId(morador.get().getId()).get(0).getResidencia().getId();
 		list.forEach(p -> p.setResidenciaId(residenciaId));
 		response.setData(this.converterCadastroMoradorResponseDto(list.get(0), residenciaId));
 		return ResponseEntity.ok(response);
@@ -148,9 +154,14 @@ public class CadastroMoradorController {
 	
 	private void validarDadosExistentes(CadastroMoradorDto cadastroMoradorDto, BindingResult result) {
 		
+		Optional<Long> residenciaId = cadastroMoradorDto.getMoradores().get(0).getResidenciaId();
+		
 		if(cadastroMoradorDto.getMoradores().size() == 0) {
 			result.addError(new ObjectError("morador", "Você deve informar ao menos um morador."));
 		}
+		
+		if(!this.residenciaService.buscarPorId(residenciaId.get()).isPresent())
+			result.addError(new ObjectError("morador", "Residencia ID " + residenciaId.get() + " não existente."));
 		
 		for(Morador morador : cadastroMoradorDto.getMoradores()) {
 			if(morador.getNome().isEmpty())
@@ -314,8 +325,10 @@ public class CadastroMoradorController {
 		List<VinculoResidencia> vinculos = new ArrayList<VinculoResidencia>();
 		cadastroMoradorDto.getMoradores().forEach(m -> {
 			VinculoResidencia vinculo = new VinculoResidencia();
-			vinculo.setMoradorId(this.moradorService.buscarPorCpf(m.getCpf()).get().getId());
-			vinculo.setResidenciaId(m.getResidenciaId().get());
+			vinculo.setMorador(this.moradorService.buscarPorCpf(m.getCpf()).get());
+			Residencia residencia = new Residencia();
+			residencia.setId(m.getResidenciaId().get());
+			vinculo.setResidencia(residencia);
 			vinculos.add(vinculo);
 		});
 		return vinculos;

@@ -46,7 +46,7 @@ public class VinculoResidenciaController {
 		
 		Response<VinculoResidenciaDto> response = new Response<VinculoResidenciaDto>();
 		
-		vinculoResidenciaDto.getVinculos().forEach(p -> p.setResidenciaId(residenciaId));
+		vinculoResidenciaDto.getVinculos().forEach(p -> p.getResidencia().setId(residenciaId));
 		
 		List<VinculoResidencia> vinculos = this.converterDtoParaVinculoResidencia(vinculoResidenciaDto);
 		validarDadosExistentes(vinculoResidenciaDto, result);
@@ -75,8 +75,8 @@ public class VinculoResidenciaController {
 		
 		vinculoResidenciaDto.getVinculos().forEach(p -> {			
 			VinculoResidencia vinculo = new VinculoResidencia();
-			vinculo.setMoradorId(p.getMoradorId());
-			vinculo.setResidenciaId(p.getResidenciaId());
+			vinculo.setId(p.getMorador().getId());
+			vinculo.setId(p.getResidencia().getId());
 			vinculos.add(vinculo);
 		});
 		return vinculos;
@@ -85,7 +85,7 @@ public class VinculoResidenciaController {
 	private void validarDadosExistentes(VinculoResidenciaDto vinculoResidenciaDto, BindingResult result) {
 		
 		vinculoResidenciaDto.getVinculos().forEach(p -> {
-			this.vinculoResidenciaService.buscarPorResidenciaIdAndMoradorId(p.getResidenciaId(), p.getMoradorId())
+			this.vinculoResidenciaService.buscarPorResidenciaIdAndMoradorId(p.getResidencia().getId(), p.getMorador().getId())
 				.ifPresent(res -> result.addError(new ObjectError("vinculor residencia", "Vinculo para residência já existente.")));			
 		});
 	}

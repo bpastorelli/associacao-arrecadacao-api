@@ -2,15 +2,19 @@ package com.associacao.arrecadacao.api.entities;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
@@ -38,6 +42,7 @@ public class Morador implements Serializable {
 	private Date dataCriacao;
 	private Date dataAtualizacao;
 	private Long residenciaId;
+	private List<VinculoResidencia> vinculosResidencia;
 
 	public Morador() {
 	}
@@ -167,6 +172,15 @@ public class Morador implements Serializable {
     	
     	this.residenciaId = residenciaId;
     }
+    
+	@OneToMany(mappedBy = "morador", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	public List<VinculoResidencia> getVinculosResidencia() {
+		return vinculosResidencia;
+	}
+
+	public void setVinculosResidencia(List<VinculoResidencia> vinculosResidencia) {
+		this.vinculosResidencia = vinculosResidencia;
+	}
     
 	@Override
 	public String toString() {

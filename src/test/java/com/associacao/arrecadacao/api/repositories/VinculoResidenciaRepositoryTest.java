@@ -73,8 +73,8 @@ public class VinculoResidenciaRepositoryTest {
 		this.moradorRepository.save(morador);
 		
 		vinculo = new VinculoResidencia();
-		vinculo.setMoradorId(morador.getId());
-		vinculo.setResidenciaId(residencia.getId());
+		vinculo.getMorador().setId(morador.getId());
+		vinculo.getResidencia().setId(residencia.getId());
 		this.vinculoResidenciaRepository.save(vinculo);
 	}
 	
@@ -82,14 +82,14 @@ public class VinculoResidenciaRepositoryTest {
 	public void testVincularResidencia() {
 		
 		VinculoResidencia response = this.vinculoResidenciaRepository.findByResidenciaIdAndMoradorId(residencia.getId(), morador.getId());
-		assertEquals(MORADOR_ID, response.getMoradorId());
+		assertEquals(MORADOR_ID, response.getMorador().getId());
 	}
 	
 	@Test
 	public void testBuscarPorMoradorId() {
 		
 		List<VinculoResidencia> response = this.vinculoResidenciaRepository.findByMoradorId(morador.getId());
-		assertEquals(residencia.getId(), response.get(0).getResidenciaId());
+		assertEquals(residencia.getId(), response.get(0).getResidencia().getId());
 	}
 	
 	@After

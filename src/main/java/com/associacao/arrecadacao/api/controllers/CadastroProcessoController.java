@@ -85,9 +85,9 @@ public class CadastroProcessoController {
 		}
 		
 		this.residenciaService.persistir(residencia);
-		moradores.forEach(p -> p.setResidenciaId(residencia.getId()));
 		this.moradorService.persistir(moradores);
-		vinculos = this.converterDtoParaVinculoResidencia(moradores, residencia.getId());
+		moradores.forEach(p -> p.setResidenciaId(residencia.getId()));
+		vinculos = this.converterDtoParaVinculoResidencia(moradores, residencia);
 		this.vinculoResidenciaService.persistir(vinculos);
 		lancamentos.forEach(p -> p.setResidenciaId(residencia.getId()));
 		this.lancamentoService.persistir(lancamentos);
@@ -280,14 +280,14 @@ public class CadastroProcessoController {
 	 * @param residenciaId
 	 * @return VinculoResidencia
 	 */
-	public List<VinculoResidencia> converterDtoParaVinculoResidencia(List<Morador> moradores, Long residenciaId){
+	public List<VinculoResidencia> converterDtoParaVinculoResidencia(List<Morador> moradores, Residencia residencia){
 		
 		List<VinculoResidencia> vinculos = new ArrayList<VinculoResidencia>();
 		
 		moradores.forEach(m -> {
 			VinculoResidencia vinculo = new VinculoResidencia();
-			vinculo.setMoradorId(m.getId());
-			vinculo.setResidenciaId(residenciaId);
+			vinculo.setMorador(m);
+			vinculo.setResidencia(residencia);
 			vinculos.add(vinculo);
 		});
 		return vinculos;

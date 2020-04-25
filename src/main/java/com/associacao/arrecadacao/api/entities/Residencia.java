@@ -138,7 +138,7 @@ public class Residencia implements Serializable {
 		this.lancamentos = lancamentos;
 	}
 	
-	@OneToMany(mappedBy = "residenciaId", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "residencia", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	public List<VinculoResidencia> getVinculosResidencia() {
 		return vinculosResidencia;
 	}
