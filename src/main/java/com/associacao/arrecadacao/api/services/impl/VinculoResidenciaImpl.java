@@ -43,4 +43,11 @@ public class VinculoResidenciaImpl implements VinculoResidenciaService {
 		log.info("Buscar vinculo por residencia ID {}", residenciaId);
 		return this.vinculoResidenciaRepository.findByResidenciaId(residenciaId);
 	}
+
+	@Override
+	public void remover(Long id) {
+		log.info("Remover vinculo de residencia ID {}", id);
+		this.vinculoResidenciaRepository.delete(id);
+	}
+
 }

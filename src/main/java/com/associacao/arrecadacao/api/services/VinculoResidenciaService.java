@@ -36,8 +36,15 @@ public interface VinculoResidenciaService {
 	 * Persistir um vínculo de residência
 	 * 
 	 * @param vinculoResidencia
-	 * @return VinculoResidencia
+	 * @return List<VinculoResidencia>
 	 */
 	List<VinculoResidencia> persistir(List<VinculoResidencia> vinculoResidencia);
 
+	/**
+	 * Remove um vinculo de morador a residencia
+	 * 
+	 * @param id
+	 */
+	void remover(Long id);
+	
 }
