@@ -1,24 +1,24 @@
 package com.associacao.arrecadacao.api.dtos;
 
-import java.util.List;
+import java.util.Optional;
 
 import com.associacao.arrecadacao.api.entities.VinculoResidencia;
 
 public class VinculoResidenciaDto {
 	
-	private List<VinculoResidencia> vinculos;
+	private Optional<VinculoResidencia> vinculo;
 	
 	public VinculoResidenciaDto() {
 		
 	}
 	
-	public List<VinculoResidencia> getVinculos() {
+	public Optional<VinculoResidencia> getVinculos() {
 		
-		return vinculos;
+		return vinculo;
 	}
 	
-	public void setVinculos(List<VinculoResidencia> vinculos) {
+	public void setVinculos(Optional<VinculoResidencia> vinculo) {
 		
-		this.vinculos = vinculos;
+		this.vinculo = vinculo;
 	}
 }

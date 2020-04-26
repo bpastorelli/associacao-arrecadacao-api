@@ -173,7 +173,8 @@ public class Morador implements Serializable {
     	this.residenciaId = residenciaId;
     }
     
-	@OneToMany(mappedBy = "morador", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "morador", fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL)
 	public List<VinculoResidencia> getVinculosResidencia() {
 		return vinculosResidencia;
 	}

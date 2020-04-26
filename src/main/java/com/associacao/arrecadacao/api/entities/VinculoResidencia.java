@@ -5,10 +5,10 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
@@ -50,7 +50,8 @@ public class VinculoResidencia implements Serializable {
 		this.dataVinculo = dataVinculo;
 	}
 	
-	@ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
+    @JoinColumn(name = "morador_id")
 	public Morador getMorador() {
 		return morador;
 	}
@@ -59,7 +60,8 @@ public class VinculoResidencia implements Serializable {
 		this.morador = morador;
 	}
 	
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne
+	@JoinColumn(name="residencia_id")
 	public Residencia getResidencia() {
 		return residencia;
 	}
