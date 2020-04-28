@@ -2,7 +2,7 @@ package com.associacao.arrecadacao.api.dtos;
 
 public class CadastroMoradorResponseDto {
 
-	private Long id;
+	private Long   id;
 	private String nome;
 	private String email;
 	private String cpf;
@@ -11,7 +11,7 @@ public class CadastroMoradorResponseDto {
 	private String celular;
 	private String dataCriacao;
 	private String dataAtualizacao;
-	private Long residenciaId;
+	private Long   residenciaId;
 	
 	public CadastroMoradorResponseDto() {
 		

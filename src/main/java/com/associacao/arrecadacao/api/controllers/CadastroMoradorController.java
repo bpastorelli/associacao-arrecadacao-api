@@ -57,7 +57,8 @@ public class CadastroMoradorController {
 	}
 	
 	@PostMapping(value = "/residencia/{residenciaId}")
-	public ResponseEntity<Response<CadastroMoradorDto>> cadastrar(@PathVariable("residenciaId") Long residenciaId, @Valid @RequestBody CadastroMoradorDto cadastroMoradorDto, 
+	public ResponseEntity<Response<CadastroMoradorDto>> cadastrar(@PathVariable("residenciaId") Long residenciaId, 
+			@Valid @RequestBody CadastroMoradorDto cadastroMoradorDto, 
 			BindingResult result) throws NoSuchAlgorithmException{
 		
 		log.info("Cadastrando de morador: {}", cadastroMoradorDto.toString());
@@ -344,7 +345,7 @@ public class CadastroMoradorController {
 		
 		if (!morador.getNome().equals(moradorDto.getNome())) {
 			this.moradorService.buscarPorNome(moradorDto.getNome())
-					.ifPresent(func -> result.addError(new ObjectError("email", "Email já existente.")));
+					.ifPresent(func -> result.addError(new ObjectError("nome", "Email já existente.")));
 			morador.setNome(moradorDto.getNome());
 		}
 		
@@ -356,7 +357,7 @@ public class CadastroMoradorController {
 		
 		if (!morador.getRg().equals(moradorDto.getRg())) {
 			this.moradorService.buscarPorRg(moradorDto.getRg())
-					.ifPresent(func -> result.addError(new ObjectError("RG", "RG já existente.")));
+					.ifPresent(func -> result.addError(new ObjectError("rg", "RG já existente.")));
 			morador.setRg(moradorDto.getRg());
 		}
 		

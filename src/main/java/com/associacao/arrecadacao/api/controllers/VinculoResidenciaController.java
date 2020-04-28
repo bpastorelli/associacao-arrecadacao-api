@@ -23,13 +23,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.associacao.arrecadacao.api.dtos.VinculoResidenciaDto;
 import com.associacao.arrecadacao.api.dtos.VinculoResidenciaMassaDto;
+import com.associacao.arrecadacao.api.dtos.VinculosResidenciaResponseDto;
+import com.associacao.arrecadacao.api.entities.Morador;
+import com.associacao.arrecadacao.api.entities.ResidenciaResponse;
 import com.associacao.arrecadacao.api.entities.VinculoResidencia;
 import com.associacao.arrecadacao.api.entities.VinculoResidenciaMassa;
 import com.associacao.arrecadacao.api.response.Response;
 import com.associacao.arrecadacao.api.services.VinculoResidenciaMassaService;
 import com.associacao.arrecadacao.api.services.VinculoResidenciaService;
+import com.associacao.arrecadacao.api.utils.Utils;
 
 @RestController
 @RequestMapping("/associados/vinculo-residencia")
@@ -80,12 +83,12 @@ public class VinculoResidenciaController {
 	 * @return ResponseEntity<Response<Lancamento>>
 	 */
 	@GetMapping(value = "/residencia/{residenciaId}/morador/{moradorId}")
-	public ResponseEntity<Response<VinculoResidenciaDto>> consultarVinculoResidenciaIdAndMoradorId(
+	public ResponseEntity<Response<VinculosResidenciaResponseDto>> consultarVinculoResidenciaIdAndMoradorId(
 			@PathVariable("residenciaId") Long residenciaId,
 			@PathVariable("moradorId") Long moradorId) {
 		
 		log.info("Consultando vinculo para o morador ID: {}", moradorId);
-		Response<VinculoResidenciaDto> response = new Response<VinculoResidenciaDto>();
+		Response<VinculosResidenciaResponseDto> response = new Response<VinculosResidenciaResponseDto>();
 		Optional<VinculoResidencia> vinculo = this.vinculoResidenciaService.buscarPorResidenciaIdAndMoradorId(residenciaId, moradorId);
 
 		if (!vinculo.isPresent()) {
@@ -155,12 +158,30 @@ public class VinculoResidenciaController {
 	 * @param vinculo
 	 * @return VinculoResidenciaDto
 	 */
-	public Optional<VinculoResidenciaDto> converterVinculoResidenciaDto(Optional<VinculoResidencia> vinculo) {
+	public Optional<VinculosResidenciaResponseDto> converterVinculoResidenciaDto(Optional<VinculoResidencia> vinculo) {
 		
-		VinculoResidenciaDto vinculoResidenciaDto = new VinculoResidenciaDto();
-		vinculoResidenciaDto.setVinculos(vinculo);
+		VinculosResidenciaResponseDto vinculosResidenciaResponseDto = new VinculosResidenciaResponseDto();
 		
-		return Optional.ofNullable(vinculoResidenciaDto);
+		ResidenciaResponse residencia = new ResidenciaResponse();
+		residencia.setId(vinculo.get().getResidencia().getId());
+		residencia.setMatricula(vinculo.get().getResidencia().getMatricula());
+		residencia.setEndereco(vinculo.get().getResidencia().getEndereco());
+		residencia.setNumero(vinculo.get().getResidencia().getNumero());
+		residencia.setBairro(vinculo.get().getResidencia().getBairro());
+		residencia.setCep(vinculo.get().getResidencia().getCep());
+		residencia.setCidade(vinculo.get().getResidencia().getCidade());
+		residencia.setUf(vinculo.get().getResidencia().getUf());
+		residencia.setDataCriacao(Utils.dateFormat(vinculo.get().getResidencia().getDataCriacao(),"dd/MM/yyyy"));
+		residencia.setDataAtualizacao(Utils.dateFormat(vinculo.get().getResidencia().getDataAtualizacao(),"dd/MM/yyyy"));
+		
+		List<Morador> moradores = new ArrayList<Morador>();
+		moradores.add(vinculo.get().getMorador());
+		
+		vinculosResidenciaResponseDto.setResidencia(residencia);
+		vinculosResidenciaResponseDto.setMoradores(moradores);
+		
+		return Optional.ofNullable(vinculosResidenciaResponseDto);
+		
 	}
 	
 	/**
