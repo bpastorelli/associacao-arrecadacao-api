@@ -152,6 +152,9 @@ class CadastroResidenciaController {
 		this.residenciaService.buscarPorMatricula(cadastroResidenciaDto.getMatricula())
 				.ifPresent(res -> result.addError(new ObjectError("residencia", "Residência já existente")));
 		
+		this.residenciaService.bucarPorEnderecoAndNumero(cadastroResidenciaDto.getEndereco(), cadastroResidenciaDto.getNumero())
+				.ifPresent(res -> result.addError(new ObjectError("residencia", "Endereço já existente")));
+		
 	}
 	
 	/**

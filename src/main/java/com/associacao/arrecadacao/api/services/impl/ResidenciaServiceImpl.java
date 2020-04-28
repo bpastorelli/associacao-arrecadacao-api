@@ -42,4 +42,10 @@ public class ResidenciaServiceImpl implements ResidenciaService {
 		log.info("Buscando uma residência para o ID {}", id);
 		return Optional.ofNullable(this.residenciaRepository.findByIdOrMatricula(id, matricula));
 	}
+
+	@Override
+	public Optional<Residencia> bucarPorEnderecoAndNumero(String endereco, String numero) {
+		log.info("Buscando uma residência por Endereço e Número {}", endereco, numero);
+		return Optional.ofNullable(this.residenciaRepository.findByEnderecoAndNumero(endereco, numero));
+	}
 }

@@ -101,6 +101,9 @@ public class CadastroProcessoController {
 		this.residenciaService.buscarPorMatricula(cadastroResidenciaDto.getMatricula())
 				.ifPresent(res -> result.addError(new ObjectError("residencia", "Residência já existente")));
 		
+		this.residenciaService.bucarPorEnderecoAndNumero(cadastroResidenciaDto.getEndereco(), cadastroResidenciaDto.getNumero())
+				.ifPresent(res -> result.addError(new ObjectError("residencia", "Endereço já existente")));
+		
 		if(cadastroResidenciaDto.getMoradores().size() == 0) {
 			result.addError(new ObjectError("morador", "Você deve informar ao menos um morador."));
 		}

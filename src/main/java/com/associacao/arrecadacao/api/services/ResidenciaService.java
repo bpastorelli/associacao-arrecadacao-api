@@ -39,5 +39,14 @@ public interface ResidenciaService {
 	 * @return Optional<Residencia>
 	 */	
 	Optional<Residencia> bucarPorIdOrMatricula(Long id, String matricula);
+	
+	/**
+	 * Retorna uma residência dado Endereço e Número.
+	 * 
+	 * @param endereco
+	 * @param numero
+	 * @return Optional<Residencia>
+	 */	
+	Optional<Residencia> bucarPorEnderecoAndNumero(String string, String numero);
 
 }
