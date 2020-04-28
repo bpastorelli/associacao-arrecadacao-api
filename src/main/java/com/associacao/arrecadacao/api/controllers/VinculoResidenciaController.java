@@ -92,8 +92,32 @@ public class VinculoResidenciaController {
 		Optional<VinculoResidencia> vinculo = this.vinculoResidenciaService.buscarPorResidenciaIdAndMoradorId(residenciaId, moradorId);
 
 		if (!vinculo.isPresent()) {
-			log.info("Erro ao remover devido ao vinculo para o morador ID: {} não existir.", moradorId);
-			response.getErrors().add("Erro ao remover vinculo. Registro não encontrado para o morador ID " + moradorId);
+			log.info("Erro ao consultar devido ao vinculo para o morador ID: {} não existir.", moradorId);
+			response.getErrors().add("Erro ao consultar vinculo. Registro não encontrado para o morador ID " + moradorId);
+			return ResponseEntity.badRequest().body(response);
+		}
+
+		response.setData(this.converterVinculoResidenciaDto(vinculo).get());
+		return ResponseEntity.ok(response);
+	}
+	
+	/**
+	 * Consulta um vinculo de residência a um morador.
+	 * 
+	 * @param id
+	 * @return ResponseEntity<Response<Lancamento>>
+	 */
+	@GetMapping(value = "/residencia/{residenciaId}")
+	public ResponseEntity<Response<VinculosResidenciaResponseDto>> consultarVinculoResidenciaIdAndMoradorId(
+			@PathVariable("residenciaId") Long residenciaId) {
+		
+		log.info("Consultando vinculo para o morador ID: {}", residenciaId);
+		Response<VinculosResidenciaResponseDto> response = new Response<VinculosResidenciaResponseDto>();
+		List<VinculoResidencia> vinculo = this.vinculoResidenciaService.buscarPorResidenciaId(residenciaId);
+
+		if (vinculo.size() == 0) {
+			log.info("Erro ao consultar devido ao vinculo para a residencia ID: {} não existir.", residenciaId);
+			response.getErrors().add("Erro ao consultar vinculo. Registro não encontrado para a residencia ID " + residenciaId);
 			return ResponseEntity.badRequest().body(response);
 		}
 
@@ -176,6 +200,42 @@ public class VinculoResidenciaController {
 		
 		List<Morador> moradores = new ArrayList<Morador>();
 		moradores.add(vinculo.get().getMorador());
+		
+		vinculosResidenciaResponseDto.setResidencia(residencia);
+		vinculosResidenciaResponseDto.setMoradores(moradores);
+		
+		return Optional.ofNullable(vinculosResidenciaResponseDto);
+		
+	}
+	
+	/**
+	 * Converter Vinculos de Residencia em VinculoResidenciaDto
+	 * 
+	 * @param vinculos
+	 * @return VinculoResidenciaDto
+	 */
+	public Optional<VinculosResidenciaResponseDto> converterVinculoResidenciaDto(List<VinculoResidencia> vinculos) {
+		
+		VinculosResidenciaResponseDto vinculosResidenciaResponseDto = new VinculosResidenciaResponseDto();
+		
+		ResidenciaResponse residencia = new ResidenciaResponse();
+		residencia.setId(vinculos.get(0).getResidencia().getId());
+		residencia.setMatricula(vinculos.get(0).getResidencia().getMatricula());
+		residencia.setEndereco(vinculos.get(0).getResidencia().getEndereco());
+		residencia.setNumero(vinculos.get(0).getResidencia().getNumero());
+		residencia.setBairro(vinculos.get(0).getResidencia().getBairro());
+		residencia.setCep(vinculos.get(0).getResidencia().getCep());
+		residencia.setCidade(vinculos.get(0).getResidencia().getCidade());
+		residencia.setUf(vinculos.get(0).getResidencia().getUf());
+		residencia.setDataCriacao(Utils.dateFormat(vinculos.get(0).getResidencia().getDataCriacao(),"dd/MM/yyyy"));
+		residencia.setDataAtualizacao(Utils.dateFormat(vinculos.get(0).getResidencia().getDataAtualizacao(),"dd/MM/yyyy"));
+		
+		List<Morador> moradores = new ArrayList<Morador>();
+		
+		vinculos.forEach(m -> {
+			m.getMorador().setResidenciaId(m.getResidencia().getId());
+			moradores.add(m.getMorador());			
+		});
 		
 		vinculosResidenciaResponseDto.setResidencia(residencia);
 		vinculosResidenciaResponseDto.setMoradores(moradores);

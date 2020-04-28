@@ -8,6 +8,15 @@ import com.associacao.arrecadacao.api.entities.VinculoResidencia;
 public interface VinculoResidenciaService {
 	
 	/**
+	 * Buscar por Residencia ID or Morador ID
+	 * 
+	 * @param residenciaID
+	 * @param moradorId
+	 * @return VinculoResidencia
+	 */
+	Optional<VinculoResidencia> buscarPorResidenciaIdOrMoradorId(Long residenciaID, Long moradorId);
+	
+	/**
 	 * Buscar por Residencia ID e Morador ID
 	 * 
 	 * @param residenciaID
