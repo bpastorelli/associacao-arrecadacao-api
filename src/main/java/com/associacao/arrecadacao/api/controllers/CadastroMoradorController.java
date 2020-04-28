@@ -342,23 +342,17 @@ public class CadastroMoradorController {
 	private void atualizarDadosMorador(Morador morador, AtualizaMoradorDto moradorDto, BindingResult result)
 			throws NoSuchAlgorithmException {
 		
-		morador.setNome(moradorDto.getNome());
-		
 		if (!morador.getNome().equals(moradorDto.getNome())) {
 			this.moradorService.buscarPorNome(moradorDto.getNome())
 					.ifPresent(func -> result.addError(new ObjectError("email", "Email já existente.")));
 			morador.setNome(moradorDto.getNome());
 		}
 		
-		morador.setEmail(moradorDto.getEmail());
-		
 		if (!morador.getEmail().equals(moradorDto.getEmail())) {
 			this.moradorService.buscarPorEmail(moradorDto.getEmail())
 					.ifPresent(func -> result.addError(new ObjectError("email", "Email já existente.")));
 			morador.setEmail(moradorDto.getEmail());
 		}
-		
-		morador.setRg(moradorDto.getRg());
 		
 		if (!morador.getRg().equals(moradorDto.getRg())) {
 			this.moradorService.buscarPorRg(moradorDto.getRg())
