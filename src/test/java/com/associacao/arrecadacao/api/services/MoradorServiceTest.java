@@ -57,7 +57,7 @@ public class MoradorServiceTest {
 	
 	@Test
 	public void testBuscarMoradorPorEmail() {
-		Optional<Morador> morador = this.moradorService.bucarPorEmail("email@email.com");
+		Optional<Morador> morador = this.moradorService.buscarPorEmail("email@email.com");
 		
 		assertTrue(morador.isPresent());
 	}

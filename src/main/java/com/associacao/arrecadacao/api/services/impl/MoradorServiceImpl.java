@@ -39,7 +39,7 @@ public class MoradorServiceImpl implements MoradorService {
 	}
 
 	@Override
-	public Optional<Morador> bucarPorEmail(String email) {
+	public Optional<Morador> buscarPorEmail(String email) {
 		log.info("Buscando morador pelo E-mail {}", email);
 		return Optional.ofNullable(this.moradorRepository.findByEmail(email));
 	}
@@ -48,5 +48,11 @@ public class MoradorServiceImpl implements MoradorService {
 	public Optional<Morador> buscarPorId(Long id) {
 		log.info("Buscando morador pelo ID {}", id);
 		return Optional.ofNullable(this.moradorRepository.findOne(id));
+	}
+
+	@Override
+	public Optional<Morador> buscarPorNome(String nome) {
+		log.info("Buscando morador pelo Nome {}", nome);
+		return Optional.ofNullable(this.moradorRepository.findByNome(nome));
 	}
 }

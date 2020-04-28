@@ -57,7 +57,7 @@ public class CadastroLancamentoController {
 		
 	}
 	
-	@PostMapping("/{residenciaId}")
+	@PostMapping("/residencia/{residenciaId}")
 	public ResponseEntity<Response<CadastroLancamentoDto>> cadastrar(@PathVariable("residenciaId") Long residenciaId, @Valid @RequestBody CadastroLancamentoDto cadastroLancamentoDto,
 			BindingResult result) throws NoSuchAlgorithmException{
 		

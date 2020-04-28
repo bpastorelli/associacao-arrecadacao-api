@@ -165,7 +165,7 @@ public class CadastroProcessoController {
 		});
 	
 		cadastroResidenciaDto.getMoradores().forEach(morador ->{
-			this.moradorService.bucarPorEmail(morador.getEmail())
+			this.moradorService.buscarPorEmail(morador.getEmail())
 				.ifPresent(res -> result.addError(new ObjectError("morador", "E-mail " + morador.getEmail() + " já existente")));	
 		});
 		

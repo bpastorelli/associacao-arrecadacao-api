@@ -8,6 +8,8 @@ import com.associacao.arrecadacao.api.entities.Morador;
 @Transactional(readOnly = true)
 public interface MoradorRepository extends JpaRepository<Morador, Long> {
 	
+	Morador findByNome(String nome);
+	
 	Morador findByCpf(String cpf);
 	
 	Morador findByRg(String rg);

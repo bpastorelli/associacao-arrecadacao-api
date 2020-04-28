@@ -56,7 +56,7 @@ public class CadastroMoradorController {
 		
 	}
 	
-	@PostMapping(value = "/{residenciaId}")
+	@PostMapping(value = "/residencia/{residenciaId}")
 	public ResponseEntity<Response<CadastroMoradorDto>> cadastrar(@PathVariable("residenciaId") Long residenciaId, @Valid @RequestBody CadastroMoradorDto cadastroMoradorDto, 
 			BindingResult result) throws NoSuchAlgorithmException{
 		
@@ -89,7 +89,7 @@ public class CadastroMoradorController {
 	 * @return ResponseEntity<Response<CadastroMoradorDto>>
 	 * @throws NoSuchAlgorithmException
 	 */
-	@PutMapping(value = "/{id}")
+	@PutMapping(value = "/morador/{id}")
 	public ResponseEntity<Response<AtualizaMoradorDto>> atualizarMorador(@PathVariable("id") Long id,
 			@Valid @RequestBody AtualizaMoradorDto moradorDto, BindingResult result) throws NoSuchAlgorithmException {
 		
@@ -98,13 +98,10 @@ public class CadastroMoradorController {
 		
 		Optional<Morador> morador = this.moradorService.buscarPorId(id);
 		if (!morador.isPresent()) {
-			result.addError(new ObjectError("morador", "Morador não encontrada."));
-		}
-		
-		List<Morador> list = new ArrayList<Morador>();
-		list.add(morador.get());
-		Long residenciaId = vinculoResidenciaService.buscarPorMoradorId(morador.get().getId()).get(0).getResidencia().getId();
-		list.forEach(p -> p.setResidenciaId(residenciaId));
+			result.addError(new ObjectError("morador", "Morador não encontrado pelo ID " + id));
+			result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
+			return ResponseEntity.badRequest().body(response);
+		}	
 		
 		this.atualizarDadosMorador(morador.get(), moradorDto, result);
 		
@@ -113,6 +110,9 @@ public class CadastroMoradorController {
 			result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
 			return ResponseEntity.badRequest().body(response);
 		}
+		
+		List<Morador> list = new ArrayList<Morador>();
+		list.add(morador.get());		
 		
 		this.moradorService.persistir(list);
 		response.setData(this.converterCadastroMoradorUpdtRequestDto(list.get(0)));
@@ -173,9 +173,6 @@ public class CadastroMoradorController {
 			if(!ValidaCPF.isCPF(morador.getCpf()))
 				result.addError(new ObjectError("morador", "CPF inválido."));
 			
-			if(morador.getSenha().isEmpty())
-				result.addError(new ObjectError("morador", "O campo Senha é obrigatório."));
-			
 			if(morador.getRg().isEmpty())
 				result.addError(new ObjectError("morador", "O campo RG é obrigatório."));
 			
@@ -200,7 +197,7 @@ public class CadastroMoradorController {
 		});
 	
 		cadastroMoradorDto.getMoradores().forEach(morador ->{
-			this.moradorService.bucarPorEmail(morador.getEmail())
+			this.moradorService.buscarPorEmail(morador.getEmail())
 				.ifPresent(res -> result.addError(new ObjectError("morador", "E-mail " + morador.getEmail() + " já existente")));	
 		});
 		
@@ -306,7 +303,7 @@ public class CadastroMoradorController {
 		
 		AtualizaMoradorDto dto = new AtualizaMoradorDto();
 		dto.setNome(morador.getNome());
-		dto.setEmail(morador.getEmail());
+		dto.setEmail(morador.getEmail());		
 		dto.setRg(morador.getRg());
 		dto.setTelefone(morador.getTelefone());
 		dto.setCelular(morador.getCelular());
@@ -346,8 +343,29 @@ public class CadastroMoradorController {
 			throws NoSuchAlgorithmException {
 		
 		morador.setNome(moradorDto.getNome());
+		
+		if (!morador.getNome().equals(moradorDto.getNome())) {
+			this.moradorService.buscarPorNome(moradorDto.getNome())
+					.ifPresent(func -> result.addError(new ObjectError("email", "Email já existente.")));
+			morador.setNome(moradorDto.getNome());
+		}
+		
 		morador.setEmail(moradorDto.getEmail());
+		
+		if (!morador.getEmail().equals(moradorDto.getEmail())) {
+			this.moradorService.buscarPorEmail(moradorDto.getEmail())
+					.ifPresent(func -> result.addError(new ObjectError("email", "Email já existente.")));
+			morador.setEmail(moradorDto.getEmail());
+		}
+		
 		morador.setRg(moradorDto.getRg());
+		
+		if (!morador.getRg().equals(moradorDto.getRg())) {
+			this.moradorService.buscarPorRg(moradorDto.getRg())
+					.ifPresent(func -> result.addError(new ObjectError("RG", "RG já existente.")));
+			morador.setRg(moradorDto.getRg());
+		}
+		
 		morador.setTelefone(moradorDto.getTelefone());
 		morador.setCelular(moradorDto.getCelular());
 
