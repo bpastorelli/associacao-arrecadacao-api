@@ -131,7 +131,7 @@ public class CadastroMoradorController {
 	 * @return ResponseEntity<Response<CadastroMoradorDto>>
 	 * @throws NoSuchAlgorithmException
 	 */
-	@GetMapping(value = "/{id}")
+	@GetMapping(value = "/morador/{id}")
 	public ResponseEntity<Response<CadastroMoradorResponseDto>> buscarPorId(@PathVariable("id") Long id) throws NoSuchAlgorithmException {
 		
 		log.info("Buscando morador: {}", id);
@@ -323,7 +323,7 @@ public class CadastroMoradorController {
 		List<VinculoResidencia> vinculos = new ArrayList<VinculoResidencia>();
 		cadastroMoradorDto.getMoradores().forEach(m -> {
 			VinculoResidencia vinculo = new VinculoResidencia();
-			vinculo.setMorador(this.moradorService.buscarPorCpf(m.getCpf()).get());
+			vinculo.setMorador(m);
 			Residencia residencia = new Residencia();
 			residencia.setId(m.getResidenciaId().get());
 			vinculo.setResidencia(residencia);
