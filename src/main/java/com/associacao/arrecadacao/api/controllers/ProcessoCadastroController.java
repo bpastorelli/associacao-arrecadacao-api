@@ -36,9 +36,9 @@ import com.associacao.arrecadacao.api.utils.PasswordUtils;
 @RestController
 @RequestMapping("/associados/processo")
 @CrossOrigin(origins = "*")
-public class CadastroProcessoController {
+public class ProcessoCadastroController {
 
-	private static final Logger log = LoggerFactory.getLogger(CadastroProcessoController.class);
+	private static final Logger log = LoggerFactory.getLogger(ProcessoCadastroController.class);
 	
 	@Autowired
 	private MoradorService moradorService;
@@ -52,7 +52,7 @@ public class CadastroProcessoController {
 	@Autowired
 	private LancamentoService lancamentoService;
 	
-	public CadastroProcessoController() {
+	public ProcessoCadastroController() {
 	}
 	
 	/**

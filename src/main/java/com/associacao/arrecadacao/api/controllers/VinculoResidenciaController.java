@@ -171,6 +171,11 @@ public class VinculoResidenciaController {
 	private void validarDadosExistentes(VinculoResidenciaMassaDto vinculoResidenciaMassaDto, BindingResult result) {
 		
 		vinculoResidenciaMassaDto.getVinculosMassa().forEach(p -> {
+			if(this.vinculoResidenciaMassaService.buscarPorResidenciaId(p.getResidenciaId()).size() == 0 )
+				result.addError(new ObjectError("vinculor residencia", "Código de Residência inexistente."));			
+		});		
+		
+		vinculoResidenciaMassaDto.getVinculosMassa().forEach(p -> {
 			this.vinculoResidenciaMassaService.buscarPorResidenciaIdAndMoradorId(p.getResidenciaId(), p.getMoradorId())
 				.ifPresent(res -> result.addError(new ObjectError("vinculor residencia", "Vinculo para residência já existente.")));			
 		});

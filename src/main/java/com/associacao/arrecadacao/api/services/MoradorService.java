@@ -55,4 +55,5 @@ public interface MoradorService {
 	 */
 	Optional<Morador> buscarPorId(Long id);
 	
+	
 }

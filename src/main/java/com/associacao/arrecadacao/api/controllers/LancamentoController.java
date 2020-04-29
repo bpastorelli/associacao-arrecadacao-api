@@ -40,9 +40,9 @@ import com.associacao.arrecadacao.api.utils.Utils;
 @RestController
 @RequestMapping("/associados/lancamento")
 @CrossOrigin(origins = "*")
-public class CadastroLancamentoController {
+public class LancamentoController {
 	
-	private static final Logger log = LoggerFactory.getLogger(CadastroLancamentoController.class);
+	private static final Logger log = LoggerFactory.getLogger(LancamentoController.class);
 	
 	@Autowired
 	private ResidenciaService residenciaService;
@@ -53,7 +53,7 @@ public class CadastroLancamentoController {
 	@Value("${paginacao.qtd_por_pagina}")
 	private int qtdPorPagina;
 	
-	public CadastroLancamentoController() {
+	public LancamentoController() {
 		
 	}
 	

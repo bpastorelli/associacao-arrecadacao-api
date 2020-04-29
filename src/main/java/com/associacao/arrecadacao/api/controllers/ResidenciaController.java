@@ -29,14 +29,14 @@ import com.associacao.arrecadacao.api.services.ResidenciaService;
 @RestController
 @RequestMapping("/associados/residencia")
 @CrossOrigin(origins = "*")
-class CadastroResidenciaController {
+class ResidenciaController {
 	
-	private static final Logger log = LoggerFactory.getLogger(CadastroResidenciaController.class);
+	private static final Logger log = LoggerFactory.getLogger(ResidenciaController.class);
 	
 	@Autowired
 	private ResidenciaService residenciaService;
 	
-	public CadastroResidenciaController() {
+	public ResidenciaController() {
 		
 	}
 	

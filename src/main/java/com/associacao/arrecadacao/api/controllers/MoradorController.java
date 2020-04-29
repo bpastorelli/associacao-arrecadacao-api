@@ -39,9 +39,9 @@ import com.associacao.arrecadacao.api.utils.Utils;
 @RestController
 @RequestMapping("/associados/morador")
 @CrossOrigin(origins = "*")
-public class CadastroMoradorController {
+public class MoradorController {
 	
-	private static final Logger log = LoggerFactory.getLogger(CadastroMoradorController.class);
+	private static final Logger log = LoggerFactory.getLogger(MoradorController.class);
 	
 	@Autowired
 	private MoradorService moradorService;
@@ -52,7 +52,7 @@ public class CadastroMoradorController {
 	@Autowired
 	private VinculoResidenciaService vinculoResidenciaService;
 	
-	public CadastroMoradorController() {
+	public MoradorController() {
 		
 	}
 	
@@ -131,7 +131,7 @@ public class CadastroMoradorController {
 	 * @return ResponseEntity<Response<CadastroMoradorDto>>
 	 * @throws NoSuchAlgorithmException
 	 */
-	@GetMapping(value = "/morador/{id}")
+	@GetMapping(value = "/id/{id}")
 	public ResponseEntity<Response<CadastroMoradorResponseDto>> buscarPorId(@PathVariable("id") Long id) throws NoSuchAlgorithmException {
 		
 		log.info("Buscando morador: {}", id);
@@ -141,6 +141,37 @@ public class CadastroMoradorController {
 		if (!morador.isPresent()) {
 			log.info("Morador não encontrada para o ID: {}", id);
 			response.getErrors().add("Morador não encontrada para o ID " + id);
+			return ResponseEntity.badRequest().body(response);
+		}
+		
+		List<Morador> list = new ArrayList<Morador>();
+		list.add(morador.get());
+		Long residenciaId = vinculoResidenciaService.buscarPorMoradorId(morador.get().getId()).get(0).getResidencia().getId();
+		list.forEach(p -> p.setResidenciaId(residenciaId));
+		response.setData(this.converterCadastroMoradorResponseDto(list.get(0), residenciaId));
+		return ResponseEntity.ok(response);
+		
+	}
+	
+	/**
+	 * Atualiza os dados de uma residência.
+	 * 
+	 * @param id
+	 * @param moradorDto
+	 * @param result
+	 * @return ResponseEntity<Response<CadastroMoradorDto>>
+	 * @throws NoSuchAlgorithmException
+	 */
+	@GetMapping(value = "/cpf/{cpf}")
+	public ResponseEntity<Response<CadastroMoradorResponseDto>> buscarPorCpf(@PathVariable("cpf") String cpf) throws NoSuchAlgorithmException {
+		
+		log.info("Buscando morador CPF: {}", cpf);
+		Response<CadastroMoradorResponseDto> response = new Response<CadastroMoradorResponseDto>();
+		
+		Optional<Morador> morador = this.moradorService.buscarPorCpf(cpf);
+		if (!morador.isPresent()) {
+			log.info("Morador não encontrada para o CPF: {}", cpf);
+			response.getErrors().add("Morador não encontrada para o CPF " + cpf);
 			return ResponseEntity.badRequest().body(response);
 		}
 		
