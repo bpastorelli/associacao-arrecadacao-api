@@ -145,8 +145,8 @@ public class MoradorController {
 		}
 		
 		List<Morador> list = new ArrayList<Morador>();
-		list.add(morador.get());
-		Long residenciaId = vinculoResidenciaService.buscarPorMoradorId(morador.get().getId()).get(0).getResidencia().getId();
+		list.add(morador.get()); 
+		Long residenciaId = vinculoResidenciaService.buscarPorMoradorId(morador.get().getId()).size() > 0 ? vinculoResidenciaService.buscarPorMoradorId(morador.get().getId()) .get(0).getResidencia().getId() : 0;
 		list.forEach(p -> p.setResidenciaId(residenciaId));
 		response.setData(this.converterCadastroMoradorResponseDto(list.get(0), residenciaId));
 		return ResponseEntity.ok(response);
