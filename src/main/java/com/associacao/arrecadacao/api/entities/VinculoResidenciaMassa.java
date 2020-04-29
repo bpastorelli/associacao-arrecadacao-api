@@ -8,24 +8,22 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "vinculo_residencia")
-public class VinculoResidencia implements Serializable {
+public class VinculoResidenciaMassa implements Serializable {
 	
 	private static final long serialVersionUID = 3960436649365666214L;
 	
 	private Long id;
+	private Long moradorId;
+	private Long residenciaId;
 	private Date dataVinculo;
-	private Morador morador;
-	private Residencia residencia;
 	
-	public VinculoResidencia() {
+	public VinculoResidenciaMassa() {
 		
 	}
 	
@@ -50,24 +48,22 @@ public class VinculoResidencia implements Serializable {
 		this.dataVinculo = dataVinculo;
 	}
 	
-    @ManyToOne
-    @JoinColumn(name = "morador_id")
-	public Morador getMorador() {
-		return morador;
+	@Column(name = "morador_id", nullable = false)
+	public Long getMoradorId() {
+		return moradorId;
 	}
 	
-	public void setMorador(Morador morador) {
-		this.morador = morador;
+	public void setMoradorId(Long moradorId) {
+		this.moradorId = moradorId;
 	}
 	
-	@ManyToOne
-	@JoinColumn(name="residencia_id")
-	public Residencia getResidencia() {
-		return residencia;
+	@Column(name = "residencia_id", nullable = false)
+	public Long getResidenciaId() {
+		return residenciaId;
 	}
 	
-	public void setResidencia(Residencia residencia) {
-		this.residencia = residencia;
+	public void setResidenciaId(Long residenciaId) {
+		this.residenciaId = residenciaId;
 	}
 	
 	@PreUpdate

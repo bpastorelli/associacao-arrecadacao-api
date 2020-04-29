@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.validation.constraints.Size;
 
+
 import com.associacao.arrecadacao.api.entities.Lancamento;
 
 public class CadastroLancamentoDto {
@@ -14,7 +15,7 @@ public class CadastroLancamentoDto {
 		
 	}
 	
-	//@Size(min = 1, message = "Você deve incluir ao menos um lançamento.")
+	@Size(min = 1, message = "Você deve incluir ao menos um lançamento.")
 	public List<Lancamento> getLancamentos(){
 		return lancamentos;
 	}

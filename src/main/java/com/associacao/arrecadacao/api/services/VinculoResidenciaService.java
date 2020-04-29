@@ -8,6 +8,15 @@ import com.associacao.arrecadacao.api.entities.VinculoResidencia;
 public interface VinculoResidenciaService {
 	
 	/**
+	 * Buscar por Residencia ID or Morador ID
+	 * 
+	 * @param residenciaID
+	 * @param moradorId
+	 * @return VinculoResidencia
+	 */
+	Optional<VinculoResidencia> buscarPorResidenciaIdOrMoradorId(Long residenciaID, Long moradorId);
+	
+	/**
 	 * Buscar por Residencia ID e Morador ID
 	 * 
 	 * @param residenciaID
@@ -36,8 +45,15 @@ public interface VinculoResidenciaService {
 	 * Persistir um vínculo de residência
 	 * 
 	 * @param vinculoResidencia
-	 * @return VinculoResidencia
+	 * @return List<VinculoResidencia>
 	 */
 	List<VinculoResidencia> persistir(List<VinculoResidencia> vinculoResidencia);
 
+	/**
+	 * Remove um vinculo de morador a residencia
+	 * 
+	 * @param id
+	 */
+	void remover(Long id);
+	
 }

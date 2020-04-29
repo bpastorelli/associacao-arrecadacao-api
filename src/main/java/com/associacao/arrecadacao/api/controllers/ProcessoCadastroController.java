@@ -36,9 +36,9 @@ import com.associacao.arrecadacao.api.utils.PasswordUtils;
 @RestController
 @RequestMapping("/associados/processo")
 @CrossOrigin(origins = "*")
-public class CadastroProcessoController {
+public class ProcessoCadastroController {
 
-	private static final Logger log = LoggerFactory.getLogger(CadastroProcessoController.class);
+	private static final Logger log = LoggerFactory.getLogger(ProcessoCadastroController.class);
 	
 	@Autowired
 	private MoradorService moradorService;
@@ -52,7 +52,7 @@ public class CadastroProcessoController {
 	@Autowired
 	private LancamentoService lancamentoService;
 	
-	public CadastroProcessoController() {
+	public ProcessoCadastroController() {
 	}
 	
 	/**
@@ -85,9 +85,9 @@ public class CadastroProcessoController {
 		}
 		
 		this.residenciaService.persistir(residencia);
-		moradores.forEach(p -> p.setResidenciaId(residencia.getId()));
 		this.moradorService.persistir(moradores);
-		vinculos = this.converterDtoParaVinculoResidencia(moradores, residencia.getId());
+		moradores.forEach(p -> p.setResidenciaId(residencia.getId()));
+		vinculos = this.converterDtoParaVinculoResidencia(moradores, residencia);
 		this.vinculoResidenciaService.persistir(vinculos);
 		lancamentos.forEach(p -> p.setResidenciaId(residencia.getId()));
 		this.lancamentoService.persistir(lancamentos);
@@ -100,6 +100,9 @@ public class CadastroProcessoController {
 		
 		this.residenciaService.buscarPorMatricula(cadastroResidenciaDto.getMatricula())
 				.ifPresent(res -> result.addError(new ObjectError("residencia", "Residência já existente")));
+		
+		this.residenciaService.bucarPorEnderecoAndNumero(cadastroResidenciaDto.getEndereco(), cadastroResidenciaDto.getNumero())
+				.ifPresent(res -> result.addError(new ObjectError("residencia", "Endereço já existente")));
 		
 		if(cadastroResidenciaDto.getMoradores().size() == 0) {
 			result.addError(new ObjectError("morador", "Você deve informar ao menos um morador."));
@@ -154,20 +157,58 @@ public class CadastroProcessoController {
 			
 		}
 		
-		for(Morador morador : cadastroResidenciaDto.getMoradores()) {
+		cadastroResidenciaDto.getMoradores().forEach(morador ->{
 			this.moradorService.buscarPorCpf(morador.getCpf())
-					.ifPresent(res -> result.addError(new ObjectError("morador", "CPF " + morador.getCpf() + " já existente")));
-		}
+				.ifPresent(res -> result.addError(new ObjectError("morador", "CPF " + morador.getCpf() + " já existente")));	
+		});
 		
-		for(Morador morador : cadastroResidenciaDto.getMoradores()) {
-			if(this.moradorService.buscarPorRg(morador.getRg()).size() > 0)
-				result.addError(new ObjectError("morador", "RG " + morador.getRg() + " já existente"));
-		}
+		cadastroResidenciaDto.getMoradores().forEach(morador ->{
+			this.moradorService.buscarPorRg(morador.getRg())
+				.ifPresent(res -> result.addError(new ObjectError("morador", "RG " + morador.getRg() + " já existente")));	
+		});
+	
+		cadastroResidenciaDto.getMoradores().forEach(morador ->{
+			this.moradorService.buscarPorEmail(morador.getEmail())
+				.ifPresent(res -> result.addError(new ObjectError("morador", "E-mail " + morador.getEmail() + " já existente")));	
+		});
 		
-		for(Morador morador : cadastroResidenciaDto.getMoradores()) {
-			if(this.moradorService.bucarPorEmail(morador.getEmail()).size() > 0)
-				result.addError(new ObjectError("morador", "E-mail " + morador.getEmail() + " já existente"));
-		}
+		//Valida se o  não está duplicado na requisição.
+		cadastroResidenciaDto.getMoradores().forEach(morador -> {
+			if(cadastroResidenciaDto.getMoradores()
+					.stream()
+					.filter(pessoa -> pessoa.getCpf()
+					.equals(morador.getCpf())).count() > 1)
+				result.addError(new ObjectError("morador", "CPF " + morador.getCpf() + " está duplicado."));
+		});		
+		
+		//Valida se o RG não está duplicado na requisição.
+		cadastroResidenciaDto.getMoradores().forEach(morador -> {
+			if(cadastroResidenciaDto.getMoradores()
+					.stream()
+					.filter(pessoa -> pessoa.getRg()
+					.equals(morador.getRg())).count() > 1)
+				result.addError(new ObjectError("morador", "RG " + morador.getRg() + " está duplicado."));
+		});
+		
+		//Valida se o E-mail não está duplicado na requisição.
+		cadastroResidenciaDto.getMoradores().forEach(morador -> {
+			if(cadastroResidenciaDto.getMoradores()
+					.stream()
+					.filter(pessoa -> pessoa.getEmail()
+					.equals(morador.getEmail())).count() > 1) {
+				result.addError(new ObjectError("morador", "E-mail " + morador.getEmail() + " está duplicado."));				
+			}
+		});
+		
+		//Valida se o Periodo não está duplicado na requisição.
+		cadastroResidenciaDto.getLancamentos().forEach(lance -> {
+			if(cadastroResidenciaDto.getLancamentos()
+					.stream()
+					.filter(lancamento -> lancamento.getPeriodo()
+					.equals(lance.getPeriodo())).count() > 1) {
+				result.addError(new ObjectError("lançamento", "Período " + lance.getPeriodo() + " está duplicado."));				
+			}
+		});
 		
 	}
 	
@@ -242,14 +283,14 @@ public class CadastroProcessoController {
 	 * @param residenciaId
 	 * @return VinculoResidencia
 	 */
-	public List<VinculoResidencia> converterDtoParaVinculoResidencia(List<Morador> moradores, Long residenciaId){
+	public List<VinculoResidencia> converterDtoParaVinculoResidencia(List<Morador> moradores, Residencia residencia){
 		
 		List<VinculoResidencia> vinculos = new ArrayList<VinculoResidencia>();
 		
 		moradores.forEach(m -> {
 			VinculoResidencia vinculo = new VinculoResidencia();
-			vinculo.setMoradorId(m.getId());
-			vinculo.setResidenciaId(residenciaId);
+			vinculo.setMorador(m);
+			vinculo.setResidencia(residencia);
 			vinculos.add(vinculo);
 		});
 		return vinculos;

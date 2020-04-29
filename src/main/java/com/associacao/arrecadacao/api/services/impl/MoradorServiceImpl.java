@@ -33,20 +33,26 @@ public class MoradorServiceImpl implements MoradorService {
 	}
 
 	@Override
-	public List<Morador> buscarPorRg(String rg) {
+	public Optional<Morador> buscarPorRg(String rg) {
 		log.info("Buscando morador pelo RG {}", rg);
-		return this.moradorRepository.findByRg(rg);
+		return Optional.ofNullable(this.moradorRepository.findByRg(rg));
 	}
 
 	@Override
-	public List<Morador> bucarPorEmail(String email) {
+	public Optional<Morador> buscarPorEmail(String email) {
 		log.info("Buscando morador pelo E-mail {}", email);
-		return this.moradorRepository.findByEmail(email);
+		return Optional.ofNullable(this.moradorRepository.findByEmail(email));
 	}
 
 	@Override
 	public Optional<Morador> buscarPorId(Long id) {
 		log.info("Buscando morador pelo ID {}", id);
 		return Optional.ofNullable(this.moradorRepository.findOne(id));
+	}
+
+	@Override
+	public Optional<Morador> buscarPorNome(String nome) {
+		log.info("Buscando morador pelo Nome {}", nome);
+		return Optional.ofNullable(this.moradorRepository.findByNome(nome));
 	}
 }

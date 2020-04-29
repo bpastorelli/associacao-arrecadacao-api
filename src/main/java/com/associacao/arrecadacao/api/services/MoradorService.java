@@ -24,12 +24,20 @@ public interface MoradorService {
 	Optional<Morador> buscarPorCpf(String cpf);
 	
 	/**
+	 * Busca e retorna um morador dado o nome.
+	 * 
+	 * @param nome
+	 * @return Optional<Morador>
+	 */
+	Optional<Morador> buscarPorNome(String nome);
+	
+	/**
 	 * Busca e retorna um morador dado o rg.
 	 * 
 	 * @param rg
 	 * @return Optional<Morador>
 	 */	
-	List<Morador> buscarPorRg(String rg);
+	Optional<Morador> buscarPorRg(String rg);
 	
 	/**
 	 * Busca e retorna um morador dado o email.
@@ -37,7 +45,7 @@ public interface MoradorService {
 	 * @param email
 	 * @return Optional<Morador>
 	 */
-	List<Morador> bucarPorEmail(String email);
+	Optional<Morador> buscarPorEmail(String email);
 
 	/**
 	 * Busca e retorna um morador dado o id.
@@ -46,5 +54,6 @@ public interface MoradorService {
 	 * @return Optional<Morador>
 	 */
 	Optional<Morador> buscarPorId(Long id);
+	
 	
 }

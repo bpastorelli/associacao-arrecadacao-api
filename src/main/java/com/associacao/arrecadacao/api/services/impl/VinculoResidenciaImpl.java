@@ -25,6 +25,12 @@ public class VinculoResidenciaImpl implements VinculoResidenciaService {
 		log.info("Buscar vinculo por residencia ID e morador ID {}", residenciaId, moradorId);
 		return Optional.ofNullable(this.vinculoResidenciaRepository.findByResidenciaIdAndMoradorId(residenciaId, moradorId));
 	} 
+	
+	@Override
+	public Optional<VinculoResidencia> buscarPorResidenciaIdOrMoradorId(Long residenciaId, Long moradorId) {
+		log.info("Buscar vinculo por residencia ID e morador ID {}", residenciaId, moradorId);
+		return Optional.ofNullable(this.vinculoResidenciaRepository.findByResidenciaIdOrMoradorId(residenciaId, moradorId));
+	} 
 
 	@Override
 	public List<VinculoResidencia> persistir(List<VinculoResidencia> vinculoResidencia) {
@@ -43,4 +49,11 @@ public class VinculoResidenciaImpl implements VinculoResidenciaService {
 		log.info("Buscar vinculo por residencia ID {}", residenciaId);
 		return this.vinculoResidenciaRepository.findByResidenciaId(residenciaId);
 	}
+
+	@Override
+	public void remover(Long id) {
+		log.info("Remover vinculo de residencia ID {}", id);
+		this.vinculoResidenciaRepository.delete(id);
+	}
+
 }
