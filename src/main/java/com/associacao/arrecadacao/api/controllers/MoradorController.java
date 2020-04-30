@@ -75,6 +75,7 @@ public class MoradorController {
 		}
 		
 		this.moradorService.persistir(moradores);
+		cadastroMoradorDto.setMoradores(moradores);
 		this.vinculoResidenciaService.persistir(this.converterDtoParaVinculoResidencia(cadastroMoradorDto));
 		response.setData(this.converterCadastroMoradorDto(moradores));
 		return ResponseEntity.ok(response);
