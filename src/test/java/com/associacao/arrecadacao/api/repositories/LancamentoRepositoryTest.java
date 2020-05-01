@@ -32,13 +32,14 @@ public class LancamentoRepositoryTest {
 	private ResidenciaRepository residenciaRepository;
 	
 	private Long residenciaId;
-	private String periodo;
+	private String periodo = "09/2019";
 
 	@Before
 	public void setUp() throws Exception {
 		
-		Residencia residencia = incluirResidencia();
+		Residencia residencia = this.residenciaRepository.save(obterResidencia());
 		this.residenciaId = residencia.getId();
+		
 		Lancamento lancamento = this.lancamentoRepository.save(obterDadosLancamento());
 		this.periodo = lancamento.getPeriodo();
 	}
@@ -69,7 +70,7 @@ public class LancamentoRepositoryTest {
 		return lancamento;
 	}
 	
-	private Residencia incluirResidencia() {
+	private Residencia obterResidencia() {
 		
 		Residencia residencia = new Residencia();
 		residencia.setEndereco(Mockito.anyString());
@@ -78,8 +79,6 @@ public class LancamentoRepositoryTest {
 		residencia.setCep(Mockito.anyString());
 		residencia.setCidade(Mockito.anyString());
 		residencia.setUf(Mockito.anyString());
-		
-		residenciaRepository.save(residencia);
 		
 		return residencia;
 		
