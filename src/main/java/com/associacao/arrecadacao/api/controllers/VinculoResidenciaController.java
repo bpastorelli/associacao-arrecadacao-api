@@ -176,6 +176,11 @@ public class VinculoResidenciaController {
 		});		
 		
 		vinculoResidenciaMassaDto.getVinculosMassa().forEach(p -> {
+			if(this.vinculoResidenciaMassaService.buscarPorMoradorId(p.getMoradorId()).size() == 0 )
+				result.addError(new ObjectError("vinculor residencia", "Código de Morador inexistente."));			
+		});	
+		
+		vinculoResidenciaMassaDto.getVinculosMassa().forEach(p -> {
 			this.vinculoResidenciaMassaService.buscarPorResidenciaIdAndMoradorId(p.getResidenciaId(), p.getMoradorId())
 				.ifPresent(res -> result.addError(new ObjectError("vinculor residencia", "Vinculo para residência já existente.")));			
 		});

@@ -1,0 +1,1 @@
+web: java -Dserver.port=$PORT -Dspring.profiles.active=prod -jar target/arrecadacao-associacao-0.0.1-SNAPSHOT.jar
