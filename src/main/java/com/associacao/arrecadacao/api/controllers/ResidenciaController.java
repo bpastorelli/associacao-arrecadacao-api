@@ -161,7 +161,7 @@ class ResidenciaController {
 			residencias = this.residenciaService.bucarTodos(pageRequest);
 		
 		if (residencias.getSize() == 0) {
-			log.info("A consulta não retrnou dados");
+			log.info("A consulta não retornou dados");
 			response.getErrors().add("A consulta não retornou dados");
 			return ResponseEntity.badRequest().body(response);
 		}
