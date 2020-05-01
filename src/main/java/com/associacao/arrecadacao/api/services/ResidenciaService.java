@@ -66,6 +66,6 @@ public interface ResidenciaService {
 	 * @param pageRequest
 	 * @return Page<Residencia>
 	 */
-	Page<Residencia> buscarPorId(Long residenciaId, PageRequest pageRequest);
+	Page<Residencia> buscarPorIdOrMatricula(Long id, String matricula, PageRequest pageRequest);
 
 }
