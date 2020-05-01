@@ -8,6 +8,9 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -18,6 +21,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.associacao.arrecadacao.api.dtos.AtualizaResidenciaDto;
@@ -111,7 +115,7 @@ class ResidenciaController {
 	 * @throws NoSuchAlgorithmException
 	 */
 	@GetMapping(value = "/id/{id}/matricula/{matricula}")
-	public ResponseEntity<Response<CadastroResidenciaDto>> buscarPorId(@PathVariable("id") Long id, @PathVariable("matricula") String matricula) throws NoSuchAlgorithmException {
+	public ResponseEntity<Response<CadastroResidenciaDto>> buscarPorIdOrMatricula(@PathVariable("id") Long id, @PathVariable("matricula") String matricula) throws NoSuchAlgorithmException {
 		
 		log.info("Buscando residência: {}", id);
 		Response<CadastroResidenciaDto> response = new Response<CadastroResidenciaDto>();
@@ -124,6 +128,47 @@ class ResidenciaController {
 		}
 		
 		response.setData(this.converterCadastroResidenciaDto(residencia.get()));
+		return ResponseEntity.ok(response);
+		
+	}
+	
+	/**
+	 * Busca uma residência pelo ID ou pel Matricula.
+	 * 
+	 * @param result
+	 * @return ResponseEntity<Response<CadastroResidenciaDto>>
+	 * @throws NoSuchAlgorithmException
+	 */
+	@GetMapping()
+	public ResponseEntity<Response<Page<CadastroResidenciaDto>>> buscarResidenciaPaginado(
+			@RequestParam(value = "id", defaultValue = "0") Long id,
+			@RequestParam(value = "matricula", defaultValue = "null") String matricula,
+			@RequestParam(value = "endereco", defaultValue = "null") String endereco,
+			@RequestParam(value = "numero", defaultValue = "0") String numero,
+			@RequestParam(value = "pag", defaultValue = "0") int pag,
+			@RequestParam(value = "ord", defaultValue = "id") String ord,
+			@RequestParam(value = "dir", defaultValue = "DESC") String dir,
+			@RequestParam(value = "qtdPorPagina", defaultValue = "25") int qtdPorPagina) throws NoSuchAlgorithmException {		
+		
+		Response<Page<CadastroResidenciaDto>> response = new Response<Page<CadastroResidenciaDto>>();
+		PageRequest pageRequest = new PageRequest(pag, qtdPorPagina, Direction.valueOf(dir), ord);
+		
+		Page<Residencia> residencias;
+		
+		if(id != 0 || !matricula.equals("0") || !endereco.equals("null") || !numero.equals("0"))
+			residencias = this.residenciaService.buscarPorIdOrMatriculaOrEnderecoOrNumero(id, matricula, endereco, numero, pageRequest);
+		else
+			residencias = this.residenciaService.bucarTodos(pageRequest);
+		
+		if (residencias.getSize() == 0) {
+			log.info("A consulta não retrnou dados");
+			response.getErrors().add("A consulta não retornou dados");
+			return ResponseEntity.badRequest().body(response);
+		}
+		
+		Page<CadastroResidenciaDto> residenciasDto = residencias.map(residencia -> this.converterCadastroResidenciaDto(residencia));
+		
+		response.setData(residenciasDto);
 		return ResponseEntity.ok(response);
 		
 	}
