@@ -58,8 +58,8 @@ public class ResidenciaServiceImpl implements ResidenciaService {
 	}
 	
 	@Override
-	public Page<Residencia> buscarPorIdOrMatricula(Long id, String matricula, PageRequest pageRequest) {
+	public Page<Residencia> buscarPorIdOrMatriculaOrEnderecoOrNumero(Long id, String matricula, String endereco, String numero, PageRequest pageRequest) {
 		log.info("Buscando uma residências paginado {}", pageRequest);
-		return this.residenciaRepository.findByIdOrMatricula(id, matricula, pageRequest);
+		return this.residenciaRepository.findByIdOrMatriculaOrEnderecoContainsOrNumero(id, matricula, endereco, numero, pageRequest);
 	}
 }

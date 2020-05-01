@@ -142,7 +142,9 @@ class ResidenciaController {
 	@GetMapping()
 	public ResponseEntity<Response<Page<CadastroResidenciaDto>>> buscarResidenciaPaginado(
 			@RequestParam(value = "id", defaultValue = "0") Long id,
-			@RequestParam(value = "matricula", defaultValue = "0") String matricula,
+			@RequestParam(value = "matricula", defaultValue = "null") String matricula,
+			@RequestParam(value = "endereco", defaultValue = "null") String endereco,
+			@RequestParam(value = "numero", defaultValue = "0") String numero,
 			@RequestParam(value = "pag", defaultValue = "0") int pag,
 			@RequestParam(value = "ord", defaultValue = "id") String ord,
 			@RequestParam(value = "dir", defaultValue = "DESC") String dir,
@@ -153,8 +155,8 @@ class ResidenciaController {
 		
 		Page<Residencia> residencias;
 		
-		if(id != 0 || !matricula.equals("0"))
-			residencias = this.residenciaService.buscarPorIdOrMatricula(id, matricula, pageRequest);
+		if(id != 0 || !matricula.equals("0") || !endereco.equals("null") || !numero.equals("0"))
+			residencias = this.residenciaService.buscarPorIdOrMatriculaOrEnderecoOrNumero(id, matricula, endereco, numero, pageRequest);
 		else
 			residencias = this.residenciaService.bucarTodos(pageRequest);
 		
