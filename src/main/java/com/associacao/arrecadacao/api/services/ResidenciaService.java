@@ -2,6 +2,9 @@ package com.associacao.arrecadacao.api.services;
 
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+
 import com.associacao.arrecadacao.api.entities.Residencia;
 
 public interface ResidenciaService {
@@ -48,5 +51,21 @@ public interface ResidenciaService {
 	 * @return Optional<Residencia>
 	 */	
 	Optional<Residencia> bucarPorEnderecoAndNumero(String string, String numero);
+		
+	/**
+	 * Busca todas as residências Paginado
+	 * @param pageRequest
+	 * @return Page<Residencia>
+	 */
+	Page<Residencia> bucarTodos(PageRequest pageRequest);
+	
+
+	/**
+	 * Busca residencia pelo ID Paginado
+	 * @param residenciaId
+	 * @param pageRequest
+	 * @return Page<Residencia>
+	 */
+	Page<Residencia> buscarPorId(Long residenciaId, PageRequest pageRequest);
 
 }

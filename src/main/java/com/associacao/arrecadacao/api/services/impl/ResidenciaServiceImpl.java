@@ -5,6 +5,8 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.associacao.arrecadacao.api.entities.Residencia;
@@ -47,5 +49,17 @@ public class ResidenciaServiceImpl implements ResidenciaService {
 	public Optional<Residencia> bucarPorEnderecoAndNumero(String endereco, String numero) {
 		log.info("Buscando uma residência por Endereço e Número {}", endereco, numero);
 		return Optional.ofNullable(this.residenciaRepository.findByEnderecoAndNumero(endereco, numero));
+	}
+
+	@Override
+	public Page<Residencia> bucarTodos(PageRequest pageRequest) {
+		log.info("Buscando uma residências paginado {}", pageRequest);
+		return this.residenciaRepository.findAll(pageRequest);
+	}
+	
+	@Override
+	public Page<Residencia> buscarPorId(Long residenciaId,PageRequest pageRequest) {
+		log.info("Buscando uma residências paginado {}", pageRequest);
+		return this.residenciaRepository.findById(residenciaId, pageRequest);
 	}
 }
