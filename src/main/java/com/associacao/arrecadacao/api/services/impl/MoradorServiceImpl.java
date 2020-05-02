@@ -6,6 +6,8 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.associacao.arrecadacao.api.entities.Morador;
@@ -55,4 +57,18 @@ public class MoradorServiceImpl implements MoradorService {
 		log.info("Buscando morador pelo Nome {}", nome);
 		return Optional.ofNullable(this.moradorRepository.findByNome(nome));
 	}
+
+	@Override
+	public Page<Morador> bucarTodos(PageRequest pageRequest) {
+		log.info("Buscando moradores paginado {}", pageRequest);
+		return this.moradorRepository.findAll(pageRequest);
+	}
+	
+	@Override
+	public Page<Morador> buscarPorIdOrCpfOrRgOrNomeOrEmail(Long id, String cpf, String rg, String nome, String email,
+			PageRequest pageRequest) {
+		log.info("Buscando moradores paginado {}", pageRequest);
+		return this.moradorRepository.findByIdOrCpfOrRgOrNomeContainsOrEmail(id, cpf, rg, nome, email, pageRequest);
+	}
+
 }

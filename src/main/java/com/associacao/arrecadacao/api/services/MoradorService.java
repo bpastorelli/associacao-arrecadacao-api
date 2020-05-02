@@ -3,6 +3,9 @@ package com.associacao.arrecadacao.api.services;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+
 import com.associacao.arrecadacao.api.entities.Morador;
 
 public interface MoradorService {
@@ -54,6 +57,26 @@ public interface MoradorService {
 	 * @return Optional<Morador>
 	 */
 	Optional<Morador> buscarPorId(Long id);
+	
+	/**
+	 * Busca todas os moradores Paginado
+	 * @param pageRequest
+	 * @return Page<Morador>
+	 */
+	Page<Morador> bucarTodos(PageRequest pageRequest);
+	
+	/**
+	 * Busca moradores
+	 * 
+	 * @param id
+	 * @param cpf
+	 * @param rg
+	 * @param nome
+	 * @param email
+	 * @param pageRequest
+	 * @return Page<Morador>
+	 */
+	Page<Morador> buscarPorIdOrCpfOrRgOrNomeOrEmail(Long id, String cpf, String rg, String nome, String email, PageRequest pageRequest);
 	
 	
 }
