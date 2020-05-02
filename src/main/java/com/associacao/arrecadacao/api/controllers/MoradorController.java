@@ -10,6 +10,9 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -20,6 +23,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.associacao.arrecadacao.api.commons.ValidaCPF;
@@ -155,32 +159,44 @@ public class MoradorController {
 	}
 	
 	/**
-	 * Atualiza os dados de uma residência.
+	 * Busca um morador pelo id.
 	 * 
 	 * @param id
-	 * @param moradorDto
-	 * @param result
-	 * @return ResponseEntity<Response<CadastroMoradorDto>>
+	 * @return ResponseEntity<Response<CadastroMoradorResponseDto>>
 	 * @throws NoSuchAlgorithmException
 	 */
-	@GetMapping(value = "/cpf/{cpf}")
-	public ResponseEntity<Response<CadastroMoradorResponseDto>> buscarPorCpf(@PathVariable("cpf") String cpf) throws NoSuchAlgorithmException {
+	@GetMapping()
+	public ResponseEntity<Response<Page<CadastroMoradorResponseDto>>> buscarTodos(
+			@RequestParam(value = "id", defaultValue = "0") Long id,
+			@RequestParam(value = "cpf", defaultValue = "null") String cpf,
+			@RequestParam(value = "rg", defaultValue = "null") String rg,
+			@RequestParam(value = "nome", defaultValue = "null") String nome,
+			@RequestParam(value = "email", defaultValue = "null") String email,
+			@RequestParam(value = "pag", defaultValue = "0") int pag,
+			@RequestParam(value = "ord", defaultValue = "id") String ord,
+			@RequestParam(value = "dir", defaultValue = "DESC") String dir,
+			@RequestParam(value = "qtdPorPagina", defaultValue = "25") int qtdPorPagina) throws NoSuchAlgorithmException {
 		
-		log.info("Buscando morador CPF: {}", cpf);
-		Response<CadastroMoradorResponseDto> response = new Response<CadastroMoradorResponseDto>();
+		log.info("Buscando moradores...");
+		Response<Page<CadastroMoradorResponseDto>> response = new Response<Page<CadastroMoradorResponseDto>>();
+		PageRequest pageRequest = new PageRequest(pag, qtdPorPagina, Direction.valueOf(dir), ord);
 		
-		Optional<Morador> morador = this.moradorService.buscarPorCpf(cpf);
-		if (!morador.isPresent()) {
-			log.info("Morador não encontrada para o CPF: {}", cpf);
-			response.getErrors().add("Morador não encontrada para o CPF " + cpf);
+		Page<Morador> moradores;
+		
+		if(id != 0 || !cpf.equals("null") || !rg.equals("null") || !nome.equals("null") || !email.equals("null"))
+			moradores = this.moradorService.buscarPorIdOrCpfOrRgOrNomeOrEmail(id, cpf, rg, nome, email, pageRequest);
+		else
+			moradores = this.moradorService.bucarTodos(pageRequest);
+		
+		if (moradores.getSize() == 0) {
+			log.info("A consulta não retornou dados");
+			response.getErrors().add("A consulta não retornou dados");
 			return ResponseEntity.badRequest().body(response);
 		}
 		
-		List<Morador> list = new ArrayList<Morador>();
-		list.add(morador.get());
-		Long residenciaId = vinculoResidenciaService.buscarPorMoradorId(morador.get().getId()).get(0).getResidencia().getId();
-		list.forEach(p -> p.setResidenciaId(residenciaId));
-		response.setData(this.converterCadastroMoradorResponseDto(list.get(0), residenciaId));
+		Page<CadastroMoradorResponseDto> residenciasDto = moradores.map(m -> this.converterCadastroMoradorResponseDto(m));
+		
+		response.setData(residenciasDto);
 		return ResponseEntity.ok(response);
 		
 	}
@@ -321,6 +337,27 @@ public class MoradorController {
 		dto.setTelefone(morador.getTelefone());
 		dto.setCelular(morador.getCelular());
 		dto.setResidenciaId(residenciaId);
+		dto.setDataCriacao(Utils.dateFormat(morador.getDataCriacao(),"dd/MM/yyyy"));
+		dto.setDataAtualizacao(Utils.dateFormat(morador.getDataAtualizacao(),"dd/MM/yyyy"));
+		return dto;
+	}
+	
+	/**
+	 * Converter o objeto tipo Morador para o tipo CadastroMoradorResponseDto sem o ID da residencia.
+	 * 
+	 * @param Morador
+	 * @return CadastroMoradorResponseDto
+	 */
+	private CadastroMoradorResponseDto converterCadastroMoradorResponseDto(Morador morador) {
+		
+		CadastroMoradorResponseDto dto = new CadastroMoradorResponseDto();
+		dto.setId(morador.getId());
+		dto.setNome(morador.getNome());
+		dto.setEmail(morador.getEmail());
+		dto.setCpf(morador.getCpf());
+		dto.setRg(morador.getRg());
+		dto.setTelefone(morador.getTelefone());
+		dto.setCelular(morador.getCelular());
 		dto.setDataCriacao(Utils.dateFormat(morador.getDataCriacao(),"dd/MM/yyyy"));
 		dto.setDataAtualizacao(Utils.dateFormat(morador.getDataAtualizacao(),"dd/MM/yyyy"));
 		return dto;

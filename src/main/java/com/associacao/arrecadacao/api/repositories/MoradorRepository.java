@@ -1,5 +1,7 @@
 package com.associacao.arrecadacao.api.repositories;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -9,6 +11,9 @@ import com.associacao.arrecadacao.api.entities.Morador;
 public interface MoradorRepository extends JpaRepository<Morador, Long> {
 	
 	Morador findByNome(String nome);
+	
+	@Transactional(readOnly = true)
+	Page<Morador> findByIdOrCpfOrRgOrNomeContainsOrEmail(Long id, String cpf, String rg, String nome, String email, Pageable pageable);
 	
 	Morador findByCpf(String cpf);
 	
