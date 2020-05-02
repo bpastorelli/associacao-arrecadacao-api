@@ -166,7 +166,7 @@ public class MoradorController {
 	 * @throws NoSuchAlgorithmException
 	 */
 	@GetMapping()
-	public ResponseEntity<Response<Page<CadastroMoradorResponseDto>>> buscarTodos(
+	public ResponseEntity<Response<Page<CadastroMoradorResponseDto>>> buscarMoradores(
 			@RequestParam(value = "id", defaultValue = "0") Long id,
 			@RequestParam(value = "cpf", defaultValue = "null") String cpf,
 			@RequestParam(value = "rg", defaultValue = "null") String rg,
