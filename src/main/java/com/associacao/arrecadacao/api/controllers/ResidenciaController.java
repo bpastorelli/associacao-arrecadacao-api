@@ -144,7 +144,7 @@ class ResidenciaController {
 			@RequestParam(value = "id", defaultValue = "0") Long id,
 			@RequestParam(value = "matricula", defaultValue = "null") String matricula,
 			@RequestParam(value = "endereco", defaultValue = "null") String endereco,
-			@RequestParam(value = "numero", defaultValue = "0") String numero,
+			@RequestParam(value = "numero", defaultValue = "0") Long numero,
 			@RequestParam(value = "pag", defaultValue = "0") int pag,
 			@RequestParam(value = "ord", defaultValue = "id") String ord,
 			@RequestParam(value = "dir", defaultValue = "DESC") String dir,
@@ -155,7 +155,7 @@ class ResidenciaController {
 		
 		Page<Residencia> residencias;
 		
-		if(id != 0 || !matricula.equals("0") || !endereco.equals("null") || !numero.equals("0"))
+		if(id != 0 || !matricula.equals("0") || !endereco.equals("null") || numero != 0)
 			residencias = this.residenciaService.buscarPorIdOrMatriculaOrEnderecoOrNumero(id, matricula, endereco, numero, pageRequest);
 		else
 			residencias = this.residenciaService.bucarTodos(pageRequest);
@@ -185,6 +185,7 @@ class ResidenciaController {
 		residencia.setMatricula(cadastroResidenciaDto.getMatricula());
 		residencia.setEndereco(cadastroResidenciaDto.getEndereco());
 		residencia.setNumero(cadastroResidenciaDto.getNumero());
+		residencia.setComplemento(cadastroResidenciaDto.getComplemento());
 		residencia.setBairro(cadastroResidenciaDto.getBairro());
 		residencia.setCep(cadastroResidenciaDto.getCep());
 		residencia.setCidade(cadastroResidenciaDto.getCidade());
@@ -215,6 +216,7 @@ class ResidenciaController {
 		cadastroResidenciaDto.setMatricula(residencia.getMatricula());
 		cadastroResidenciaDto.setEndereco(residencia.getEndereco());
 		cadastroResidenciaDto.setNumero(residencia.getNumero());
+		cadastroResidenciaDto.setComplemento(residencia.getComplemento());
 		cadastroResidenciaDto.setBairro(residencia.getBairro());
 		cadastroResidenciaDto.setCep(residencia.getCep());
 		cadastroResidenciaDto.setCidade(residencia.getCidade());
@@ -236,6 +238,7 @@ class ResidenciaController {
 		
 		residencia.setEndereco(residenciaDto.getEndereco());
 		residencia.setNumero(residenciaDto.getNumero());
+		residencia.setComplemento(residenciaDto.getComplemento());
 		residencia.setBairro(residenciaDto.getBairro());
 		residencia.setCep(residenciaDto.getCep());
 		residencia.setCidade(residenciaDto.getCidade());

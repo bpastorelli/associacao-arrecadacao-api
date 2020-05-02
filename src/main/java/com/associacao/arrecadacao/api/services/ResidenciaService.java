@@ -50,7 +50,7 @@ public interface ResidenciaService {
 	 * @param numero
 	 * @return Optional<Residencia>
 	 */	
-	Optional<Residencia> bucarPorEnderecoAndNumero(String string, String numero);
+	Optional<Residencia> bucarPorEnderecoAndNumero(String string, Long numero);
 		
 	/**
 	 * Busca todas as residências Paginado
@@ -66,6 +66,6 @@ public interface ResidenciaService {
 	 * @param pageRequest
 	 * @return Page<Residencia>
 	 */
-	Page<Residencia> buscarPorIdOrMatriculaOrEnderecoOrNumero(Long id, String matricula, String endereco, String numero, PageRequest pageRequest);
+	Page<Residencia> buscarPorIdOrMatriculaOrEnderecoOrNumero(Long id, String matricula, String endereco, Long numero, PageRequest pageRequest);
 
 }

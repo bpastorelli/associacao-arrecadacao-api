@@ -1,5 +1,5 @@
-INSERT INTO `residencia` (`id`, `matricula`, `endereco`, `numero`, `bairro`, `cep`, `cidade`, `uf`, `data_criacao`, `data_atualizacao`)
-VALUES (NULL, '8000','Rua Antonio Candido de Oliveira', '5', 'Chácara Tres Marias', '04475492', 'Sorocaba', 'SP', CURRENT_DATE(), CURRENT_DATE());
+INSERT INTO `residencia` (`id`, `matricula`, `endereco`, `numero`, `complemento`, `bairro`, `cep`, `cidade`, `uf`, `data_criacao`, `data_atualizacao`)
+VALUES (NULL, '8000','Rua Antonio Candido de Oliveira', 5, 'Casa 5','Chácara Tres Marias', '04475492', 'Sorocaba', 'SP', CURRENT_DATE(), CURRENT_DATE());
 
 INSERT INTO `morador` (`id`,`nome`, `email`, `cpf`, `rg`, `senha`, `telefone`, `celular`, `perfil`, `data_atualizacao`, `data_criacao`)
 VALUES (NULL, 'Bruno Dias Pastorelli', 'bruno@gmail.com', '35979769056', '342729952', '$2a$10$UftFkustVngaNHOsbNE8h.l/lNsQauk2IUMymJN.cUhQkaJtvnaR.', '1155600310', '11975778998', 'ROLE_ADMIN', CURRENT_DATE(), CURRENT_DATE());

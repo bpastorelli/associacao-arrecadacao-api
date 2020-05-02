@@ -74,7 +74,7 @@ public class LancamentoRepositoryTest {
 		
 		Residencia residencia = new Residencia();
 		residencia.setEndereco(Mockito.anyString());
-		residencia.setNumero(Mockito.anyString());
+		residencia.setNumero(Mockito.anyLong());
 		residencia.setBairro(Mockito.anyString());
 		residencia.setCep(Mockito.anyString());
 		residencia.setCidade(Mockito.anyString());
