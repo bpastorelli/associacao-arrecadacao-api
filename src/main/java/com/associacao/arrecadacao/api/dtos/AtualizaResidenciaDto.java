@@ -49,7 +49,6 @@ public class AtualizaResidenciaDto {
 	}
 
 	@NotNull(message = "Número não pode ser nulo.")
-	@Length(min = 1, max = 5, message = "Número deve conter ao menos 1 caractere.")
 	public Long getNumero() {
 		return numero;
 	}
