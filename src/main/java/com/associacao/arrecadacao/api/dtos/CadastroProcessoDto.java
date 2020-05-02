@@ -16,6 +16,7 @@ public class CadastroProcessoDto {
 	private String matricula;
 	private String endereco;
 	private Long   numero;
+	private String complemento;
 	private String bairro;
 	private String cep;
 	private String cidade;
@@ -62,6 +63,14 @@ public class CadastroProcessoDto {
 
 	public void setNumero(Long numero) {
 		this.numero = numero;
+	}
+	
+	public String getComplemento() {
+		return complemento;
+	}
+
+	public void setComplemento(String complemento) {
+		this.complemento = complemento;
 	}
 	
 	@NotEmpty(message = "Bairro não pode ser nulo.")
@@ -117,5 +126,6 @@ public class CadastroProcessoDto {
 	
 	public void setLancamentos(List<Lancamento> lancamentos) {
 		this.lancamentos = lancamentos;
-	}	
+	}
+	
 }

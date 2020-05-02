@@ -3,7 +3,7 @@ CREATE TABLE `residencia` (
   `matricula` varchar(20) NOT NULL,
   `endereco` varchar(100) NOT NULL,
   `numero` bigint(20) NOT NULL,
-  `complemento` varchar(50) NOT NULL,
+  `complemento` varchar(50) NULL,
   `bairro` varchar(100) NOT NULL,
   `cep` varchar(8) NOT NULL,
   `cidade` varchar(100) NOT NULL,
