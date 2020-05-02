@@ -30,6 +30,8 @@ import com.associacao.arrecadacao.api.entities.ResidenciaResponse;
 import com.associacao.arrecadacao.api.entities.VinculoResidencia;
 import com.associacao.arrecadacao.api.entities.VinculoResidenciaMassa;
 import com.associacao.arrecadacao.api.response.Response;
+import com.associacao.arrecadacao.api.services.MoradorService;
+import com.associacao.arrecadacao.api.services.ResidenciaService;
 import com.associacao.arrecadacao.api.services.VinculoResidenciaMassaService;
 import com.associacao.arrecadacao.api.services.VinculoResidenciaService;
 import com.associacao.arrecadacao.api.utils.Utils;
@@ -47,6 +49,12 @@ public class VinculoResidenciaController {
 	@Autowired
 	private VinculoResidenciaMassaService vinculoResidenciaMassaService;
 	
+	@Autowired
+	private ResidenciaService residenciaService;
+	
+	@Autowired
+	private MoradorService moradorService;
+	
 	public VinculoResidenciaController() {
 		
 	}
@@ -62,7 +70,7 @@ public class VinculoResidenciaController {
 		vinculoResidenciaMassaDto.getVinculosMassa().forEach(p -> p.setResidenciaId(residenciaId));
 		
 		List<VinculoResidenciaMassa> vinculos = this.converterDtoParaVinculoResidencia(vinculoResidenciaMassaDto);
-		validarDadosExistentes(vinculoResidenciaMassaDto, result);
+		this.validarDadosExistentes(vinculoResidenciaMassaDto, result);
 		
 		if(result.hasErrors()) {
 			log.error("Erro validando dados para vinculo da residência: {}", result.getAllErrors());
@@ -170,16 +178,19 @@ public class VinculoResidenciaController {
 	
 	private void validarDadosExistentes(VinculoResidenciaMassaDto vinculoResidenciaMassaDto, BindingResult result) {
 		
+		//Valida se a residencia existe
 		vinculoResidenciaMassaDto.getVinculosMassa().forEach(p -> {
-			if(this.vinculoResidenciaMassaService.buscarPorResidenciaId(p.getResidenciaId()).size() == 0 )
-				result.addError(new ObjectError("vinculor residencia", "Código de Residência inexistente."));			
+			if(!this.residenciaService.buscarPorId(p.getResidenciaId()).isPresent())
+				result.addError(new ObjectError("vinculor residencia", "Código de Residência " + p.getResidenciaId() + " inexistente.") );			
 		});		
 		
+		//Valida se o morador existe
 		vinculoResidenciaMassaDto.getVinculosMassa().forEach(p -> {
-			if(this.vinculoResidenciaMassaService.buscarPorMoradorId(p.getMoradorId()).size() == 0 )
+			if(!this.moradorService.buscarPorId(p.getMoradorId()).isPresent() )
 				result.addError(new ObjectError("vinculor residencia", "Código de Morador inexistente."));			
 		});	
 		
+		//Valida se já existe um vinculo para a mesma residência
 		vinculoResidenciaMassaDto.getVinculosMassa().forEach(p -> {
 			this.vinculoResidenciaMassaService.buscarPorResidenciaIdAndMoradorId(p.getResidenciaId(), p.getMoradorId())
 				.ifPresent(res -> result.addError(new ObjectError("vinculor residencia", "Vinculo para residência já existente.")));			
