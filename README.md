@@ -3,4 +3,4 @@
 API do sistema de controle de arrecadações da Associação Três Marias
 
 
-Url Heroku => https://associacao-arrecadacao.herokuapp.com/ 
+Url Heroku => https://powerful-savannah-73743.herokuapp.com/ 
