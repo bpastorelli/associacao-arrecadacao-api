@@ -48,7 +48,7 @@ public class ResidenciaServiceImpl implements ResidenciaService {
 	}
 
 	@Override
-	public Optional<Residencia> bucarPorEnderecoAndNumero(String endereco, String numero) {
+	public Optional<Residencia> bucarPorEnderecoAndNumero(String endereco, Long numero) {
 		log.info("Buscando uma residência por Endereço e Número {}", endereco, numero);
 		return Optional.ofNullable(this.residenciaRepository.findByEnderecoAndNumero(endereco, numero));
 	}
@@ -60,7 +60,7 @@ public class ResidenciaServiceImpl implements ResidenciaService {
 	}
 	
 	@Override
-	public Page<Residencia> buscarPorIdOrMatriculaOrEnderecoOrNumero(Long id, String matricula, String endereco, String numero, PageRequest pageRequest) {
+	public Page<Residencia> buscarPorIdOrMatriculaOrEnderecoOrNumero(Long id, String matricula, String endereco, Long numero, PageRequest pageRequest) {
 		log.info("Buscando uma residências paginado {}", pageRequest);
 		return this.residenciaRepository.findByIdOrMatriculaOrEnderecoContainsOrNumero(id, matricula, endereco, numero, pageRequest);
 	}

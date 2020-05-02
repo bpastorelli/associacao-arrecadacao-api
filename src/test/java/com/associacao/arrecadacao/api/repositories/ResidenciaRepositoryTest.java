@@ -28,7 +28,7 @@ public class ResidenciaRepositoryTest {
 		Residencia residencia = new Residencia();
 		residencia.setMatricula(MATRICULA);
 		residencia.setEndereco("Rua Antonio Candido de Oliveira");
-		residencia.setNumero("5");
+		residencia.setNumero(5L);
 		residencia.setBairro("Chacara Tres Marias");
 		residencia.setCep("04475492");
 		residencia.setCidade("Sorocaba");

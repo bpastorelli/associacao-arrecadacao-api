@@ -1,5 +1,7 @@
 package com.associacao.arrecadacao.api.dtos;
 
+import javax.validation.constraints.NotNull;
+
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -8,7 +10,8 @@ public class AtualizaResidenciaDto {
 	private Long   id;
 	private String matricula;
 	private String endereco;
-	private String numero;
+	private Long   numero;
+	private String complemento;
 	private String bairro;
 	private String cep;
 	private String cidade;
@@ -45,15 +48,24 @@ public class AtualizaResidenciaDto {
 		this.endereco = endereco;
 	}
 
-	@NotEmpty(message = "Número não pode ser nulo.")
-	@Length(min = 1, max = 5, message = "Número deve conter entre 1 e 5 caracteres.")
-	public String getNumero() {
+	@NotNull(message = "Número não pode ser nulo.")
+	@Length(min = 1, max = 5, message = "Número deve conter ao menos 1 caractere.")
+	public Long getNumero() {
 		return numero;
 	}
 
-	public void setNumero(String numero) {
+	public void setNumero(Long numero) {
 		this.numero = numero;
 	}
+	
+	@Length(min = 0, max = 50, message = "O campo complemento deve ter no máximo 50 caracteres.")
+	public String getComplemento() {
+		return complemento;
+	}
+
+	public void setComplemento(String complemento) {
+		this.complemento = complemento;
+	}	
 	
 	@NotEmpty(message = "Bairro não pode ser nulo.")
 	public String getBairro() {
@@ -91,6 +103,6 @@ public class AtualizaResidenciaDto {
 	
 	public void setUf(String uf) {
 		this.uf = uf;
-	}	
+	}
 
 }

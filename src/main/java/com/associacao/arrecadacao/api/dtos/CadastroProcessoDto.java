@@ -2,6 +2,8 @@ package com.associacao.arrecadacao.api.dtos;
 
 import java.util.List;
 
+import javax.validation.constraints.NotNull;
+
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -13,7 +15,7 @@ public class CadastroProcessoDto {
 	private Long   id;
 	private String matricula;
 	private String endereco;
-	private String numero;
+	private Long   numero;
 	private String bairro;
 	private String cep;
 	private String cidade;
@@ -53,13 +55,12 @@ public class CadastroProcessoDto {
 		this.endereco = endereco;
 	}
 
-	@NotEmpty(message = "Número não pode ser nulo.")
-	@Length(min = 1, max = 5, message = "Número deve conter entre 1 e 5 caracteres.")
-	public String getNumero() {
+	@NotNull(message = "Número não pode ser nulo.")
+	public Long getNumero() {
 		return numero;
 	}
 
-	public void setNumero(String numero) {
+	public void setNumero(Long numero) {
 		this.numero = numero;
 	}
 	

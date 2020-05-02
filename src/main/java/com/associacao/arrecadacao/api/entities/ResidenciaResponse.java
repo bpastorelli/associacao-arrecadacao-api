@@ -10,7 +10,8 @@ public class ResidenciaResponse implements Serializable {
 	private Long   id;
 	private String matricula;
 	private String endereco;
-	private String numero;
+	private Long   numero;
+	private String complemento;
 	private String bairro;
 	private String cep;
 	private String cidade;
@@ -45,12 +46,20 @@ public class ResidenciaResponse implements Serializable {
 		this.endereco = endereco;
 	}
 
-	public String getNumero() {
+	public Long getNumero() {
 		return numero;
 	}
 
-	public void setNumero(String numero) {
+	public void setNumero(Long numero) {
 		this.numero = numero;
+	}
+	
+	public String getComplemento() {
+		return complemento;
+	}
+
+	public void setComplemento(String complemento) {
+		this.complemento = complemento;
 	}
 	
 	public String getBairro() {
@@ -103,7 +112,8 @@ public class ResidenciaResponse implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Residencia [id=" + id + ", matricula=" + matricula + ", endereco=" + endereco + ", numero=" + numero + ", bairro=" + bairro + ", cidade=" + cidade + ", uf=" + uf + ", dataCriacao=" + dataCriacao
+		return "Residencia [id=" + id + ", matricula=" + matricula + ", endereco=" + endereco + ", numero=" + numero + ", complemento=" + complemento + ", bairro=" + bairro + ", cidade=" + cidade + ", uf=" + uf + ", dataCriacao=" + dataCriacao
 				+ ", dataAtualizacao=" + dataAtualizacao + "]";
 	}
+
 }
