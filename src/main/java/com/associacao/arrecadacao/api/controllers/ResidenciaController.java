@@ -155,7 +155,7 @@ class ResidenciaController {
 		
 		Page<Residencia> residencias;
 		
-		if(id != 0 || !matricula.equals("0") || !endereco.equals("null") || numero != 0)
+		if(id != 0 || !matricula.equals("null") || !endereco.equals("null") || numero != 0)
 			residencias = this.residenciaService.buscarPorIdOrMatriculaOrEnderecoOrNumero(id, matricula, endereco, numero, pageRequest);
 		else
 			residencias = this.residenciaService.bucarTodos(pageRequest);
