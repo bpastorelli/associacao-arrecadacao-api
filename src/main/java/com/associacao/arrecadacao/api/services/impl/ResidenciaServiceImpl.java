@@ -5,6 +5,8 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -21,25 +23,25 @@ public class ResidenciaServiceImpl implements ResidenciaService {
 	@Autowired
 	private ResidenciaRepository residenciaRepository;
 	
-	@Override
+	@Cacheable("lancamentoPorId")
 	public Optional<Residencia> buscarPorMatricula(String matricula) {
 		log.info("Buscando uma residência para a matricula {}", matricula);
 		return Optional.ofNullable(residenciaRepository.findByMatricula(matricula));
 	}
 
-	@Override
+	@CachePut("lancamentoPorId")
 	public Optional<Residencia> persistir(Residencia residencia) {
 		log.info("Persistindo a residência: {}", residencia);
 		return Optional.ofNullable(this.residenciaRepository.save(residencia));
 	}
 
-	@Override
+	@Cacheable("lancamentoPorId")
 	public Optional<Residencia> buscarPorId(Long id) {
 		log.info("Buscando uma residência para o ID {}", id);
 		return Optional.ofNullable(this.residenciaRepository.findById(id));
 	}
 	
-	@Override
+	@Cacheable("lancamentoPorId")
 	public Optional<Residencia> bucarPorIdOrMatricula(Long id, String matricula){
 		log.info("Buscando uma residência para o ID {}", id);
 		return Optional.ofNullable(this.residenciaRepository.findByIdOrMatricula(id, matricula));
