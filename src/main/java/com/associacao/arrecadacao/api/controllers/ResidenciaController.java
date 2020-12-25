@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -140,7 +141,7 @@ class ResidenciaController {
 	 * @throws NoSuchAlgorithmException
 	 */
 	@GetMapping()
-	public ResponseEntity<Response<Page<CadastroResidenciaDto>>> buscarResidenciaPaginado(
+	public ResponseEntity<?> buscarResidenciaPaginado(
 			@RequestParam(value = "id", defaultValue = "0") Long id,
 			@RequestParam(value = "matricula", defaultValue = "null") String matricula,
 			@RequestParam(value = "endereco", defaultValue = "null") String endereco,
@@ -150,7 +151,6 @@ class ResidenciaController {
 			@RequestParam(value = "dir", defaultValue = "DESC") String dir,
 			@RequestParam(value = "qtdPorPagina", defaultValue = "25") int qtdPorPagina) throws NoSuchAlgorithmException {		
 		
-		Response<Page<CadastroResidenciaDto>> response = new Response<Page<CadastroResidenciaDto>>();
 		PageRequest pageRequest = new PageRequest(pag, qtdPorPagina, Direction.valueOf(dir), ord);
 		
 		Page<Residencia> residencias;
@@ -162,14 +162,12 @@ class ResidenciaController {
 		
 		if (residencias.getSize() == 0) {
 			log.info("A consulta não retornou dados");
-			response.getErrors().add("A consulta não retornou dados");
-			return ResponseEntity.badRequest().body(response);
+			return ResponseEntity.badRequest().body("A consulta não retornou dados!");
 		}
 		
 		Page<CadastroResidenciaDto> residenciasDto = residencias.map(residencia -> this.converterCadastroResidenciaDto(residencia));
 		
-		response.setData(residenciasDto);
-		return ResponseEntity.ok(response);
+		return new ResponseEntity<>(residenciasDto.getContent(), HttpStatus.OK);
 		
 	}
 	

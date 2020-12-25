@@ -6,6 +6,8 @@ import java.util.Optional;
 
 import javax.persistence.Column;
 
+import com.associacao.arrecadacao.api.utils.Utils;
+
 
 public class MoradorResponse implements Serializable {
 
@@ -18,8 +20,8 @@ public class MoradorResponse implements Serializable {
 	private String rg;
 	private String telefone;
 	private String celular;
-	private Date dataCriacao;
-	private Date dataAtualizacao;
+	private String dataCriacao;
+	private String dataAtualizacao;
 	private Long residenciaId;
 
 	public MoradorResponse() {
@@ -82,20 +84,20 @@ public class MoradorResponse implements Serializable {
 		this.celular = celular;
 	}
 
-	public Date getDataCriacao() {
+	public String getDataCriacao() {
 		return dataCriacao;
 	}
 
 	public void setDataCriacao(Date dataCriacao) {
-		this.dataCriacao = dataCriacao;
+		this.dataCriacao = Utils.dateFormat(dataCriacao, "dd/MM/yyyy");
 	}
 
-	public Date getDataAtualizacao() {
+	public String getDataAtualizacao() {
 		return dataAtualizacao;
 	}
 
 	public void setDataAtualizacao(Date dataAtualizacao) {
-		this.dataAtualizacao = dataAtualizacao;
+		this.dataAtualizacao = Utils.dateFormat(dataAtualizacao, "dd/MM/yyyy");
 	}
 
     public Optional<Long> getResidenciaId() {

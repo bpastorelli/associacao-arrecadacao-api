@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -165,8 +166,8 @@ public class MoradorController {
 	 * @return ResponseEntity<Response<CadastroMoradorResponseDto>>
 	 * @throws NoSuchAlgorithmException
 	 */
-	@GetMapping()
-	public ResponseEntity<Response<Page<CadastroMoradorResponseDto>>> buscarMoradores(
+	@GetMapping(value = "/filtro")
+	public ResponseEntity<?> buscarMoradoresFiltro(
 			@RequestParam(value = "id", defaultValue = "0") Long id,
 			@RequestParam(value = "cpf", defaultValue = "null") String cpf,
 			@RequestParam(value = "rg", defaultValue = "null") String rg,
@@ -175,30 +176,38 @@ public class MoradorController {
 			@RequestParam(value = "pag", defaultValue = "0") int pag,
 			@RequestParam(value = "ord", defaultValue = "id") String ord,
 			@RequestParam(value = "dir", defaultValue = "DESC") String dir,
-			@RequestParam(value = "qtdPorPagina", defaultValue = "25") int qtdPorPagina) throws NoSuchAlgorithmException {
+			@RequestParam(value = "size", defaultValue = "25") int qtdPorPagina) throws NoSuchAlgorithmException {
 		
 		log.info("Buscando moradores...");
-		Response<Page<CadastroMoradorResponseDto>> response = new Response<Page<CadastroMoradorResponseDto>>();
 		PageRequest pageRequest = new PageRequest(pag, qtdPorPagina, Direction.valueOf(dir), ord);
-		
-		Page<Morador> moradores;
-		
-		if(id != 0 || !cpf.equals("null") || !rg.equals("null") || !nome.equals("null") || !email.equals("null"))
-			moradores = this.moradorService.buscarPorIdOrCpfOrRgOrNomeOrEmail(id, cpf, rg, nome, email, pageRequest);
-		else
-			moradores = this.moradorService.bucarTodos(pageRequest);
+		Page<Morador> moradores = this.moradorService.buscarPorIdOrCpfOrRgOrNomeOrEmail(id, cpf, rg, nome, email, pageRequest);
 		
 		if (moradores.getSize() == 0) {
 			log.info("A consulta não retornou dados");
-			response.getErrors().add("A consulta não retornou dados");
-			return ResponseEntity.badRequest().body(response);
+			return ResponseEntity.badRequest().body("A consulta não retornou dados!");
 		}
 		
-		Page<CadastroMoradorResponseDto> residenciasDto = moradores.map(m -> this.converterCadastroMoradorResponseDto(m));
+		return new ResponseEntity<>(moradores.getContent(), HttpStatus.OK);
 		
-		response.setData(residenciasDto);
-		return ResponseEntity.ok(response);
+	}
+	
+	@GetMapping()
+	public ResponseEntity<?> getAll(
+			@RequestParam(value = "pag", defaultValue = "0") int pag,
+			@RequestParam(value = "size", defaultValue = "10") int qtdPorPagina,
+			@RequestParam(value = "dir", defaultValue = "DESC") String dir,
+			@RequestParam(value = "ord", defaultValue = "nome") String ord) throws NoSuchAlgorithmException {
 		
+		PageRequest pageRequest = new PageRequest(pag, qtdPorPagina, Direction.valueOf(dir), ord);
+		
+		log.info("Buscando moradores...");
+		Page<Morador> moradores = this.moradorService.bucarTodos(pageRequest);
+		
+		if (moradores.getSize() == 0) {
+			return ResponseEntity.badRequest().body("A consulta não retornou dados!");
+		}
+		
+		return new ResponseEntity<>(moradores.getContent(), HttpStatus.OK);
 	}
 	
 	private void validarDadosExistentes(CadastroMoradorDto cadastroMoradorDto, BindingResult result) {
@@ -337,8 +346,8 @@ public class MoradorController {
 		dto.setTelefone(morador.getTelefone());
 		dto.setCelular(morador.getCelular());
 		dto.setResidenciaId(residenciaId);
-		dto.setDataCriacao(Utils.dateFormat(morador.getDataCriacao(),"dd/MM/yyyy"));
-		dto.setDataAtualizacao(Utils.dateFormat(morador.getDataAtualizacao(),"dd/MM/yyyy"));
+		dto.setDataCriacao(Utils.dateFormat(morador.getDataCriacao(), "dd/MM/yyyy"));
+		dto.setDataAtualizacao(Utils.dateFormat(morador.getDataAtualizacao(), "dd/MM/yyyy"));
 		return dto;
 	}
 	
