@@ -66,7 +66,7 @@ public class MoradorController {
 			@Valid @RequestBody CadastroMoradorDto cadastroMoradorDto, 
 			BindingResult result) throws NoSuchAlgorithmException{
 		
-		log.info("Cadastrando de morador: {}", cadastroMoradorDto.toString());
+		log.info("Cadastro de morador: {}", cadastroMoradorDto.toString());
 		Response<CadastroMoradorDto> response = new Response<CadastroMoradorDto>();
 		
 		cadastroMoradorDto.getMoradores().forEach(p -> p.setResidenciaId(residenciaId));

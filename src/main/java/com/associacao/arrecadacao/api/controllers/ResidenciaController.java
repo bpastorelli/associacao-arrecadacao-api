@@ -149,7 +149,7 @@ class ResidenciaController {
 			@RequestParam(value = "pag", defaultValue = "0") int pag,
 			@RequestParam(value = "ord", defaultValue = "id") String ord,
 			@RequestParam(value = "dir", defaultValue = "DESC") String dir,
-			@RequestParam(value = "qtdPorPagina", defaultValue = "25") int qtdPorPagina) throws NoSuchAlgorithmException {		
+			@RequestParam(value = "qtdPorPagina", defaultValue = "10") int qtdPorPagina) throws NoSuchAlgorithmException {		
 		
 		PageRequest pageRequest = new PageRequest(pag, qtdPorPagina, Direction.valueOf(dir), ord);
 		

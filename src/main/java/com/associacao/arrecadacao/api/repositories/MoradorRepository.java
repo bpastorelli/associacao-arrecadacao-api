@@ -27,7 +27,5 @@ public interface MoradorRepository extends JpaRepository<Morador, Long> {
 	
 	Morador findByCpfOrEmail(String cpf, String email);
 	
-	List<Morador> save(List<Morador> moradores);
-	
 	
 }
