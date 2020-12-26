@@ -177,7 +177,7 @@ public class MoradorController {
 			@RequestParam(value = "pag", defaultValue = "0") int pag,
 			@RequestParam(value = "ord", defaultValue = "id") String ord,
 			@RequestParam(value = "dir", defaultValue = "DESC") String dir,
-			@RequestParam(value = "qtdPorPagina", defaultValue = "10") int qtdPorPagina) throws NoSuchAlgorithmException {
+			@RequestParam(value = "size", defaultValue = "10") int qtdPorPagina) throws NoSuchAlgorithmException {
 		
 		log.info("Buscando moradores...");
 		PageRequest pageRequest = new PageRequest(pag, qtdPorPagina, Direction.valueOf(dir), ord);
@@ -195,7 +195,7 @@ public class MoradorController {
 	@GetMapping()
 	public ResponseEntity<?> getAll(
 			@RequestParam(value = "pag", defaultValue = "0") int pag,
-			@RequestParam(value = "qtdPorPagina", defaultValue = "10") int qtdPorPagina,
+			@RequestParam(value = "size", defaultValue = "10") int qtdPorPagina,
 			@RequestParam(value = "dir", defaultValue = "DESC") String dir,
 			@RequestParam(value = "ord", defaultValue = "nome") String ord) throws NoSuchAlgorithmException {
 		
