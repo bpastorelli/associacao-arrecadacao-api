@@ -34,6 +34,7 @@ import com.associacao.arrecadacao.api.dtos.CadastroMoradorResponseDto;
 import com.associacao.arrecadacao.api.entities.Morador;
 import com.associacao.arrecadacao.api.entities.Residencia;
 import com.associacao.arrecadacao.api.entities.VinculoResidencia;
+import com.associacao.arrecadacao.api.enums.PerfilEnum;
 import com.associacao.arrecadacao.api.response.Response;
 import com.associacao.arrecadacao.api.services.MoradorService;
 import com.associacao.arrecadacao.api.services.ResidenciaService;
@@ -176,7 +177,7 @@ public class MoradorController {
 			@RequestParam(value = "pag", defaultValue = "0") int pag,
 			@RequestParam(value = "ord", defaultValue = "id") String ord,
 			@RequestParam(value = "dir", defaultValue = "DESC") String dir,
-			@RequestParam(value = "size", defaultValue = "25") int qtdPorPagina) throws NoSuchAlgorithmException {
+			@RequestParam(value = "qtdPorPagina", defaultValue = "10") int qtdPorPagina) throws NoSuchAlgorithmException {
 		
 		log.info("Buscando moradores...");
 		PageRequest pageRequest = new PageRequest(pag, qtdPorPagina, Direction.valueOf(dir), ord);
@@ -194,7 +195,7 @@ public class MoradorController {
 	@GetMapping()
 	public ResponseEntity<?> getAll(
 			@RequestParam(value = "pag", defaultValue = "0") int pag,
-			@RequestParam(value = "size", defaultValue = "10") int qtdPorPagina,
+			@RequestParam(value = "qtdPorPagina", defaultValue = "10") int qtdPorPagina,
 			@RequestParam(value = "dir", defaultValue = "DESC") String dir,
 			@RequestParam(value = "ord", defaultValue = "nome") String ord) throws NoSuchAlgorithmException {
 		
@@ -240,8 +241,6 @@ public class MoradorController {
 			if(morador.getTelefone().isEmpty() && morador.getCelular().isEmpty())
 				result.addError(new ObjectError("morador", "Você deve informar um número de telefone ou celular."));
 			
-			if(morador.getPerfil().toString().isEmpty())
-				result.addError(new ObjectError("morador", "O campo Perfi é obrigatório."));
 		}
 		
 		cadastroMoradorDto.getMoradores().forEach(morador ->{
@@ -305,7 +304,7 @@ public class MoradorController {
 			item.setRg(morador.getRg());
 			item.setEmail(morador.getEmail());
 			item.setSenha(PasswordUtils.gerarBCrypt(morador.getCpf().substring(0, 6)));
-			item.setPerfil(morador.getPerfil());
+			item.setPerfil(morador.getPerfil() == null ? PerfilEnum.ROLE_USUARIO : morador.getPerfil());
 			item.setTelefone(morador.getTelefone());
 			item.setCelular(morador.getCelular());
 			item.setResidenciaId(morador.getResidenciaId().get());
