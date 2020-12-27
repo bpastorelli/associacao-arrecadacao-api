@@ -88,6 +88,39 @@ public class MoradorController {
 		
 	}
 	
+	@PostMapping(value = "/incluir/residencia/{residenciaId}")
+	public ResponseEntity<Response<Morador>> cadastrarMorador(@PathVariable("residenciaId") Long residenciaId,
+			@Valid @RequestBody Morador moradorRequestBody, 
+			BindingResult result) throws NoSuchAlgorithmException{
+		
+		log.info("Cadastro de morador: {}", moradorRequestBody.toString());
+		
+		Response<Morador> response = new Response<Morador>();
+		
+		Morador morador = this.converterDtoParaMorador(moradorRequestBody);
+		
+		CadastroMoradorDto dto = new CadastroMoradorDto();
+		
+		List<Morador> listMorador = new ArrayList<Morador>();
+		listMorador.add(morador);
+		dto.setMoradores(listMorador);
+		
+		validarDadosExistentes(dto, result);
+		
+		if(result.hasErrors()) {
+			log.error("Erro validando dados para cadastro do(s) morador(es): {}", result.getAllErrors());
+			result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
+			return ResponseEntity.badRequest().body(response);
+		}
+		
+		this.moradorService.persistir(listMorador);
+		dto.setMoradores(listMorador);
+		this.vinculoResidenciaService.persistir(this.converterDtoParaVinculoResidencia(dto));
+		response.setData(morador);
+		return ResponseEntity.ok(response);
+		
+	}
+	
 	/**
 	 * Atualiza os dados de um morador.
 	 * 
@@ -312,6 +345,22 @@ public class MoradorController {
 		}
 		
 		return moradores;
+	}
+	
+	public Morador converterDtoParaMorador(Morador morador){
+		
+		Morador item = new Morador();
+		item.setNome(morador.getNome());
+		item.setCpf(morador.getCpf());
+		item.setRg(morador.getRg());
+		item.setEmail(morador.getEmail());
+		item.setSenha(PasswordUtils.gerarBCrypt(morador.getCpf().substring(0, 6)));
+		item.setPerfil(morador.getPerfil() == null ? PerfilEnum.ROLE_USUARIO : morador.getPerfil());
+		item.setTelefone(morador.getTelefone());
+		item.setCelular(morador.getCelular());
+		item.setResidenciaId(morador.getResidenciaId().get());
+		
+		return item;
 	}
 
 	/**
