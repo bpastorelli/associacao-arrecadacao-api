@@ -210,11 +210,17 @@ public class MoradorController {
 			@RequestParam(value = "pag", defaultValue = "0") int pag,
 			@RequestParam(value = "ord", defaultValue = "id") String ord,
 			@RequestParam(value = "dir", defaultValue = "DESC") String dir,
-			@RequestParam(value = "size", defaultValue = "10") int qtdPorPagina) throws NoSuchAlgorithmException {
+			@RequestParam(value = "size", defaultValue = "10") int size) throws NoSuchAlgorithmException {
 		
 		log.info("Buscando moradores...");
-		PageRequest pageRequest = new PageRequest(pag, qtdPorPagina, Direction.valueOf(dir), ord);
-		Page<Morador> moradores = this.moradorService.buscarPorIdOrCpfOrRgOrNomeOrEmail(id, cpf, rg, nome, email, pageRequest);
+		PageRequest pageRequest = new PageRequest(pag, size, Direction.valueOf(dir), ord);
+		
+		Page<Morador> moradores = null;
+		
+		if(id == 0 && cpf.equals("null") && rg.equals("null") && email.equals("null") && nome.equals("null") )
+			moradores = this.moradorService.bucarTodos(pageRequest);
+		else 			
+			moradores = this.moradorService.buscarPorIdOrCpfOrRgOrNomeOrEmail(id, cpf, rg, nome, email, pageRequest);
 		
 		if (moradores.getSize() == 0) {
 			log.info("A consulta não retornou dados");
@@ -396,27 +402,6 @@ public class MoradorController {
 		dto.setResidenciaId(residenciaId);
 		dto.setDataCriacao(Utils.dateFormat(morador.getDataCriacao(), "dd/MM/yyyy"));
 		dto.setDataAtualizacao(Utils.dateFormat(morador.getDataAtualizacao(), "dd/MM/yyyy"));
-		return dto;
-	}
-	
-	/**
-	 * Converter o objeto tipo Morador para o tipo CadastroMoradorResponseDto sem o ID da residencia.
-	 * 
-	 * @param Morador
-	 * @return CadastroMoradorResponseDto
-	 */
-	private CadastroMoradorResponseDto converterCadastroMoradorResponseDto(Morador morador) {
-		
-		CadastroMoradorResponseDto dto = new CadastroMoradorResponseDto();
-		dto.setId(morador.getId());
-		dto.setNome(morador.getNome());
-		dto.setEmail(morador.getEmail());
-		dto.setCpf(morador.getCpf());
-		dto.setRg(morador.getRg());
-		dto.setTelefone(morador.getTelefone());
-		dto.setCelular(morador.getCelular());
-		dto.setDataCriacao(Utils.dateFormat(morador.getDataCriacao(),"dd/MM/yyyy"));
-		dto.setDataAtualizacao(Utils.dateFormat(morador.getDataAtualizacao(),"dd/MM/yyyy"));
 		return dto;
 	}
 	
