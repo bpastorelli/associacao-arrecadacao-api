@@ -88,8 +88,8 @@ public class MoradorController {
 		
 	}
 	
-	@PostMapping(value = "/incluir/residencia/{residenciaId}")
-	public ResponseEntity<Response<Morador>> cadastrarMorador(@PathVariable("residenciaId") Long residenciaId,
+	@PostMapping(value = "/incluir")
+	public ResponseEntity<Response<Morador>> cadastrarMorador(
 			@Valid @RequestBody Morador moradorRequestBody, 
 			BindingResult result) throws NoSuchAlgorithmException{
 		
