@@ -140,7 +140,7 @@ class ResidenciaController {
 	 * @return ResponseEntity<Response<CadastroResidenciaDto>>
 	 * @throws NoSuchAlgorithmException
 	 */
-	@GetMapping()
+	@GetMapping("/filtro")
 	public ResponseEntity<?> buscarResidenciaPaginado(
 			@RequestParam(value = "id", defaultValue = "0") Long id,
 			@RequestParam(value = "matricula", defaultValue = "null") String matricula,
