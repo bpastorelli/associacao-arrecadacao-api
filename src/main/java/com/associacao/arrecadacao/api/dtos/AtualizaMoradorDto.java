@@ -41,7 +41,6 @@ public class AtualizaMoradorDto {
 		this.email = email;
 	}
 	
-	@NotEmpty(message = "Telefone não pode ser nulo.")
 	public String getTelefone() {
 		return telefone;
 	}
@@ -50,6 +49,7 @@ public class AtualizaMoradorDto {
 		this.telefone = telefone;
 	}
 
+	@NotEmpty(message = "Celular não pode ser nulo.")
 	public String getCelular() {
 		return celular;
 	}

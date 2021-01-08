@@ -117,7 +117,7 @@ public class MoradorController {
 		dto.setMoradores(listMorador);
 		this.vinculoResidenciaService.persistir(this.converterDtoParaVinculoResidencia(dto));
 		response.setData(morador);
-		return ResponseEntity.ok(response);
+		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 		
 	}
 	
@@ -141,7 +141,7 @@ public class MoradorController {
 		if (!morador.isPresent()) {
 			result.addError(new ObjectError("morador", "Morador não encontrado pelo ID " + id));
 			result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
-			return ResponseEntity.badRequest().body(response);
+			return ResponseEntity.status(404).body(response);
 		}	
 		
 		this.atualizarDadosMorador(morador.get(), moradorDto, result);
@@ -149,7 +149,7 @@ public class MoradorController {
 		if (result.hasErrors()) {
 			log.error("Erro validando morador: {}", result.getAllErrors());
 			result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
-			return ResponseEntity.badRequest().body(response);
+			return ResponseEntity.status(400).body(response);
 		}
 		
 		List<Morador> list = new ArrayList<Morador>();
@@ -158,7 +158,7 @@ public class MoradorController {
 		this.moradorService.persistir(list);
 		response.setData(this.converterCadastroMoradorUpdtRequestDto(list.get(0)));
 
-		return ResponseEntity.ok(response);
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 		
 	}
 	
@@ -456,7 +456,7 @@ public class MoradorController {
 		
 		if (!morador.getNome().equals(moradorDto.getNome())) {
 			this.moradorService.buscarPorNome(moradorDto.getNome())
-					.ifPresent(func -> result.addError(new ObjectError("nome", "Email já existente.")));
+					.ifPresent(func -> result.addError(new ObjectError("nome", "Nome já existente.")));
 			morador.setNome(moradorDto.getNome());
 		}
 		

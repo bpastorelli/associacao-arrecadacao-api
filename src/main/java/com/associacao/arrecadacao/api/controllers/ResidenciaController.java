@@ -59,13 +59,13 @@ class ResidenciaController {
 		if(result.hasErrors()) {
 			log.error("Erro validando dados para cadastro da residência: {}", result.getAllErrors());
 			result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
-			return ResponseEntity.badRequest().body(response);
+			return ResponseEntity.status(400).body(response);
 		}
 		
 		this.residenciaService.persistir(residencia);
 		
 		response.setData(this.converterCadastroResidenciaDto(residencia));
-		return ResponseEntity.ok(response);
+		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 		
 	}
 	
@@ -102,7 +102,7 @@ class ResidenciaController {
 		this.residenciaService.persistir(residencia.get());
 		response.setData(this.converterCadastroResidenciaDto(residencia.get()));
 
-		return ResponseEntity.ok(response);
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 		
 	}
 	
@@ -125,11 +125,11 @@ class ResidenciaController {
 		if (!residencia.isPresent()) {
 			log.info("Residência não encontrada para o ID: {}", id);
 			response.getErrors().add("Residência não encontrada para o ID " + id);
-			return ResponseEntity.badRequest().body(response);
+			return ResponseEntity.status(404).body(response);
 		}
 		
 		response.setData(this.converterCadastroResidenciaDto(residencia.get()));
-		return ResponseEntity.ok(response);
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 		
 	}
 	
@@ -137,7 +137,7 @@ class ResidenciaController {
 	 * Busca uma residência pelo ID ou pel Matricula.
 	 * 
 	 * @param result
-	 * @return ResponseEntity<Response<CadastroResidenciaDto>>
+	 * @return ResponseEntity<?>
 	 * @throws NoSuchAlgorithmException
 	 */
 	@GetMapping("/filtro")
@@ -162,7 +162,7 @@ class ResidenciaController {
 		
 		if (residencias.getSize() == 0) {
 			log.info("A consulta não retornou dados");
-			return ResponseEntity.badRequest().body("A consulta não retornou dados!");
+			return ResponseEntity.status(404).body("A consulta não retornou dados!");
 		}
 		
 		Page<CadastroResidenciaDto> residenciasDto = residencias.map(residencia -> this.converterCadastroResidenciaDto(residencia));
