@@ -9,6 +9,7 @@ public class AtualizaMoradorDto {
 	private String rg;
 	private String telefone;
 	private String celular;
+	private Long posicao;
 	
 	public AtualizaMoradorDto() {
 		
@@ -56,6 +57,14 @@ public class AtualizaMoradorDto {
 
 	public void setCelular(String celular) {
 		this.celular = celular;
+	}
+
+	public Long getPosicao() {
+		return posicao;
+	}
+
+	public void setPosicao(Long posicao) {
+		this.posicao = posicao;
 	}
 	
 }

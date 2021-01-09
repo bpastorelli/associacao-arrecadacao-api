@@ -12,6 +12,7 @@ public class CadastroMoradorResponseDto {
 	private String dataCriacao;
 	private String dataAtualizacao;
 	private Long   residenciaId;
+	private Long   posicao;
 	
 	public CadastroMoradorResponseDto() {
 		
@@ -95,6 +96,14 @@ public class CadastroMoradorResponseDto {
 
 	public void setResidenciaId(Long residenciaId) {
 		this.residenciaId = residenciaId;
+	}
+	
+	public Long getPosicao() {
+		return posicao;
+	}
+
+	public void setPosicao(Long posicao) {
+		this.posicao = posicao;
 	}
 	
 }

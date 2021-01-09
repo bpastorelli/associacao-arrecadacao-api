@@ -347,6 +347,7 @@ public class MoradorController {
 			item.setTelefone(morador.getTelefone());
 			item.setCelular(morador.getCelular());
 			item.setResidenciaId(morador.getResidenciaId().get());
+			item.setPosicao(morador.getPosicao());
 			moradores.add(item);
 		}
 		
@@ -365,6 +366,7 @@ public class MoradorController {
 		item.setTelefone(morador.getTelefone());
 		item.setCelular(morador.getCelular());
 		item.setResidenciaId(morador.getResidenciaId().get());
+		item.setPosicao(morador.getPosicao());
 		
 		return item;
 	}
@@ -419,6 +421,7 @@ public class MoradorController {
 		dto.setRg(morador.getRg());
 		dto.setTelefone(morador.getTelefone());
 		dto.setCelular(morador.getCelular());
+		dto.setPosicao(morador.getPosicao());
 		return dto;
 	}
 	
@@ -474,6 +477,7 @@ public class MoradorController {
 		
 		morador.setTelefone(moradorDto.getTelefone());
 		morador.setCelular(moradorDto.getCelular());
+		morador.setPosicao(moradorDto.getPosicao());
 
 	}
 }
