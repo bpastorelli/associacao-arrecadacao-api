@@ -10,6 +10,7 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
@@ -81,7 +82,7 @@ public class VinculoResidenciaController {
 		this.vinculoResidenciaMassaService.persistir(vinculos);
 		
 		response.setData(this.converterVinculoResidenciaMassaDto(vinculos));
-		return ResponseEntity.ok(response);
+		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	}
 
 	/**
@@ -112,8 +113,8 @@ public class VinculoResidenciaController {
 	/**
 	 * Consulta um vinculo de residência a um morador.
 	 * 
-	 * @param id
-	 * @return ResponseEntity<Response<Lancamento>>
+	 * @param residenciaId
+	 * @return ResponseEntity<Response<VinculosResidenciaResponseDto>>
 	 */
 	@GetMapping(value = "/residencia/{residenciaId}")
 	public ResponseEntity<Response<VinculosResidenciaResponseDto>> consultarVinculoResidenciaIdAndMoradorId(
@@ -125,12 +126,12 @@ public class VinculoResidenciaController {
 
 		if (vinculo.size() == 0) {
 			log.info("Erro ao consultar devido ao vinculo para a residencia ID: {} não existir.", residenciaId);
-			response.getErrors().add("Erro ao consultar vinculo. Registro não encontrado para a residencia ID " + residenciaId);
-			return ResponseEntity.badRequest().body(response);
+			response.getErrors().add("Registro não encontrado para a residencia ID " + residenciaId);
+			return ResponseEntity.status(404).body(response);
 		}
 
 		response.setData(this.converterVinculoResidenciaDto(vinculo).get());
-		return ResponseEntity.ok(response);
+		return ResponseEntity.status(200).body(response);
 	}
 	
 	/**
