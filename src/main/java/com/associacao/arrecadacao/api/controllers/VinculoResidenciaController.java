@@ -2,8 +2,10 @@ package com.associacao.arrecadacao.api.controllers;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -267,7 +269,9 @@ public class VinculoResidenciaController {
 			moradores.add(m.getMorador());			
 		});
 		
-		moradoresResidenciaDto.setMoradores(moradores);
+		List<Morador> listSorted = moradores.stream().sorted(Comparator.comparing(Morador::getNome)).collect(Collectors.toList());
+		
+		moradoresResidenciaDto.setMoradores(listSorted);
 		
 		return Optional.ofNullable(moradoresResidenciaDto);
 		
