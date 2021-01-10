@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.associacao.arrecadacao.api.dtos.MoradoresResidenciaDto;
 import com.associacao.arrecadacao.api.dtos.VinculoResidenciaMassaDto;
 import com.associacao.arrecadacao.api.dtos.VinculosResidenciaResponseDto;
 import com.associacao.arrecadacao.api.entities.Morador;
@@ -135,6 +136,31 @@ public class VinculoResidenciaController {
 	}
 	
 	/**
+	 * Consulta um vinculo de residência a um morador.
+	 * 
+	 * @param residenciaId
+	 * @return ResponseEntity<Response<VinculosResidenciaResponseDto>>
+	 */
+	@GetMapping(value = "moradores/residencia/{residenciaId}")
+	public ResponseEntity<?> consultarMoradoresResidencia(
+			@PathVariable("residenciaId") Long residenciaId) {
+		
+		log.info("Consultando vinculo para o morador ID: {}", residenciaId);
+		Response<MoradoresResidenciaDto> response = new Response<MoradoresResidenciaDto>();
+		List<VinculoResidencia> vinculo = this.vinculoResidenciaService.buscarPorResidenciaId(residenciaId);
+
+		if (vinculo.size() == 0) {
+			log.info("Erro ao consultar devido ao vinculo para a residencia ID: {} não existir.", residenciaId);
+			response.getErrors().add("Registro não encontrado para a residencia ID " + residenciaId);
+			return ResponseEntity.status(404).body(response);
+		}
+		
+		response.setData(this.converterVinculoResidenciaParaMoradoresResidenciaDto(vinculo).get());
+		return new ResponseEntity<>(response.getData().getMoradores(), HttpStatus.OK);
+		
+	}
+	
+	/**
 	 * Remove um vinculo de residência a um morador.
 	 * 
 	 * @param id
@@ -227,6 +253,29 @@ public class VinculoResidenciaController {
 		vinculosResidenciaResponseDto.setMoradores(moradores);
 		
 		return Optional.ofNullable(vinculosResidenciaResponseDto);
+		
+	}
+	
+	/**
+	 * Converter Vinculo de Residencia em MoradoresResidenciaDto
+	 * 
+	 * @param vinculo
+	 * @return MoradoresResidenciaDto
+	 */
+	public Optional<MoradoresResidenciaDto> converterVinculoResidenciaParaMoradoresResidenciaDto(List<VinculoResidencia> vinculos) {
+		
+		MoradoresResidenciaDto moradoresResidenciaDto = new MoradoresResidenciaDto();
+		
+		List<Morador> moradores = new ArrayList<Morador>();
+		
+		vinculos.forEach(m -> {
+			m.getMorador().setResidenciaId(m.getResidencia().getId());
+			moradores.add(m.getMorador());			
+		});
+		
+		moradoresResidenciaDto.setMoradores(moradores);
+		
+		return Optional.ofNullable(moradoresResidenciaDto);
 		
 	}
 	
