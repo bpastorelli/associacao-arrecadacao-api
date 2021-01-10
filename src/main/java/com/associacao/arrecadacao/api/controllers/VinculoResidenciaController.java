@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.associacao.arrecadacao.api.dtos.MoradoresResidenciaDto;
+import com.associacao.arrecadacao.api.dtos.ResidenciasMoradorDto;
 import com.associacao.arrecadacao.api.dtos.VinculoResidenciaMassaDto;
 import com.associacao.arrecadacao.api.dtos.VinculosResidenciaResponseDto;
 import com.associacao.arrecadacao.api.entities.Morador;
@@ -157,6 +158,25 @@ public class VinculoResidenciaController {
 	}
 	
 	/**
+	 * Consulta um vinculo de residência a um morador.
+	 * 
+	 * @param residenciaId
+	 * @return ResponseEntity<Response<VinculosResidenciaResponseDto>>
+	 */
+	@GetMapping(value = "residencias/morador/{moradorId}")
+	public ResponseEntity<?> consultarResidenciasMorador(
+			@PathVariable("moradorId") Long moradorId) {
+		
+		log.info("Consultando vinculo para o morador ID: {}", moradorId);
+		Response<ResidenciasMoradorDto> response = new Response<ResidenciasMoradorDto>();
+		List<VinculoResidencia> vinculo = this.vinculoResidenciaService.buscarPorMoradorId(moradorId);
+		
+		response.setData(this.converterVinculoResidenciaParaResidenciasMoradorDto(vinculo).get());
+		return new ResponseEntity<>(response.getData().getResidencias(), HttpStatus.OK);
+		
+	}
+	
+	/**
 	 * Remove um vinculo de residência a um morador.
 	 * 
 	 * @param id
@@ -274,6 +294,43 @@ public class VinculoResidenciaController {
 		moradoresResidenciaDto.setMoradores(listSorted);
 		
 		return Optional.ofNullable(moradoresResidenciaDto);
+		
+	}
+	
+	/**
+	 * Converter Vinculo de Residencia em ResidenciasMoradorDto
+	 * 
+	 * @param vinculo
+	 * @return ResidenciasMoradorDto
+	 */
+	public Optional<ResidenciasMoradorDto> converterVinculoResidenciaParaResidenciasMoradorDto(List<VinculoResidencia> vinculos) {
+		
+		ResidenciasMoradorDto residenciasMoradorDto = new ResidenciasMoradorDto();
+		
+		List<ResidenciaResponse> residencias = new ArrayList<ResidenciaResponse>();
+		
+		vinculos.forEach(r -> {	
+			ResidenciaResponse residencia = new ResidenciaResponse();
+			residencia.setId(r.getResidencia().getId());
+			residencia.setMatricula(r.getResidencia().getMatricula());
+			residencia.setEndereco(r.getResidencia().getEndereco());
+			residencia.setNumero(r.getResidencia().getNumero());
+			residencia.setBairro(r.getResidencia().getBairro());
+			residencia.setCep(r.getResidencia().getCep());
+			residencia.setComplemento(r.getResidencia().getComplemento());
+			residencia.setCidade(r.getResidencia().getCidade());
+			residencia.setUf(r.getResidencia().getUf());
+			residencia.setDataCriacao(Utils.dateFormat(r.getResidencia().getDataCriacao(), "dd/MM/yyyy"));
+			residencia.setDataAtualizacao(Utils.dateFormat(r.getResidencia().getDataAtualizacao(), "dd/MM/yyyy"));
+			residencias.add(residencia);	
+			
+		});
+		
+		List<ResidenciaResponse> listSorted = residencias.stream().sorted(Comparator.comparing(ResidenciaResponse:: getEndereco)).collect(Collectors.toList());
+		
+		residenciasMoradorDto.setResidencias(listSorted);
+		
+		return Optional.ofNullable(residenciasMoradorDto);
 		
 	}
 	
