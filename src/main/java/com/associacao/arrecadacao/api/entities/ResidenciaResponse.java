@@ -18,6 +18,7 @@ public class ResidenciaResponse implements Serializable {
 	private String uf;
 	private String dataCriacao;
 	private String dataAtualizacao;
+	private String dataVinculo;
 	
 	public ResidenciaResponse() {
 	}
@@ -114,6 +115,14 @@ public class ResidenciaResponse implements Serializable {
 	public String toString() {
 		return "Residencia [id=" + id + ", matricula=" + matricula + ", endereco=" + endereco + ", numero=" + numero + ", complemento=" + complemento + ", bairro=" + bairro + ", cidade=" + cidade + ", uf=" + uf + ", dataCriacao=" + dataCriacao
 				+ ", dataAtualizacao=" + dataAtualizacao + "]";
+	}
+
+	public String getDataVinculo() {
+		return dataVinculo;
+	}
+
+	public void setDataVinculo(String dataVinculo) {
+		this.dataVinculo = dataVinculo;
 	}
 
 }

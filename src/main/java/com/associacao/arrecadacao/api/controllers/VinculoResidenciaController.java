@@ -322,6 +322,7 @@ public class VinculoResidenciaController {
 			residencia.setUf(r.getResidencia().getUf());
 			residencia.setDataCriacao(Utils.dateFormat(r.getResidencia().getDataCriacao(), "dd/MM/yyyy"));
 			residencia.setDataAtualizacao(Utils.dateFormat(r.getResidencia().getDataAtualizacao(), "dd/MM/yyyy"));
+			residencia.setDataVinculo(Utils.dateFormat(r.getDataVinculo(), "dd/MM/yyyy"));
 			residencias.add(residencia);	
 			
 		});
