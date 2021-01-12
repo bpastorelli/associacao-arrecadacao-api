@@ -89,24 +89,31 @@ public class MoradorController {
 	}
 	
 	@PostMapping(value = "/novo")
-	public ResponseEntity<?> cadastrar( 
-			@Valid @RequestBody CadastroMoradorDto cadastroMoradorDto, 
+	public ResponseEntity<?> cadastrarNovo( 
+			@Valid @RequestBody Morador moradorRequestBody, 
 			BindingResult result) throws NoSuchAlgorithmException{
 		
-		log.info("Cadastro de morador: {}", cadastroMoradorDto.toString());
-		Response<CadastroMoradorDto> response = new Response<CadastroMoradorDto>();
+		log.info("Cadastro de morador: {}", moradorRequestBody.toString());
+		Response<Morador> response = new Response<Morador>();
 		
-		List<Morador> moradores = this.converterDtoParaMorador(cadastroMoradorDto);
-		validarDadosExistentes(cadastroMoradorDto, result);
+		Morador morador = this.converterDtoParaMorador(moradorRequestBody);
+		
+		CadastroMoradorDto dto = new CadastroMoradorDto();
+		
+		List<Morador> listMorador = new ArrayList<Morador>();
+		listMorador.add(morador);
+		dto.setMoradores(listMorador);
+		
+		validarDadosExistentes(dto, result);
 		
 		if(result.hasErrors()) {
 			log.error("Erro validando dados para cadastro do(s) morador(es): {}", result.getAllErrors());
 			result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
-			return ResponseEntity.badRequest().body(response);
-		}
+			return ResponseEntity.badRequest().body(response.getErrors());
+		}	
 		
-		this.moradorService.persistir(moradores);
-		response.setData(this.converterCadastroMoradorDto(moradores));
+		this.moradorService.persistir(listMorador);
+		response.setData(morador);
 		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 		
 	}
@@ -282,14 +289,8 @@ public class MoradorController {
 	
 	private void validarDadosExistentes(CadastroMoradorDto cadastroMoradorDto, BindingResult result) {
 		
-		Optional<Long> residenciaId = cadastroMoradorDto.getMoradores().get(0).getResidenciaId();
-		
-		if(cadastroMoradorDto.getMoradores().size() == 0) {
-			result.addError(new ObjectError("morador", " Você deve informar ao menos um morador"));
-		}
-		
-		if(!this.residenciaService.buscarPorId(residenciaId.get()).isPresent())
-			result.addError(new ObjectError("morador", " Residencia ID " + residenciaId.get() + " não existente"));
+		if(cadastroMoradorDto.getMoradores().size() == 0) 
+			result.addError(new ObjectError("morador", " Você deve informar ao menos um morador"));	
 		
 		for(Morador morador : cadastroMoradorDto.getMoradores()) {
 			if(morador.getNome().isEmpty())
@@ -299,7 +300,7 @@ public class MoradorController {
 				result.addError(new ObjectError("morador", " O campo CPF é obrigatório"));
 			
 			if(!ValidaCPF.isCPF(morador.getCpf()))
-				result.addError(new ObjectError("morador", " CPF inválido"));
+				result.addError(new ObjectError("morador", " CPF " + morador.getCpf() + " inválido"));
 			
 			if(morador.getRg().isEmpty())
 				result.addError(new ObjectError("morador", " O campo RG é obrigatório"));
@@ -338,7 +339,7 @@ public class MoradorController {
 					.stream()
 					.filter(pessoa -> pessoa.getCpf()
 					.equals(morador.getCpf())).count() > 1)
-				result.addError(new ObjectError("morador", " CPF " + morador.getCpf() + " está duplicado."));
+				result.addError(new ObjectError("morador", " CPF '" + morador.getCpf() + "' está duplicado"));
 		});	
 		
 		//Valida se o RG não está duplicado na requisição.
@@ -347,7 +348,7 @@ public class MoradorController {
 					.stream()
 					.filter(pessoa -> pessoa.getRg()
 					.equals(morador.getRg())).count() > 1)
-				result.addError(new ObjectError("morador", "RG " + morador.getRg() + " está duplicado."));
+				result.addError(new ObjectError("morador", " RG '" + morador.getRg() + "' está duplicado"));
 		});
 		
 		//Valida se o E-mail não está duplicado na requisição.
@@ -356,7 +357,7 @@ public class MoradorController {
 					.stream()
 					.filter(pessoa -> pessoa.getEmail()
 					.equals(morador.getEmail())).count() > 1) {
-				result.addError(new ObjectError("morador", "E-mail " + morador.getEmail() + " está duplicado."));				
+				result.addError(new ObjectError("morador", " E-mail '" + morador.getEmail() + "' está duplicado"));				
 			}
 		});
 		
@@ -400,7 +401,7 @@ public class MoradorController {
 		item.setPerfil(morador.getPerfil() == null ? PerfilEnum.ROLE_USUARIO : morador.getPerfil());
 		item.setTelefone(morador.getTelefone());
 		item.setCelular(morador.getCelular());
-		item.setResidenciaId(morador.getResidenciaId().get());
+		item.setResidenciaId(!morador.getResidenciaId().isPresent() ? 0 : morador.getResidenciaId().get());
 		item.setPosicao(morador.getPosicao());
 		
 		return item;

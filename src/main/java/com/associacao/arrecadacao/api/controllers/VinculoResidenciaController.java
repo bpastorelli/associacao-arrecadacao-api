@@ -121,7 +121,7 @@ public class VinculoResidenciaController {
 	 * @return ResponseEntity<Response<VinculosResidenciaResponseDto>>
 	 */
 	@GetMapping(value = "/residencia/{residenciaId}")
-	public ResponseEntity<Response<VinculosResidenciaResponseDto>> consultarVinculoResidenciaIdAndMoradorId(
+	public ResponseEntity<?> consultarVinculoResidenciaIdAndMoradorId(
 			@PathVariable("residenciaId") Long residenciaId) {
 		
 		log.info("Consultando vinculo para o morador ID: {}", residenciaId);
@@ -131,7 +131,7 @@ public class VinculoResidenciaController {
 		if (vinculo.size() == 0) {
 			log.info("Erro ao consultar devido ao vinculo para a residencia ID: {} não existir.", residenciaId);
 			response.getErrors().add("Registro não encontrado para a residencia ID " + residenciaId);
-			return ResponseEntity.status(404).body(response);
+			return ResponseEntity.status(404).body(response.getErrors());
 		}
 
 		response.setData(this.converterVinculoResidenciaDto(vinculo).get());
