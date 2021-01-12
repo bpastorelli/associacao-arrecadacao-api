@@ -179,7 +179,7 @@ public class Morador implements Serializable {
 	public void setPosicao(Long posicao) {
 		this.posicao = posicao;
 	}
-    
+	
 	@Override
 	public String toString() {
 		return "Morador [id=" + id + ", nome=" + nome + ", email=" + email + ", senha=" + senha + ", cpf=" + cpf
