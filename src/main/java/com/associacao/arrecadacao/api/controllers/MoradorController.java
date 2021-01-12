@@ -119,7 +119,7 @@ public class MoradorController {
 	 * @throws NoSuchAlgorithmException
 	 */
 	@PostMapping(value = "/incluir")
-	public ResponseEntity<Response<Morador>> cadastrarMorador(
+	public ResponseEntity<?> cadastrarMorador(
 			@Valid @RequestBody Morador moradorRequestBody, 
 			BindingResult result) throws NoSuchAlgorithmException{
 		
@@ -140,7 +140,7 @@ public class MoradorController {
 		if(result.hasErrors()) {
 			log.error("Erro validando dados para cadastro do(s) morador(es): {}", result.getAllErrors());
 			result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
-			return ResponseEntity.badRequest().body(response);
+			return ResponseEntity.status(400).body(response.getErrors());
 		}
 		
 		this.moradorService.persistir(listMorador);
@@ -311,20 +311,25 @@ public class MoradorController {
 				result.addError(new ObjectError("morador", " Você deve informar um número de telefone ou celular"));
 			
 		}
+
+		cadastroMoradorDto.getMoradores().forEach(morador ->{
+			this.moradorService.buscarPorNome(morador.getNome())
+				.ifPresent(res -> result.addError(new ObjectError("morador", " Nome '" + morador.getNome() + "' já existe")));	
+		});
 		
 		cadastroMoradorDto.getMoradores().forEach(morador ->{
 			this.moradorService.buscarPorCpf(morador.getCpf())
-				.ifPresent(res -> result.addError(new ObjectError("morador", " CPF " + morador.getCpf() + " já existe")));	
+				.ifPresent(res -> result.addError(new ObjectError("morador", " CPF '" + morador.getCpf() + "' já existe")));	
 		});
 		
 		cadastroMoradorDto.getMoradores().forEach(morador ->{
 			this.moradorService.buscarPorRg(morador.getRg())
-				.ifPresent(res -> result.addError(new ObjectError("morador", " RG " + morador.getRg() + " já existe")));	
+				.ifPresent(res -> result.addError(new ObjectError("morador", " RG '" + morador.getRg() + "' já existe")));	
 		});
 	
 		cadastroMoradorDto.getMoradores().forEach(morador ->{
 			this.moradorService.buscarPorEmail(morador.getEmail())
-				.ifPresent(res -> result.addError(new ObjectError("morador", " E-mail " + morador.getEmail() + " já existe")));	
+				.ifPresent(res -> result.addError(new ObjectError("morador", " E-mail '" + morador.getEmail() + "' já existe")));	
 		});
 		
 		//Valida se o CPF não está duplicado na requisição.
