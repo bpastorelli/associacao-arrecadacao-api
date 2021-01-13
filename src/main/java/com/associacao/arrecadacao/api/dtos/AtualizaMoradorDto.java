@@ -9,6 +9,8 @@ public class AtualizaMoradorDto {
 	private String rg;
 	private String telefone;
 	private String celular;
+	private Long posicao;
+	private String[] errors;
 	
 	public AtualizaMoradorDto() {
 		
@@ -18,12 +20,12 @@ public class AtualizaMoradorDto {
 		this.nome = nome;
 	}
 	
-	@NotEmpty(message = "Nome não pode ser nulo.")
+	@NotEmpty(message = " Nome não pode ser nulo")
 	public String getNome() {
 		return nome;
 	}
 	
-	@NotEmpty(message = "RG não pode ser nulo.")
+	@NotEmpty(message = " RG não pode ser nulo")
 	public String getRg() {
 		return rg;
 	}
@@ -32,7 +34,7 @@ public class AtualizaMoradorDto {
 		this.rg = rg;
 	}
 	
-	@NotEmpty(message = "E-mail não pode ser nulo.")
+	@NotEmpty(message = " E-mail não pode ser nulo")
 	public String getEmail() {
 		return email;
 	}
@@ -41,7 +43,6 @@ public class AtualizaMoradorDto {
 		this.email = email;
 	}
 	
-	@NotEmpty(message = "Telefone não pode ser nulo.")
 	public String getTelefone() {
 		return telefone;
 	}
@@ -50,12 +51,29 @@ public class AtualizaMoradorDto {
 		this.telefone = telefone;
 	}
 
+	@NotEmpty(message = " Celular não pode ser nulo")
 	public String getCelular() {
 		return celular;
 	}
 
 	public void setCelular(String celular) {
 		this.celular = celular;
+	}
+
+	public Long getPosicao() {
+		return posicao;
+	}
+
+	public void setPosicao(Long posicao) {
+		this.posicao = posicao;
+	}
+
+	public String[] getErrors() {
+		return errors;
+	}
+
+	public void setErrors(String[] errors) {
+		this.errors = errors;
 	}
 	
 }

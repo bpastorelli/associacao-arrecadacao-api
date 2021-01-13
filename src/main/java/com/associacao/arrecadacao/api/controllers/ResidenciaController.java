@@ -1,6 +1,8 @@
 package com.associacao.arrecadacao.api.controllers;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import javax.validation.Valid;
@@ -26,10 +28,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.associacao.arrecadacao.api.dtos.AtualizaResidenciaDto;
+import com.associacao.arrecadacao.api.dtos.CadastroNovaResidenciaDto;
 import com.associacao.arrecadacao.api.dtos.CadastroResidenciaDto;
+import com.associacao.arrecadacao.api.entities.Morador;
 import com.associacao.arrecadacao.api.entities.Residencia;
+import com.associacao.arrecadacao.api.entities.VinculoResidencia;
 import com.associacao.arrecadacao.api.response.Response;
+import com.associacao.arrecadacao.api.services.MoradorService;
 import com.associacao.arrecadacao.api.services.ResidenciaService;
+import com.associacao.arrecadacao.api.services.VinculoResidenciaService;
 
 @RestController
 @RequestMapping("/associados/residencia")
@@ -39,14 +46,21 @@ class ResidenciaController {
 	private static final Logger log = LoggerFactory.getLogger(ResidenciaController.class);
 	
 	@Autowired
+	private MoradorService moradorService;
+	
+	@Autowired
 	private ResidenciaService residenciaService;
+	
+	@Autowired
+	private VinculoResidenciaService vinculoResidenciaService;
+	
 	
 	public ResidenciaController() {
 		
 	}
 	
 	@PostMapping
-	public ResponseEntity<Response<CadastroResidenciaDto>> cadastrar(@Valid @RequestBody CadastroResidenciaDto cadastroResidenciaDto,
+	public ResponseEntity<?> cadastrar(@Valid @RequestBody CadastroResidenciaDto cadastroResidenciaDto,
 			BindingResult result ){
 		
 		log.info("Cadastrando uma residência: {}", cadastroResidenciaDto.toString());
@@ -59,13 +73,39 @@ class ResidenciaController {
 		if(result.hasErrors()) {
 			log.error("Erro validando dados para cadastro da residência: {}", result.getAllErrors());
 			result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
-			return ResponseEntity.badRequest().body(response);
+			return ResponseEntity.status(400).body(response.getErrors());
 		}
 		
 		this.residenciaService.persistir(residencia);
 		
 		response.setData(this.converterCadastroResidenciaDto(residencia));
-		return ResponseEntity.ok(response);
+		return ResponseEntity.status(HttpStatus.CREATED).body(response);
+		
+	}
+	
+	@PostMapping("/nova")
+	public ResponseEntity<?> cadastrarNova(@Valid @RequestBody CadastroNovaResidenciaDto cadastroNovaResidenciaDto,
+			BindingResult result ){
+		
+		log.info("Cadastrando uma residência: {}", cadastroNovaResidenciaDto.toString());
+		
+		Response<CadastroResidenciaDto> response = new Response<CadastroResidenciaDto>();
+		
+		Residencia residencia = this.converterNovaDtoParaResidencia(cadastroNovaResidenciaDto);
+		validarDadosExistentes(cadastroNovaResidenciaDto, result);
+		
+		if(result.hasErrors()) {
+			log.error("Erro validando dados para cadastro da residência: {}", result.getAllErrors());
+			result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
+			return ResponseEntity.status(400).body(response.getErrors());
+		}
+		
+		Optional<Morador> morador = moradorService.buscarPorId(cadastroNovaResidenciaDto.getMoradorId());
+		
+		this.residenciaService.persistir(residencia);
+		this.vinculoResidenciaService.persistir(this.converterParaVinculoResidencia(morador.get(), residencia));
+		response.setData(this.converterCadastroResidenciaDto(residencia));
+		return ResponseEntity.status(HttpStatus.CREATED).body(response.getData());
 		
 	}
 	
@@ -80,7 +120,7 @@ class ResidenciaController {
 	 * @throws NoSuchAlgorithmException
 	 */
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<Response<CadastroResidenciaDto>> atualizar(@PathVariable("id") Long id,
+	public ResponseEntity<?> atualizar(@PathVariable("id") Long id,
 			@Valid @RequestBody AtualizaResidenciaDto residenciaDto, BindingResult result) throws NoSuchAlgorithmException {
 		
 		log.info("Atualizando residência: {}", residenciaDto.toString());
@@ -88,7 +128,7 @@ class ResidenciaController {
 		
 		Optional<Residencia> residencia = this.residenciaService.buscarPorId(id);
 		if (!residencia.isPresent()) {
-			result.addError(new ObjectError("residencia", "Residência não encontrada."));
+			result.addError(new ObjectError("residencia", " Residência não encontrada."));
 		}
 		
 		this.atualizarDadosResidencia(residencia.get(), residenciaDto, result);
@@ -96,13 +136,13 @@ class ResidenciaController {
 		if (result.hasErrors()) {
 			log.error("Erro validando residência: {}", result.getAllErrors());
 			result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
-			return ResponseEntity.badRequest().body(response);
+			return ResponseEntity.badRequest().body(response.getErrors());
 		}
 		
 		this.residenciaService.persistir(residencia.get());
 		response.setData(this.converterCadastroResidenciaDto(residencia.get()));
 
-		return ResponseEntity.ok(response);
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 		
 	}
 	
@@ -125,11 +165,11 @@ class ResidenciaController {
 		if (!residencia.isPresent()) {
 			log.info("Residência não encontrada para o ID: {}", id);
 			response.getErrors().add("Residência não encontrada para o ID " + id);
-			return ResponseEntity.badRequest().body(response);
+			return ResponseEntity.status(404).body(response);
 		}
 		
 		response.setData(this.converterCadastroResidenciaDto(residencia.get()));
-		return ResponseEntity.ok(response);
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 		
 	}
 	
@@ -137,10 +177,10 @@ class ResidenciaController {
 	 * Busca uma residência pelo ID ou pel Matricula.
 	 * 
 	 * @param result
-	 * @return ResponseEntity<Response<CadastroResidenciaDto>>
+	 * @return ResponseEntity<?>
 	 * @throws NoSuchAlgorithmException
 	 */
-	@GetMapping()
+	@GetMapping("/filtro")
 	public ResponseEntity<?> buscarResidenciaPaginado(
 			@RequestParam(value = "id", defaultValue = "0") Long id,
 			@RequestParam(value = "matricula", defaultValue = "null") String matricula,
@@ -162,12 +202,36 @@ class ResidenciaController {
 		
 		if (residencias.getSize() == 0) {
 			log.info("A consulta não retornou dados");
-			return ResponseEntity.badRequest().body("A consulta não retornou dados!");
+			return ResponseEntity.status(404).body("A consulta não retornou dados!");
 		}
 		
 		Page<CadastroResidenciaDto> residenciasDto = residencias.map(residencia -> this.converterCadastroResidenciaDto(residencia));
 		
 		return new ResponseEntity<>(residenciasDto.getContent(), HttpStatus.OK);
+		
+	}
+	
+	
+	/**
+	 * Converter para VinculoResidencia.
+	 * 
+	 * @param morador
+	 * @param residencia
+	 * @return VinculoResidencia
+	 */
+	public List<VinculoResidencia> converterParaVinculoResidencia(Morador morador, Residencia residencia){
+		
+		
+		List<VinculoResidencia> listVinculo = new ArrayList<VinculoResidencia>();
+		
+		VinculoResidencia vinculo = new VinculoResidencia();
+		
+		vinculo.setMorador(morador);
+		vinculo.setResidencia(residencia);
+		
+		listVinculo.add(vinculo);
+		
+		return listVinculo;
 		
 	}
 	
@@ -191,13 +255,46 @@ class ResidenciaController {
 		return residencia;
 	}
 	
+	/**
+	 * Converter o CadastroNovaResidenciaDto para Residencia.
+	 * 
+	 * @param cadastroNovaResidenciaDto
+	 * @return Residencia
+	 */
+	private Residencia converterNovaDtoParaResidencia(CadastroNovaResidenciaDto cadastroNovaResidenciaDto) {
+		
+		Residencia residencia = new Residencia();
+		residencia.setMatricula(cadastroNovaResidenciaDto.getMatricula());
+		residencia.setEndereco(cadastroNovaResidenciaDto.getEndereco());
+		residencia.setNumero(cadastroNovaResidenciaDto.getNumero());
+		residencia.setComplemento(cadastroNovaResidenciaDto.getComplemento());
+		residencia.setBairro(cadastroNovaResidenciaDto.getBairro());
+		residencia.setCep(cadastroNovaResidenciaDto.getCep());
+		residencia.setCidade(cadastroNovaResidenciaDto.getCidade());
+		residencia.setUf(cadastroNovaResidenciaDto.getUf());
+		return residencia;
+	}
+	
 	private void validarDadosExistentes(CadastroResidenciaDto cadastroResidenciaDto, BindingResult result) {
 		
 		this.residenciaService.buscarPorMatricula(cadastroResidenciaDto.getMatricula())
-				.ifPresent(res -> result.addError(new ObjectError("residencia", "Residência já existente")));
+				.ifPresent(res -> result.addError(new ObjectError("residencia", " Residência já existente")));
 		
 		this.residenciaService.bucarPorEnderecoAndNumero(cadastroResidenciaDto.getEndereco(), cadastroResidenciaDto.getNumero())
-				.ifPresent(res -> result.addError(new ObjectError("residencia", "Endereço já existente")));
+				.ifPresent(res -> result.addError(new ObjectError("residencia", " Endereço já existente")));
+		
+	}
+	
+	private void validarDadosExistentes(CadastroNovaResidenciaDto cadastroNovaResidenciaDto, BindingResult result) {
+		
+		this.residenciaService.buscarPorMatricula(cadastroNovaResidenciaDto.getMatricula())
+				.ifPresent(res -> result.addError(new ObjectError("residencia", " Residência já existente")));
+		
+		this.residenciaService.bucarPorEnderecoAndNumero(cadastroNovaResidenciaDto.getEndereco(), cadastroNovaResidenciaDto.getNumero())
+				.ifPresent(res -> result.addError(new ObjectError("residencia", " Endereço já existente")));
+		
+		if(!this.moradorService.buscarPorId(cadastroNovaResidenciaDto.getMoradorId()).isPresent())
+				result.addError(new ObjectError("residencia", " O morador código " + cadastroNovaResidenciaDto.getMoradorId() + " não existe" ));
 		
 	}
 	
@@ -232,15 +329,29 @@ class ResidenciaController {
 	 * @throws NoSuchAlgorithmException
 	 */
 	private void atualizarDadosResidencia(Residencia residencia, AtualizaResidenciaDto residenciaDto, BindingResult result)
-			throws NoSuchAlgorithmException {
+			throws NoSuchAlgorithmException {	
 		
-		residencia.setEndereco(residenciaDto.getEndereco());
-		residencia.setNumero(residenciaDto.getNumero());
-		residencia.setComplemento(residenciaDto.getComplemento());
-		residencia.setBairro(residenciaDto.getBairro());
-		residencia.setCep(residenciaDto.getCep());
-		residencia.setCidade(residenciaDto.getCidade());
-		residencia.setUf(residenciaDto.getUf());
+		Optional<Residencia> residenciaAtual = this.residenciaService.buscarPorId(residencia.getId());
+		
+		this.residenciaService.buscarPorMatricula(residenciaDto.getMatricula())
+			.ifPresent(res -> result.addError(new ObjectError("residencia", " Residência já existente")));
 
+		if(residenciaAtual.isPresent())
+			if(residenciaDto.getEndereco() != residenciaAtual.get().getEndereco() && residenciaDto.getNumero() != residenciaAtual.get().getNumero())
+				this.residenciaService.bucarPorEnderecoAndNumero(residenciaDto.getEndereco(), residenciaDto.getNumero())
+					.ifPresent(res -> result.addError(new ObjectError("residencia", " Endereço já existente para a residência codigo " + res.getId() +"")));
+		
+		if(!result.hasErrors()) {
+			
+			residencia.setEndereco(residenciaDto.getEndereco());
+			residencia.setNumero(residenciaDto.getNumero());
+			residencia.setComplemento(residenciaDto.getComplemento());
+			residencia.setBairro(residenciaDto.getBairro());
+			residencia.setCep(residenciaDto.getCep());
+			residencia.setCidade(residenciaDto.getCidade());
+			residencia.setUf(residenciaDto.getUf());
+			
+		}
+		
 	}
 }

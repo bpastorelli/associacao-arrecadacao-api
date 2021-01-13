@@ -38,6 +38,7 @@ public class Morador implements Serializable {
 	private Date dataCriacao;
 	private Date dataAtualizacao;
 	private Long residenciaId;
+	private Long posicao;
 
 	public Morador() {
 	}
@@ -153,8 +154,10 @@ public class Morador implements Serializable {
     @PrePersist
     public void prePersist() {
         final Date atual = new Date();
+        final long status = 1;
         dataCriacao = atual;
         dataAtualizacao = atual;
+        posicao = status;
     }
 
     @Transient
@@ -168,11 +171,20 @@ public class Morador implements Serializable {
     	this.residenciaId = residenciaId;
     }
     
+	@Column(name = "posicao", nullable = false)
+	public Long getPosicao() {
+		return posicao;
+	}
+	
+	public void setPosicao(Long posicao) {
+		this.posicao = posicao;
+	}
+	
 	@Override
 	public String toString() {
 		return "Morador [id=" + id + ", nome=" + nome + ", email=" + email + ", senha=" + senha + ", cpf=" + cpf
 				+ ", rg=" + rg + ", telefone=" + telefone + ", celular=" + celular + ", perfil=" + perfil + ", dataCriacao="
-				+ dataCriacao + ", dataAtualizacao=" + dataAtualizacao + "]";
+				+ dataCriacao + ", dataAtualizacao=" + dataAtualizacao + ", posicao=" + posicao + "]";
 	}
 
 }

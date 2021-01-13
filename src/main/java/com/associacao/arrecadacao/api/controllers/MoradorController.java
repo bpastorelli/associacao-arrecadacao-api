@@ -37,11 +37,10 @@ import com.associacao.arrecadacao.api.entities.VinculoResidencia;
 import com.associacao.arrecadacao.api.enums.PerfilEnum;
 import com.associacao.arrecadacao.api.response.Response;
 import com.associacao.arrecadacao.api.services.MoradorService;
-import com.associacao.arrecadacao.api.services.ResidenciaService;
 import com.associacao.arrecadacao.api.services.VinculoResidenciaService;
 import com.associacao.arrecadacao.api.utils.PasswordUtils;
 import com.associacao.arrecadacao.api.utils.Utils;
-
+	
 @RestController
 @RequestMapping("/associados/morador")
 @CrossOrigin(origins = "*")
@@ -50,10 +49,7 @@ public class MoradorController {
 	private static final Logger log = LoggerFactory.getLogger(MoradorController.class);
 	
 	@Autowired
-	private MoradorService moradorService;
-	
-	@Autowired
-	private ResidenciaService residenciaService;	
+	private MoradorService moradorService;	
 	
 	@Autowired
 	private VinculoResidenciaService vinculoResidenciaService;
@@ -63,7 +59,7 @@ public class MoradorController {
 	}
 	
 	@PostMapping(value = "/residencia/{residenciaId}")
-	public ResponseEntity<Response<CadastroMoradorDto>> cadastrar(@PathVariable("residenciaId") Long residenciaId, 
+	public ResponseEntity<Response<CadastroMoradorDto>> cadastroVinculado(@PathVariable("residenciaId") Long residenciaId, 
 			@Valid @RequestBody CadastroMoradorDto cadastroMoradorDto, 
 			BindingResult result) throws NoSuchAlgorithmException{
 		
@@ -88,8 +84,45 @@ public class MoradorController {
 		
 	}
 	
+	@PostMapping(value = "/novo")
+	public ResponseEntity<?> cadastrarNovo( 
+			@Valid @RequestBody Morador moradorRequestBody, 
+			BindingResult result) throws NoSuchAlgorithmException{
+		
+		log.info("Cadastro de morador: {}", moradorRequestBody.toString());
+		Response<Morador> response = new Response<Morador>();
+		
+		Morador morador = this.converterDtoParaMorador(moradorRequestBody);
+		
+		CadastroMoradorDto dto = new CadastroMoradorDto();
+		
+		List<Morador> listMorador = new ArrayList<Morador>();
+		listMorador.add(morador);
+		dto.setMoradores(listMorador);
+		
+		validarDadosExistentes(dto, result);
+		
+		if(result.hasErrors()) {
+			log.error("Erro validando dados para cadastro do(s) morador(es): {}", result.getAllErrors());
+			result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
+			return ResponseEntity.badRequest().body(response.getErrors());
+		}	
+		
+		this.moradorService.persistir(listMorador);
+		response.setData(morador);
+		return ResponseEntity.status(HttpStatus.CREATED).body(response);
+		
+	}
+	
+	/**
+	 * Cria um morador.
+	 * 
+	 * @param Morador
+	 * @return ResponseEntity<Response<CadastroMoradorDto>>
+	 * @throws NoSuchAlgorithmException
+	 */
 	@PostMapping(value = "/incluir")
-	public ResponseEntity<Response<Morador>> cadastrarMorador(
+	public ResponseEntity<?> cadastrarMorador(
 			@Valid @RequestBody Morador moradorRequestBody, 
 			BindingResult result) throws NoSuchAlgorithmException{
 		
@@ -110,14 +143,14 @@ public class MoradorController {
 		if(result.hasErrors()) {
 			log.error("Erro validando dados para cadastro do(s) morador(es): {}", result.getAllErrors());
 			result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
-			return ResponseEntity.badRequest().body(response);
+			return ResponseEntity.status(400).body(response.getErrors());
 		}
 		
 		this.moradorService.persistir(listMorador);
 		dto.setMoradores(listMorador);
 		this.vinculoResidenciaService.persistir(this.converterDtoParaVinculoResidencia(dto));
 		response.setData(morador);
-		return ResponseEntity.ok(response);
+		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 		
 	}
 	
@@ -131,17 +164,17 @@ public class MoradorController {
 	 * @throws NoSuchAlgorithmException
 	 */
 	@PutMapping(value = "/morador/{id}")
-	public ResponseEntity<Response<AtualizaMoradorDto>> atualizarMorador(@PathVariable("id") Long id,
+	public ResponseEntity<?> atualizarMorador(@PathVariable("id") Long id,
 			@Valid @RequestBody AtualizaMoradorDto moradorDto, BindingResult result) throws NoSuchAlgorithmException {
 		
 		log.info("Atualizando morador: {}", moradorDto.toString());
-		Response<AtualizaMoradorDto> response = new Response<AtualizaMoradorDto>();
+		Response<Morador> response = new Response<Morador>();
 		
 		Optional<Morador> morador = this.moradorService.buscarPorId(id);
 		if (!morador.isPresent()) {
-			result.addError(new ObjectError("morador", "Morador não encontrado pelo ID " + id));
-			result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
-			return ResponseEntity.badRequest().body(response);
+			result.addError(new ObjectError("morador", " Morador não encontrado pelo ID " + id));
+			result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));			
+			return ResponseEntity.status(404).body(response.getErrors());
 		}	
 		
 		this.atualizarDadosMorador(morador.get(), moradorDto, result);
@@ -149,16 +182,16 @@ public class MoradorController {
 		if (result.hasErrors()) {
 			log.error("Erro validando morador: {}", result.getAllErrors());
 			result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
-			return ResponseEntity.badRequest().body(response);
+			return ResponseEntity.status(400).body(response.getErrors());
 		}
 		
 		List<Morador> list = new ArrayList<Morador>();
 		list.add(morador.get());		
 		
 		this.moradorService.persistir(list);
-		response.setData(this.converterCadastroMoradorUpdtRequestDto(list.get(0)));
+		response.setData(morador.get());
 
-		return ResponseEntity.ok(response);
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 		
 	}
 	
@@ -172,7 +205,7 @@ public class MoradorController {
 	 * @throws NoSuchAlgorithmException
 	 */
 	@GetMapping(value = "/id/{id}")
-	public ResponseEntity<Response<CadastroMoradorResponseDto>> buscarPorId(@PathVariable("id") Long id) throws NoSuchAlgorithmException {
+	public ResponseEntity<?> buscarPorId(@PathVariable("id") Long id) throws NoSuchAlgorithmException {
 		
 		log.info("Buscando morador: {}", id);
 		Response<CadastroMoradorResponseDto> response = new Response<CadastroMoradorResponseDto>();
@@ -189,7 +222,7 @@ public class MoradorController {
 		Long residenciaId = vinculoResidenciaService.buscarPorMoradorId(morador.get().getId()).size() > 0 ? vinculoResidenciaService.buscarPorMoradorId(morador.get().getId()) .get(0).getResidencia().getId() : 0;
 		list.forEach(p -> p.setResidenciaId(residenciaId));
 		response.setData(this.converterCadastroMoradorResponseDto(list.get(0), residenciaId));
-		return ResponseEntity.ok(response);
+		return new ResponseEntity<>(morador.get(), HttpStatus.OK);
 		
 	}
 	
@@ -252,49 +285,48 @@ public class MoradorController {
 	
 	private void validarDadosExistentes(CadastroMoradorDto cadastroMoradorDto, BindingResult result) {
 		
-		Optional<Long> residenciaId = cadastroMoradorDto.getMoradores().get(0).getResidenciaId();
-		
-		if(cadastroMoradorDto.getMoradores().size() == 0) {
-			result.addError(new ObjectError("morador", "Você deve informar ao menos um morador."));
-		}
-		
-		if(!this.residenciaService.buscarPorId(residenciaId.get()).isPresent())
-			result.addError(new ObjectError("morador", "Residencia ID " + residenciaId.get() + " não existente."));
+		if(cadastroMoradorDto.getMoradores().size() == 0) 
+			result.addError(new ObjectError("morador", " Você deve informar ao menos um morador"));	
 		
 		for(Morador morador : cadastroMoradorDto.getMoradores()) {
 			if(morador.getNome().isEmpty())
-				result.addError(new ObjectError("morador", "O campo Nome é obrigatório."));
+				result.addError(new ObjectError("morador", " O campo Nome é obrigatório"));
 			
 			if(morador.getCpf().isEmpty())
-				result.addError(new ObjectError("morador", "O campo CPF é obrigatório."));
+				result.addError(new ObjectError("morador", " O campo CPF é obrigatório"));
 			
 			if(!ValidaCPF.isCPF(morador.getCpf()))
-				result.addError(new ObjectError("morador", "CPF inválido."));
+				result.addError(new ObjectError("morador", " CPF " + morador.getCpf() + " inválido"));
 			
 			if(morador.getRg().isEmpty())
-				result.addError(new ObjectError("morador", "O campo RG é obrigatório."));
+				result.addError(new ObjectError("morador", " O campo RG é obrigatório"));
 			
 			if(morador.getEmail().isEmpty())
-				result.addError(new ObjectError("morador", "O campo e-mail é obrigatório."));
+				result.addError(new ObjectError("morador", " O campo e-mail é obrigatório"));
 			
 			if(morador.getTelefone().isEmpty() && morador.getCelular().isEmpty())
-				result.addError(new ObjectError("morador", "Você deve informar um número de telefone ou celular."));
+				result.addError(new ObjectError("morador", " Você deve informar um número de telefone ou celular"));
 			
 		}
+
+		cadastroMoradorDto.getMoradores().forEach(morador ->{
+			this.moradorService.buscarPorNome(morador.getNome())
+				.ifPresent(res -> result.addError(new ObjectError("morador", " Nome '" + morador.getNome() + "' já existe")));	
+		});
 		
 		cadastroMoradorDto.getMoradores().forEach(morador ->{
 			this.moradorService.buscarPorCpf(morador.getCpf())
-				.ifPresent(res -> result.addError(new ObjectError("morador", "CPF " + morador.getCpf() + " já existente")));	
+				.ifPresent(res -> result.addError(new ObjectError("morador", " CPF '" + morador.getCpf() + "' já existe")));	
 		});
 		
 		cadastroMoradorDto.getMoradores().forEach(morador ->{
 			this.moradorService.buscarPorRg(morador.getRg())
-				.ifPresent(res -> result.addError(new ObjectError("morador", "RG " + morador.getRg() + " já existente")));	
+				.ifPresent(res -> result.addError(new ObjectError("morador", " RG '" + morador.getRg() + "' já existe")));	
 		});
 	
 		cadastroMoradorDto.getMoradores().forEach(morador ->{
 			this.moradorService.buscarPorEmail(morador.getEmail())
-				.ifPresent(res -> result.addError(new ObjectError("morador", "E-mail " + morador.getEmail() + " já existente")));	
+				.ifPresent(res -> result.addError(new ObjectError("morador", " E-mail '" + morador.getEmail() + "' já existe")));	
 		});
 		
 		//Valida se o CPF não está duplicado na requisição.
@@ -303,7 +335,7 @@ public class MoradorController {
 					.stream()
 					.filter(pessoa -> pessoa.getCpf()
 					.equals(morador.getCpf())).count() > 1)
-				result.addError(new ObjectError("morador", "CPF " + morador.getCpf() + " está duplicado."));
+				result.addError(new ObjectError("morador", " CPF '" + morador.getCpf() + "' está duplicado"));
 		});	
 		
 		//Valida se o RG não está duplicado na requisição.
@@ -312,7 +344,7 @@ public class MoradorController {
 					.stream()
 					.filter(pessoa -> pessoa.getRg()
 					.equals(morador.getRg())).count() > 1)
-				result.addError(new ObjectError("morador", "RG " + morador.getRg() + " está duplicado."));
+				result.addError(new ObjectError("morador", " RG '" + morador.getRg() + "' está duplicado"));
 		});
 		
 		//Valida se o E-mail não está duplicado na requisição.
@@ -321,7 +353,7 @@ public class MoradorController {
 					.stream()
 					.filter(pessoa -> pessoa.getEmail()
 					.equals(morador.getEmail())).count() > 1) {
-				result.addError(new ObjectError("morador", "E-mail " + morador.getEmail() + " está duplicado."));				
+				result.addError(new ObjectError("morador", " E-mail '" + morador.getEmail() + "' está duplicado"));				
 			}
 		});
 		
@@ -347,6 +379,7 @@ public class MoradorController {
 			item.setTelefone(morador.getTelefone());
 			item.setCelular(morador.getCelular());
 			item.setResidenciaId(morador.getResidenciaId().get());
+			item.setPosicao(morador.getPosicao());
 			moradores.add(item);
 		}
 		
@@ -364,7 +397,8 @@ public class MoradorController {
 		item.setPerfil(morador.getPerfil() == null ? PerfilEnum.ROLE_USUARIO : morador.getPerfil());
 		item.setTelefone(morador.getTelefone());
 		item.setCelular(morador.getCelular());
-		item.setResidenciaId(morador.getResidenciaId().get());
+		item.setResidenciaId(!morador.getResidenciaId().isPresent() ? 0 : morador.getResidenciaId().get());
+		item.setPosicao(morador.getPosicao());
 		
 		return item;
 	}
@@ -404,23 +438,7 @@ public class MoradorController {
 		dto.setDataAtualizacao(Utils.dateFormat(morador.getDataAtualizacao(), "dd/MM/yyyy"));
 		return dto;
 	}
-	
-	/**
-	 * Converter o objeto tipo Morador para o tipo CadastroMoradorResponseDto.
-	 * 
-	 * @param Morador
-	 * @return CadastroMoradorResponseDto
-	 */
-	private AtualizaMoradorDto converterCadastroMoradorUpdtRequestDto(Morador morador) {
-		
-		AtualizaMoradorDto dto = new AtualizaMoradorDto();
-		dto.setNome(morador.getNome());
-		dto.setEmail(morador.getEmail());		
-		dto.setRg(morador.getRg());
-		dto.setTelefone(morador.getTelefone());
-		dto.setCelular(morador.getCelular());
-		return dto;
-	}
+
 	
 	/**
 	 * Converter o CadastroProcessoDto para VinculoResidencia.
@@ -456,24 +474,25 @@ public class MoradorController {
 		
 		if (!morador.getNome().equals(moradorDto.getNome())) {
 			this.moradorService.buscarPorNome(moradorDto.getNome())
-					.ifPresent(func -> result.addError(new ObjectError("nome", "Email já existente.")));
+					.ifPresent(func -> result.addError(new ObjectError("nome", " O nome '" + func.getNome() + "' já existe")));
 			morador.setNome(moradorDto.getNome());
 		}
 		
 		if (!morador.getEmail().equals(moradorDto.getEmail())) {
 			this.moradorService.buscarPorEmail(moradorDto.getEmail())
-					.ifPresent(func -> result.addError(new ObjectError("email", "Email já existente.")));
+					.ifPresent(func -> result.addError(new ObjectError("email", " O e-mail '" + func.getEmail() + "' já existe")));
 			morador.setEmail(moradorDto.getEmail());
 		}
 		
 		if (!morador.getRg().equals(moradorDto.getRg())) {
 			this.moradorService.buscarPorRg(moradorDto.getRg())
-					.ifPresent(func -> result.addError(new ObjectError("rg", "RG já existente.")));
+					.ifPresent(func -> result.addError(new ObjectError("rg", " RG '" + func.getRg() + "' já existe")));
 			morador.setRg(moradorDto.getRg());
 		}
 		
 		morador.setTelefone(moradorDto.getTelefone());
 		morador.setCelular(moradorDto.getCelular());
+		morador.setPosicao(moradorDto.getPosicao());
 
 	}
 }
