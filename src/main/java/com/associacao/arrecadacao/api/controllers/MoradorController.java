@@ -37,7 +37,6 @@ import com.associacao.arrecadacao.api.entities.VinculoResidencia;
 import com.associacao.arrecadacao.api.enums.PerfilEnum;
 import com.associacao.arrecadacao.api.response.Response;
 import com.associacao.arrecadacao.api.services.MoradorService;
-import com.associacao.arrecadacao.api.services.ResidenciaService;
 import com.associacao.arrecadacao.api.services.VinculoResidenciaService;
 import com.associacao.arrecadacao.api.utils.PasswordUtils;
 import com.associacao.arrecadacao.api.utils.Utils;
@@ -50,10 +49,7 @@ public class MoradorController {
 	private static final Logger log = LoggerFactory.getLogger(MoradorController.class);
 	
 	@Autowired
-	private MoradorService moradorService;
-	
-	@Autowired
-	private ResidenciaService residenciaService;	
+	private MoradorService moradorService;	
 	
 	@Autowired
 	private VinculoResidenciaService vinculoResidenciaService;

@@ -46,7 +46,7 @@ class ResidenciaController {
 	}
 	
 	@PostMapping
-	public ResponseEntity<Response<CadastroResidenciaDto>> cadastrar(@Valid @RequestBody CadastroResidenciaDto cadastroResidenciaDto,
+	public ResponseEntity<?> cadastrar(@Valid @RequestBody CadastroResidenciaDto cadastroResidenciaDto,
 			BindingResult result ){
 		
 		log.info("Cadastrando uma residência: {}", cadastroResidenciaDto.toString());
@@ -59,7 +59,7 @@ class ResidenciaController {
 		if(result.hasErrors()) {
 			log.error("Erro validando dados para cadastro da residência: {}", result.getAllErrors());
 			result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
-			return ResponseEntity.status(400).body(response);
+			return ResponseEntity.status(400).body(response.getErrors());
 		}
 		
 		this.residenciaService.persistir(residencia);
@@ -80,7 +80,7 @@ class ResidenciaController {
 	 * @throws NoSuchAlgorithmException
 	 */
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<Response<CadastroResidenciaDto>> atualizar(@PathVariable("id") Long id,
+	public ResponseEntity<?> atualizar(@PathVariable("id") Long id,
 			@Valid @RequestBody AtualizaResidenciaDto residenciaDto, BindingResult result) throws NoSuchAlgorithmException {
 		
 		log.info("Atualizando residência: {}", residenciaDto.toString());
@@ -88,7 +88,7 @@ class ResidenciaController {
 		
 		Optional<Residencia> residencia = this.residenciaService.buscarPorId(id);
 		if (!residencia.isPresent()) {
-			result.addError(new ObjectError("residencia", "Residência não encontrada."));
+			result.addError(new ObjectError("residencia", " Residência não encontrada."));
 		}
 		
 		this.atualizarDadosResidencia(residencia.get(), residenciaDto, result);
@@ -96,7 +96,7 @@ class ResidenciaController {
 		if (result.hasErrors()) {
 			log.error("Erro validando residência: {}", result.getAllErrors());
 			result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
-			return ResponseEntity.badRequest().body(response);
+			return ResponseEntity.badRequest().body(response.getErrors());
 		}
 		
 		this.residenciaService.persistir(residencia.get());
@@ -194,10 +194,10 @@ class ResidenciaController {
 	private void validarDadosExistentes(CadastroResidenciaDto cadastroResidenciaDto, BindingResult result) {
 		
 		this.residenciaService.buscarPorMatricula(cadastroResidenciaDto.getMatricula())
-				.ifPresent(res -> result.addError(new ObjectError("residencia", "Residência já existente")));
+				.ifPresent(res -> result.addError(new ObjectError("residencia", " Residência já existente")));
 		
 		this.residenciaService.bucarPorEnderecoAndNumero(cadastroResidenciaDto.getEndereco(), cadastroResidenciaDto.getNumero())
-				.ifPresent(res -> result.addError(new ObjectError("residencia", "Endereço já existente")));
+				.ifPresent(res -> result.addError(new ObjectError("residencia", " Endereço já existente")));
 		
 	}
 	
@@ -232,15 +232,29 @@ class ResidenciaController {
 	 * @throws NoSuchAlgorithmException
 	 */
 	private void atualizarDadosResidencia(Residencia residencia, AtualizaResidenciaDto residenciaDto, BindingResult result)
-			throws NoSuchAlgorithmException {
+			throws NoSuchAlgorithmException {	
 		
-		residencia.setEndereco(residenciaDto.getEndereco());
-		residencia.setNumero(residenciaDto.getNumero());
-		residencia.setComplemento(residenciaDto.getComplemento());
-		residencia.setBairro(residenciaDto.getBairro());
-		residencia.setCep(residenciaDto.getCep());
-		residencia.setCidade(residenciaDto.getCidade());
-		residencia.setUf(residenciaDto.getUf());
+		Optional<Residencia> residenciaAtual = this.residenciaService.buscarPorId(residencia.getId());
+		
+		this.residenciaService.buscarPorMatricula(residenciaDto.getMatricula())
+			.ifPresent(res -> result.addError(new ObjectError("residencia", " Residência já existente")));
 
+		if(residenciaAtual.isPresent())
+			if(residenciaDto.getEndereco() != residenciaAtual.get().getEndereco() && residenciaDto.getNumero() != residenciaAtual.get().getNumero())
+				this.residenciaService.bucarPorEnderecoAndNumero(residenciaDto.getEndereco(), residenciaDto.getNumero())
+					.ifPresent(res -> result.addError(new ObjectError("residencia", " Endereço já existente para a residência codigo " + res.getId() +"")));
+		
+		if(!result.hasErrors()) {
+			
+			residencia.setEndereco(residenciaDto.getEndereco());
+			residencia.setNumero(residenciaDto.getNumero());
+			residencia.setComplemento(residenciaDto.getComplemento());
+			residencia.setBairro(residenciaDto.getBairro());
+			residencia.setCep(residenciaDto.getCep());
+			residencia.setCidade(residenciaDto.getCidade());
+			residencia.setUf(residenciaDto.getUf());
+			
+		}
+		
 	}
 }
