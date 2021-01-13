@@ -40,7 +40,7 @@ import com.associacao.arrecadacao.api.services.MoradorService;
 import com.associacao.arrecadacao.api.services.VinculoResidenciaService;
 import com.associacao.arrecadacao.api.utils.PasswordUtils;
 import com.associacao.arrecadacao.api.utils.Utils;
-
+	
 @RestController
 @RequestMapping("/associados/morador")
 @CrossOrigin(origins = "*")
