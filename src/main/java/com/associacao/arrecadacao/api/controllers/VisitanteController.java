@@ -7,14 +7,19 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.associacao.arrecadacao.api.commons.ValidaCPF;
@@ -63,6 +68,50 @@ public class VisitanteController {
 		this.visitanteService.persistir(visitante);
 		response.setData(visitante);
 		return ResponseEntity.status(HttpStatus.CREATED).body(response.getData());
+		
+	}
+	
+	/**
+	 * 
+	 * @param id id o visitante
+	 * @param nome nome do visitante
+	 * @param rg rg do visitante
+	 * @param cpf cpf do visitante
+	 * @param pag pagina atual
+	 * @param ord ordenar pelo campo
+	 * @param dir ordem de crescente ASC ou decrescente DESC
+	 * @param size registros por pagina
+	 * @return List<Visitante>
+	 * @throws NoSuchAlgorithmException
+	 */
+	@GetMapping(value = "/filtro")
+	public ResponseEntity<?> buscarVisitantesFiltro(
+			@RequestParam(value = "id", defaultValue = "0") Long id,
+			@RequestParam(value = "nome", defaultValue = "null") String nome,
+			@RequestParam(value = "rg", defaultValue = "null") String rg,
+			@RequestParam(value = "cpf", defaultValue = "null") String cpf,
+			@RequestParam(value = "pag", defaultValue = "0") int pag,
+			@RequestParam(value = "ord", defaultValue = "id") String ord,
+			@RequestParam(value = "dir", defaultValue = "DESC") String dir,
+			@RequestParam(value = "size", defaultValue = "10") int size) throws NoSuchAlgorithmException{
+		
+		log.info("Buscando visitantes...");
+		
+		PageRequest pageRequest = new PageRequest(pag, size, Direction.valueOf(dir), ord);
+		
+		Page<Visitante> visitantes = null;
+		
+		if(id != 0 || !nome.equals("null") || !rg.equals("null") || !cpf.equals("null"))
+			visitantes = this.visitanteService.buscarPorIdOrNomeOrCpfOrRg(id, nome, cpf, rg, pageRequest);
+		else
+			visitantes = this.visitanteService.buscarTodos(pageRequest);
+		
+		if (visitantes.getSize() == 0) {
+			log.info("A consulta não retornou dados");
+			return ResponseEntity.status(404).body("A consulta não retornou dados!");
+		}
+		
+		return ResponseEntity.status(HttpStatus.OK).body(visitantes.getContent());
 		
 	}
 	
@@ -118,4 +167,5 @@ public class VisitanteController {
 			
 		
 	}
+	
 }
