@@ -55,14 +55,14 @@ public class VisitanteController {
 		validarDadosExistentes(visitante, result);
 		
 		if(result.hasErrors()) {
-			log.error("Erro validando dados para cadastro do(s) visitantw(es): {}", result.getAllErrors());
+			log.error("Erro validando dados para cadastro do(s) visitante(s): {}", result.getAllErrors());
 			result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
-			return ResponseEntity.status(400).body(response);
+			return ResponseEntity.status(400).body(response.getErrors());
 		}
 		
 		this.visitanteService.persistir(visitante);
 		response.setData(visitante);
-		return ResponseEntity.status(HttpStatus.CREATED).body(response);
+		return ResponseEntity.status(HttpStatus.CREATED).body(response.getData());
 		
 	}
 	
