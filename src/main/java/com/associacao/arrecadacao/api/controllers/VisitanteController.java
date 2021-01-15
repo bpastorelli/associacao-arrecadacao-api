@@ -54,13 +54,13 @@ public class VisitanteController {
 	 * @throws NoSuchAlgorithmException
 	 */
 	@PostMapping("/incluir")
-	public ResponseEntity<?> cadastrarVisitante(@Valid @RequestBody Visitante visitante,
+	public ResponseEntity<?> cadastrarVisitante(@Valid @RequestBody Visitante visitanteDto,
 												BindingResult result) throws NoSuchAlgorithmException{
 		
-		log.info("Preparando dados para cadastro de visitante", visitante);
+		log.info("Preparando dados para cadastro de visitante", visitanteDto);
 		Response<Visitante> response = new Response<Visitante>();
 		
-		validarDadosExistentes(visitante, result);
+		this.validarDadosExistentes(visitanteDto, result);
 		
 		if(result.hasErrors()) {
 			log.error("Erro validando dados para cadastro do(s) visitante(s): {}", result.getAllErrors());
@@ -68,8 +68,8 @@ public class VisitanteController {
 			return ResponseEntity.status(400).body(response.getErrors());
 		}
 		
-		this.visitanteService.persistir(visitante);
-		response.setData(visitante);
+		this.visitanteService.persistir(visitanteDto);
+		response.setData(visitanteDto);
 		return ResponseEntity.status(HttpStatus.CREATED).body(response.getData());
 		
 	}
@@ -81,20 +81,21 @@ public class VisitanteController {
 	 * @return Morador
 	 * @throws NoSuchAlgorithmException
 	 */
-	@PutMapping("/id")
+	@PutMapping("/{id}")
 	public ResponseEntity<?> atualizarVisitante(@PathVariable("id") Long id,
-												@Valid @RequestBody Visitante visitante,
+												@Valid @RequestBody Visitante visitanteDto,
 												BindingResult result) throws NoSuchAlgorithmException{
 		
-		log.info("Preparando dados para cadastro de visitante", visitante);
+		log.info("Preparando dados para atualização de visitante", visitanteDto);
 		Response<Visitante> response = new Response<Visitante>();
 		
-		Optional<Visitante> visitanteEdit = this.visitanteService.buscarPorId(id);
-		if (!visitanteEdit.isPresent()) {
+		Optional<Visitante> visitante = this.visitanteService.buscarPorId(id);
+		if (!visitante.isPresent()) {
 			result.addError(new ObjectError("visitante", "  Visitante não encontrado"));
+			return ResponseEntity.status(404).body(response.getErrors());
 		}
 		
-		validarDadosExistentes(visitante, result);
+		this.atualizarDadosVisitante(visitanteDto, visitante.get(), result);
 		
 		if(result.hasErrors()) {
 			log.error("Erro validando dados para cadastro do(s) visitante(s): {}", result.getAllErrors());
@@ -102,8 +103,8 @@ public class VisitanteController {
 			return ResponseEntity.status(400).body(response.getErrors());
 		}
 		
-		this.visitanteService.persistir(visitante);
-		response.setData(visitante);
+		this.visitanteService.persistir(visitante.get());
+		response.setData(visitante.get());
 		return ResponseEntity.status(HttpStatus.OK).body(response.getData());
 		
 	}
@@ -182,26 +183,65 @@ public class VisitanteController {
 	}
 	
 	//Validação dos dados informados no dto para um cadastro
+	public void atualizarDadosVisitante(Visitante visitanteDto, Visitante visitante, BindingResult result) {
+		
+
+			if(visitanteDto.getNome().isEmpty())
+				result.addError(new ObjectError("visitante", " O campo nome é obrigatório"));
+			
+			if(!visitanteDto.getNome().equals(visitante.getNome())) {
+				this.visitanteService.buscarPorNome(visitanteDto.getNome())
+					.ifPresent(res -> result.addError(new ObjectError("visitante", " Visitante já cadastrado para o nome "+ visitanteDto.getNome() +"")));
+			}
+			
+			if(!visitanteDto.getCpf().isEmpty()) {
+				if(!ValidaCPF.isCPF(visitanteDto.getCpf()))
+					result.addError(new ObjectError("visitante", " CPF inválido"));
+			}
+			
+			if(!result.hasErrors()) {
+				
+				visitante.setNome(visitanteDto.getNome());
+				visitante.setCpf(visitanteDto.getCpf());
+				visitante.setCep(visitanteDto.getCep());
+				visitante.setEndereco(visitanteDto.getEndereco());
+				visitante.setNumero(visitanteDto.getNumero());
+				visitante.setComplemento(visitanteDto.getComplemento());
+				visitante.setBairro(visitanteDto.getBairro());
+				visitante.setCidade(visitanteDto.getCidade());
+				visitante.setUf(visitanteDto.getUf());
+				visitante.setTelefone(visitanteDto.getTelefone());
+				visitante.setCelular(visitanteDto.getCelular());
+				
+			}
+		
+	}
+	
+	//Validação dos dados informados no dto para um cadastro
 	public void validarDadosExistentes(Visitante visitante, BindingResult result) {
 		
-	
+
 			if(visitante.getNome().isEmpty())
 				result.addError(new ObjectError("visitante", " O campo nome é obrigatório"));
 			
+			if(visitante.getRg().isEmpty()) {
+				result.addError(new ObjectError("visitante", " O campo RG é obrigatório"));			
+			}
+			
 			if(!visitante.getCpf().isEmpty()) {
-				if(!ValidaCPF.isCPF(visitante.getCpf()))
-					result.addError(new ObjectError("visitante", " O campo RG é obrigatório"));			
+				if(!ValidaCPF.isCPF(visitante.getCpf())) 				
+					result.addError(new ObjectError("visitante", " CPF inválido"));			
 			}
 			
 			this.visitanteService.buscarPorRg(visitante.getRg())
-				.ifPresent(res -> result.addError(new ObjectError("visitante", " Vistante já cadastrado para o rg "+ visitante.getRg() +"")));
+				.ifPresent(res -> result.addError(new ObjectError("visitante", " Visitante já cadastrado para o rg "+ visitante.getRg() +"")));				
+
 			
 			this.visitanteService.buscarPorCpf(visitante.getRg())
-				.ifPresent(res -> result.addError(new ObjectError("visitante", " Vistante já cadastrado para o cpf "+ visitante.getCpf() +"")));
+				.ifPresent(res -> result.addError(new ObjectError("visitante", " Visitante já cadastrado para o cpf "+ visitante.getCpf() +"")));
 			
 			this.visitanteService.buscarPorNome(visitante.getNome())
-				.ifPresent(res -> result.addError(new ObjectError("visitante", " Vistante já cadastrado para o nome "+ visitante.getNome() +"")));
-			
+				.ifPresent(res -> result.addError(new ObjectError("visitante", " Visitante já cadastrado para o nome "+ visitante.getNome() +"")));
 		
 	}
 	

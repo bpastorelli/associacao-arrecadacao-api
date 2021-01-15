@@ -24,6 +24,13 @@ public class Visitante implements Serializable {
 	private String nome;
 	private String cpf;
 	private String rg;
+	private String endereco;
+	private String numero;
+	private String cep;
+	private String complemento;
+	private String bairro;
+	private String cidade;
+	private String uf;
 	private String telefone;
 	private String celular;
 	private Date   dataCriacao;
@@ -95,10 +102,72 @@ public class Visitante implements Serializable {
 	public String getCelular() {
 		return celular;
 	}
-
-
+	
 	public void setCelular(String celular) {
 		this.celular = celular;
+	}
+
+	@Column(name = "endereco", nullable = true)
+	public String getEndereco() {
+		return endereco;
+	}
+
+	public void setEndereco(String endereco) {
+		this.endereco = endereco;
+	}
+
+	@Column(name = "numero", nullable = true)
+	public String getNumero() {
+		return numero;
+	}
+
+	public void setNumero(String numero) {
+		this.numero = numero;
+	}
+
+	@Column(name = "cep", nullable = true)
+	public String getCep() {
+		return cep;
+	}
+
+	public void setCep(String cep) {
+		this.cep = cep;
+	}
+
+	@Column(name = "complemento", nullable = true)
+	public String getComplemento() {
+		return complemento;
+	}
+
+	public void setComplemento(String complemento) {
+		this.complemento = complemento;
+	}
+
+	@Column(name = "bairro", nullable = true)
+	public String getBairro() {
+		return bairro;
+	}
+
+	public void setBairro(String bairro) {
+		this.bairro = bairro;
+	}
+	
+	@Column(name = "cidade", nullable = true)
+	public String getCidade() {
+		return cidade;
+	}
+
+	public void setCidade(String cidade) {
+		this.cidade = cidade;
+	}
+
+	@Column(name = "uf", nullable = true)
+	public String getUf() {
+		return uf;
+	}
+
+	public void setUf(String uf) {
+		this.uf = uf;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
