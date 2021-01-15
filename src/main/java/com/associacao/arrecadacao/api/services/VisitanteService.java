@@ -36,6 +36,14 @@ public interface VisitanteService {
 	Optional<Visitante> buscarPorCpf(String cpf);
 	
 	/**
+	 * Busca um visitante por id.
+	 * 
+	 * @param id
+	 * @return Visitante
+	 */
+	Optional<Visitante> buscarPorId(Long id);
+	
+	/**
 	 * Busca um visitante por RG.
 	 * 
 	 * @param rg

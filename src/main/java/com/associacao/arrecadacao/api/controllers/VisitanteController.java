@@ -1,6 +1,7 @@
 package com.associacao.arrecadacao.api.controllers;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
@@ -16,7 +17,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -44,7 +47,7 @@ public class VisitanteController {
 	}
 	
 	/**
-	 * Cadastra um visitate
+	 * Cadastra um visitante
 	 * @param cadastroVisitanteDto
 	 * @param result
 	 * @return Morador
@@ -68,6 +71,40 @@ public class VisitanteController {
 		this.visitanteService.persistir(visitante);
 		response.setData(visitante);
 		return ResponseEntity.status(HttpStatus.CREATED).body(response.getData());
+		
+	}
+	
+	/**
+	 * Atualiza um visitante
+	 * @param cadastroVisitanteDto
+	 * @param result
+	 * @return Morador
+	 * @throws NoSuchAlgorithmException
+	 */
+	@PutMapping("/id")
+	public ResponseEntity<?> atualizarVisitante(@PathVariable("id") Long id,
+												@Valid @RequestBody Visitante visitante,
+												BindingResult result) throws NoSuchAlgorithmException{
+		
+		log.info("Preparando dados para cadastro de visitante", visitante);
+		Response<Visitante> response = new Response<Visitante>();
+		
+		Optional<Visitante> visitanteEdit = this.visitanteService.buscarPorId(id);
+		if (!visitanteEdit.isPresent()) {
+			result.addError(new ObjectError("visitante", "  Visitante não encontrado"));
+		}
+		
+		validarDadosExistentes(visitante, result);
+		
+		if(result.hasErrors()) {
+			log.error("Erro validando dados para cadastro do(s) visitante(s): {}", result.getAllErrors());
+			result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
+			return ResponseEntity.status(400).body(response.getErrors());
+		}
+		
+		this.visitanteService.persistir(visitante);
+		response.setData(visitante);
+		return ResponseEntity.status(HttpStatus.OK).body(response.getData());
 		
 	}
 	

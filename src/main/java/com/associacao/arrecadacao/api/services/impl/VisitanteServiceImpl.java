@@ -67,4 +67,10 @@ public class VisitanteServiceImpl implements VisitanteService {
 		return visitanteRepository.findByNome(nome);
 	}
 
+	@Override
+	public Optional<Visitante> buscarPorId(Long id) {
+		log.info("Buscar por id {}", id);
+		return visitanteRepository.findById(id);
+	}
+
 }

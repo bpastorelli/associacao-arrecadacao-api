@@ -13,6 +13,8 @@ import com.associacao.arrecadacao.api.entities.Visitante;
 public interface VisitanteRepository extends JpaRepository<Visitante, Long> {
 	
 	
+	Optional<Visitante> findById(Long id);
+	
 	Optional<Visitante> findByNome(String nome);
 	
 	Optional<Visitante> findByCpf(String cpf);
