@@ -69,7 +69,7 @@ public class VisitaController {
 		this.converterVisitaDtoParaVisita(visitaDto, visita, result);
 		
 		if(result.hasErrors()) {
-			log.error("Erro validando dados para cadastro do(s) visita(s): {}", result.getAllErrors());
+			log.error("Erro validando dados para cadastro de visita(s): {}", result.getAllErrors());
 			result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
 			return ResponseEntity.status(400).body(response.getErrors());
 		}
@@ -123,10 +123,11 @@ public class VisitaController {
 		visitaResponse.setId(visita.getId());
 		visitaResponse.setNome(visitante.get().getNome());
 		visitaResponse.setRg(visitante.get().getRg());
+		visitaResponse.setCpf(visitante.get().getCpf() != null ? visitante.get().getCpf() : "");
 		visitaResponse.setDataEntrada(Utils.dateFormat(visita.getDataEntrada(), "dd/MM/yyyy"));
 		visitaResponse.setHoraEntrada(visita.getHoraEntrada().toString());
-		visitaResponse.setDataSaida(visita.getDataSaida() != null ? visita.getDataSaida().toString() : null );
-		visitaResponse.setHoraSaida(visita.getHoraSaida() != null ? visita.getHoraSaida().toString() : null );
+		visitaResponse.setDataSaida(visita.getDataSaida() != null ? Utils.dateFormat(visita.getDataSaida(), "dd/MM/yyyy") : "" );
+		visitaResponse.setHoraSaida(visita.getHoraSaida() != null ? visita.getHoraSaida().toString() : "" );
 		visitaResponse.setEndereco(residencia.get().getEndereco());
 		visitaResponse.setNumero(residencia.get().getNumero().toString());
 		visitaResponse.setBairro(residencia.get().getBairro());

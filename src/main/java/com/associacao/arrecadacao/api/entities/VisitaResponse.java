@@ -10,6 +10,7 @@ public class VisitaResponse implements Serializable {
 	private Long   id;
 	private String nome;
 	private String rg;
+	private String cpf;
 	private String dataEntrada;
 	private String horaEntrada;
 	private String dataSaida;
@@ -36,6 +37,15 @@ public class VisitaResponse implements Serializable {
 		this.nome = nome;
 	}
 	
+	public String getCpf() {
+		return cpf;
+	}
+
+	public void setCpf(String cpf) {
+		this.cpf = cpf;
+	}	
+
+	
 	public String getRg() {
 		return rg;
 	}
@@ -61,7 +71,7 @@ public class VisitaResponse implements Serializable {
 	}
 
 	public void setDataSaida(String dataSaida) {
-		this.dataSaida = dataSaida;
+		this.dataSaida = dataSaida == null ? "" : dataSaida;
 	}
 	
 	public void setHoraEntrada(String horaEntrada) {
@@ -73,7 +83,7 @@ public class VisitaResponse implements Serializable {
 	}
 
 	public void setHoraSaida(String horaSaida) {
-		this.horaSaida = horaSaida;
+		this.horaSaida = horaSaida == null ? "" : horaSaida;
 	}
 	
 	public String getEndereco() {
@@ -114,6 +124,5 @@ public class VisitaResponse implements Serializable {
 	
 	public void setUf(String uf) {
 		this.uf = uf;
-	}	
-
+	}
 }

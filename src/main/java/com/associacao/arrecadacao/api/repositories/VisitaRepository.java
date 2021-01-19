@@ -16,7 +16,7 @@ import com.associacao.arrecadacao.api.entities.Visita;
 @Transactional(readOnly = true)
 @NamedQueries({
 		@NamedQuery(name = "VisitaRepository.findByVisitanteRgOrVisitanteCpfAndPosicao", 
-					query = "SELECT a FROM Visitante a WHERE a.rg = :rg "
+					query = " SELECT a FROM Visitante a WHERE a.rg = :rg "
 							+ "OR a.cpf = :cpf "
 							+ "AND a.posicao = :posicao")})
 		
