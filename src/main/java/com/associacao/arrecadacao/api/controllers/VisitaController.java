@@ -1,6 +1,7 @@
 package com.associacao.arrecadacao.api.controllers;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 import java.util.Optional;
 
 import javax.validation.Valid;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -81,9 +83,16 @@ public class VisitaController {
 	public Visita converterVisitaDtoParaVisita(VisitaDto visitaDto, Visita visita, BindingResult result) {
 		
 		Optional<Visitante> visitante = visitanteService.buscarPorRg(visitaDto.getRg());
-	
-		visita.setVisitante(visitante.get());
-		visita.setResidenciaId(visitaDto.getResidenciaId());
+				
+		Long posicao = (long) 1;
+		List<Visita> listVisitas = visitaService.buscarPorRgAndPosicao(visitante.get().getRg(), posicao);
+		
+		if(listVisitas.size() > 0) {
+			result.addError(new ObjectError("visita", " Este visitante já possui " + listVisitas.size() + " registro(s) ativo(s) de entrada!" ));	
+		}else {
+			visita.setVisitante(visitante.get());
+			visita.setResidenciaId(visitaDto.getResidenciaId());			
+		}
 		
 		return visita;
 		
@@ -92,12 +101,13 @@ public class VisitaController {
 	
 	public VisitaResponse converterDtoParaVisitaResponse(Visita visita){
 		
+		Optional<Visitante> visitante = visitanteService.buscarPorRg(visita.getVisitante().getRg());
 		Optional<Residencia> residencia = residenciaService.bucarPorIdOrMatricula(visita.getResidenciaId(), null);
 		
 		VisitaResponse visitaResponse = new VisitaResponse();
 		visitaResponse.setId(visita.getId());
-		visitaResponse.setNome(visita.getVisitante().getNome());
-		visitaResponse.setRg(visita.getVisitante().getRg());
+		visitaResponse.setNome(visitante.get().getNome());
+		visitaResponse.setRg(visitante.get().getRg());
 		visitaResponse.setDataEntrada(Utils.dateFormat(visita.getDataEntrada(), "dd/MM/yyyy"));
 		visitaResponse.setHoraEntrada(visita.getHoraEntrada().toString());
 		visitaResponse.setDataSaida(visita.getDataSaida() != null ? visita.getDataSaida().toString() : null );

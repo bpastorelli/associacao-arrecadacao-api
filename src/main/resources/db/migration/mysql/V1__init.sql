@@ -51,9 +51,9 @@ CREATE TABLE `visita` (
   `visitante_id` bigint(20) NOT NULL,
   `residencia_id` bigint(20) NOT NULL,
   `data_entrada` datetime NOT NULL,
-  `hora_entrada` datetime NOT NULL,
+  `hora_entrada` time NOT NULL,
   `data_saida` datetime NULL,
-  `hora_saida` datetime NULL,	
+  `hora_saida` time NULL,	
   `posicao` int(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
