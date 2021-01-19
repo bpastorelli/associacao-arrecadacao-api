@@ -18,10 +18,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.associacao.arrecadacao.api.dtos.VisitaDto;
+import com.associacao.arrecadacao.api.entities.Residencia;
 import com.associacao.arrecadacao.api.entities.Visita;
 import com.associacao.arrecadacao.api.entities.VisitaResponse;
 import com.associacao.arrecadacao.api.entities.Visitante;
 import com.associacao.arrecadacao.api.response.Response;
+import com.associacao.arrecadacao.api.services.ResidenciaService;
 import com.associacao.arrecadacao.api.services.VisitaService;
 import com.associacao.arrecadacao.api.services.VisitanteService;
 import com.associacao.arrecadacao.api.utils.Utils;
@@ -38,6 +40,9 @@ public class VisitaController {
 	
 	@Autowired
 	private VisitanteService visitanteService;
+	
+	@Autowired
+	private ResidenciaService residenciaService; 
 	
 	
 	public VisitaController() {
@@ -87,12 +92,22 @@ public class VisitaController {
 	
 	public VisitaResponse converterDtoParaVisitaResponse(Visita visita){
 		
+		Optional<Residencia> residencia = residenciaService.bucarPorIdOrMatricula(visita.getResidenciaId(), null);
+		
 		VisitaResponse visitaResponse = new VisitaResponse();
 		visitaResponse.setId(visita.getId());
 		visitaResponse.setNome(visita.getVisitante().getNome());
 		visitaResponse.setRg(visita.getVisitante().getRg());
 		visitaResponse.setDataEntrada(Utils.dateFormat(visita.getDataEntrada(), "dd/MM/yyyy"));
-		visitaResponse.setResidenciaId(visita.getResidenciaId());
+		visitaResponse.setHoraEntrada(visita.getHoraEntrada().toString());
+		visitaResponse.setDataSaida(visita.getDataSaida() != null ? visita.getDataSaida().toString() : null );
+		visitaResponse.setHoraSaida(visita.getHoraSaida() != null ? visita.getHoraSaida().toString() : null );
+		visitaResponse.setEndereco(residencia.get().getEndereco());
+		visitaResponse.setNumero(residencia.get().getNumero().toString());
+		visitaResponse.setBairro(residencia.get().getBairro());
+		visitaResponse.setCidade(residencia.get().getCidade());
+		visitaResponse.setUf(residencia.get().getUf());
+		
 		return visitaResponse;
 	}
 	

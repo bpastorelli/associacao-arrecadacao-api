@@ -2,16 +2,12 @@ package com.associacao.arrecadacao.api.entities;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
@@ -41,7 +37,6 @@ public class Visitante implements Serializable {
 	private Date   dataCriacao;
 	private Date   dataAtualizacao;
 	private Long   posicao;
-	private List<Visita> visitas;
 	
 	
 	public Visitante(){		
@@ -172,15 +167,6 @@ public class Visitante implements Serializable {
 
 	public void setUf(String uf) {
 		this.uf = uf;
-	}
-
-	@OneToMany(mappedBy = "visitante", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	public List<Visita> getVisitas() {
-		return visitas;
-	}
-
-	public void setVisitas(List<Visita> visitas) {
-		this.visitas = visitas;
 	}
 	
 	@Temporal(TemporalType.TIMESTAMP)

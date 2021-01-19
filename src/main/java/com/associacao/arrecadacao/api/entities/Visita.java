@@ -1,6 +1,7 @@
 package com.associacao.arrecadacao.api.entities;
 
 import java.io.Serializable;
+import java.sql.Time;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -9,8 +10,9 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -58,7 +60,6 @@ public class Visita implements Serializable {
 	}
 	
 	@DateTimeFormat(pattern = "HH:mm")
-	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "hora_entrada", nullable = false)
 	public Date getHoraEntrada() {
 		return horaEntrada;
@@ -70,12 +71,12 @@ public class Visita implements Serializable {
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "data_saida", nullable = false)
-	public Date getData_saida() {
+	public Date getDataSaida() {
 		return dataSaida;
 	}
 
-	public void setData_saida(Date data_saida) {
-		this.dataSaida = data_saida;
+	public void setDataSaida(Date dataSaida) {
+		this.dataSaida = dataSaida;
 	}
 
 	@DateTimeFormat(pattern = "HH:mm")
@@ -87,15 +88,6 @@ public class Visita implements Serializable {
 
 	public void setHoraSaida(Date horaSaida) {
 		this.horaSaida = horaSaida;
-	}
-
-	@ManyToOne(fetch = FetchType.EAGER)
-	public Visitante getVisitante() {
-		return visitante;
-	}
-
-	public void setVisitante(Visitante visitante) {
-		this.visitante = visitante;
 	}
 	
 	@Column(name = "residencia_id", nullable = false)
@@ -116,14 +108,39 @@ public class Visita implements Serializable {
 		this.posicao = posicao;
 	}
 	
+	@OneToOne(fetch = FetchType.EAGER)
+	public Visitante getVisitante() {
+		return visitante;
+	}
+
+	public void setVisitante(Visitante visitante) {
+		this.visitante = visitante;
+	}
+	
 	@PrePersist
 	public void prePersist() {
 		
-        final Date dataAtual = new Date();
-        final Date horaAtual = new Date();
+		final Date dataAtual = new Date();
+        final Time time = new Time(dataAtual.getTime());
         final long status = 1;
+        
         dataEntrada = dataAtual;
-        horaEntrada = horaAtual;
+        horaEntrada = time;
+        
+        posicao = status;
+        
+	}
+	
+	@PreUpdate
+	public void preUpdate() {
+		
+		final Date dataAtual = new Date();
+        final Time time = new Time(dataAtual.getTime());
+        final long status = 0;
+        
+        dataSaida = dataAtual;
+        horaSaida = time;
+        
         posicao = status;
         
 	}
