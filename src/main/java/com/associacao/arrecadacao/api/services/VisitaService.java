@@ -19,6 +19,6 @@ public interface VisitaService {
 	 * @param rg
 	 * @return
 	 */
-	List<Visita> buscarPorRgAndPosicao(String rg, Long posicao);
+	List<Visita> buscarPorRgOrCpfAndPosicao(String rg, String cpf, Long posicao);
 
 }

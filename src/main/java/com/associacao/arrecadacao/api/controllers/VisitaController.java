@@ -82,16 +82,31 @@ public class VisitaController {
 	
 	public Visita converterVisitaDtoParaVisita(VisitaDto visitaDto, Visita visita, BindingResult result) {
 		
-		Optional<Visitante> visitante = visitanteService.buscarPorRg(visitaDto.getRg());
+		Optional<Visitante> visitante = null;
 				
-		Long posicao = (long) 1;
-		List<Visita> listVisitas = visitaService.buscarPorRgAndPosicao(visitante.get().getRg(), posicao);
-		
-		if(listVisitas.size() > 0) {
-			result.addError(new ObjectError("visita", " Este visitante já possui " + listVisitas.size() + " registro(s) ativo(s) de entrada!" ));	
+		if(visitaDto.getCpf().equals("") && visitaDto.getRg().equals("")) {
+			result.addError(new ObjectError("visita", " Você deve infomar ao menos o CPF ou RG do visitante" ));
 		}else {
+			if(!visitaDto.getRg().equals(""))
+				visitante = visitanteService.buscarPorRg(visitaDto.getRg());
+			else
+				visitante = visitanteService.buscarPorCpf(visitaDto.getCpf());			
+		}
+		
+		if(!result.hasErrors()) {
+			
+			Long posicao = (long) 1;
+			List<Visita> listVisitas = visitaService.buscarPorRgOrCpfAndPosicao(visitante.get().getRg(), visitante.get().getCpf(), posicao);
+			
+			if(listVisitas.size() > 0) {
+				result.addError(new ObjectError("visita", " Este visitante já possui " + listVisitas.size() + " registro(s) ativo(s) de entrada!" ));	
+			}
+		}
+		
+		
+		if(!result.hasErrors()) {
 			visita.setVisitante(visitante.get());
-			visita.setResidenciaId(visitaDto.getResidenciaId());			
+			visita.setResidenciaId(visitaDto.getResidenciaId());
 		}
 		
 		return visita;

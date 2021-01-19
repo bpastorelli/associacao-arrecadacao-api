@@ -26,9 +26,9 @@ public class VisitaServiceImpl implements VisitaService {
 	}
 
 	@Override
-	public List<Visita> buscarPorRgAndPosicao(String rg, Long posicao) {
+	public List<Visita> buscarPorRgOrCpfAndPosicao(String rg, String cpf, Long posicao) {
 		log.info("Buscando visitas por RG...");
-		return serviceRepository.findByVisitanteRgAndPosicao(rg, posicao);
+		return serviceRepository.findByVisitanteRgOrVisitanteCpfAndPosicao(rg, cpf, posicao);
 	}
 
 }
