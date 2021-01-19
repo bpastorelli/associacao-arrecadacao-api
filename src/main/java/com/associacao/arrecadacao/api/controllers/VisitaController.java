@@ -19,10 +19,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.associacao.arrecadacao.api.dtos.VisitaDto;
 import com.associacao.arrecadacao.api.entities.Visita;
+import com.associacao.arrecadacao.api.entities.VisitaResponse;
 import com.associacao.arrecadacao.api.entities.Visitante;
 import com.associacao.arrecadacao.api.response.Response;
 import com.associacao.arrecadacao.api.services.VisitaService;
 import com.associacao.arrecadacao.api.services.VisitanteService;
+import com.associacao.arrecadacao.api.utils.Utils;
 
 @RestController
 @RequestMapping("/associados/visita")
@@ -54,7 +56,7 @@ public class VisitaController {
 												BindingResult result) throws NoSuchAlgorithmException{
 		
 		log.info("Preparando dados para cadastro de visita", visitaDto);
-		Response<Visita> response = new Response<Visita>();
+		Response<VisitaResponse> response = new Response<VisitaResponse>();
 		
 		Visita visita = new Visita();
 		this.converterVisitaDtoParaVisita(visitaDto, visita, result);
@@ -66,8 +68,8 @@ public class VisitaController {
 		}
 		
 		this.visitaService.persistir(visita);
-		response.setData(visita);
-		return ResponseEntity.status(HttpStatus.CREATED).body(response.getData().getId());
+		response.setData(this.converterDtoParaVisitaResponse(visita));
+		return ResponseEntity.status(HttpStatus.CREATED).body(response.getData());
 		
 	}
 	
@@ -82,6 +84,17 @@ public class VisitaController {
 		
 	}
 	
+	
+	public VisitaResponse converterDtoParaVisitaResponse(Visita visita){
+		
+		VisitaResponse visitaResponse = new VisitaResponse();
+		visitaResponse.setId(visita.getId());
+		visitaResponse.setNome(visita.getVisitante().getNome());
+		visitaResponse.setRg(visita.getVisitante().getRg());
+		visitaResponse.setDataEntrada(Utils.dateFormat(visita.getDataEntrada(), "dd/MM/yyyy"));
+		visitaResponse.setResidenciaId(visita.getResidenciaId());
+		return visitaResponse;
+	}
 	
 
 }
