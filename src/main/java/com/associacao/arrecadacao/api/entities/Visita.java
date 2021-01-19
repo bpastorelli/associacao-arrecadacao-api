@@ -5,13 +5,17 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Table(name = "visita")
@@ -20,12 +24,12 @@ public class Visita implements Serializable {
 	private static final long serialVersionUID = -5754246207015712520L;
 	
 	private Long id;
-	private Long visitanteId;
 	private Long residenciaId;
+	private Visitante visitante;
 	private Date dataEntrada;
-	private Long horaEntrada;
+	private Date horaEntrada;
 	private Date dataSaida;
-	private Long horaSaida;
+	private Date horaSaida;
 	private Long posicao;
 	
 	public Visita(){
@@ -42,26 +46,6 @@ public class Visita implements Serializable {
 	public void setId(Long id) {
 		this.id = id;
 	}
-
-	
-	@Column(name = "visitante_id", nullable = false)
-	public Long getVisitanteId() {
-		return visitanteId;
-	}
-
-	public void setVisitanteId(Long visitante_id) {
-		this.visitanteId = visitante_id;
-	}
-
-	
-	@Column(name = "residente_id", nullable = false)
-	public Long getResidenciaId() {
-		return residenciaId;
-	}
-
-	public void setResidenciaId(Long residencia_id) {
-		this.residenciaId = residencia_id;
-	}
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "data_entrada", nullable = false)
@@ -72,14 +56,15 @@ public class Visita implements Serializable {
 	public void setDataEntrada(Date data_entrada) {
 		this.dataEntrada = data_entrada;
 	}
-
+	
+	@DateTimeFormat(pattern = "HH:mm")
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "hora_entrada", nullable = false)
-	public Long getHoraEntrada() {
+	public Date getHoraEntrada() {
 		return horaEntrada;
 	}
 
-	public void setHoraEntrada(Long horaEntrada) {
+	public void setHoraEntrada(Date horaEntrada) {
 		this.horaEntrada = horaEntrada;
 	}
 
@@ -93,16 +78,35 @@ public class Visita implements Serializable {
 		this.dataSaida = data_saida;
 	}
 
+	@DateTimeFormat(pattern = "HH:mm")
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "hora_saida", nullable = false)
-	public Long getHoraSaida() {
+	public Date getHoraSaida() {
 		return horaSaida;
 	}
 
-	public void setHoraSaida(Long horaSaida) {
+	public void setHoraSaida(Date horaSaida) {
 		this.horaSaida = horaSaida;
 	}
 
+	@ManyToOne(fetch = FetchType.EAGER)
+	public Visitante getVisitante() {
+		return visitante;
+	}
+
+	public void setVisitante(Visitante visitante) {
+		this.visitante = visitante;
+	}
+	
+	@Column(name = "residencia_id", nullable = false)
+	public Long getResidenciaId() {
+		return residenciaId;
+	}
+
+	public void setResidenciaId(Long residenciaId) {
+		this.residenciaId = residenciaId;
+	}
+	
 	@Column(name = "posicao", nullable = false)
 	public Long getPosicao() {
 		return posicao;
@@ -116,14 +120,12 @@ public class Visita implements Serializable {
 	public void prePersist() {
 		
         final Date dataAtual = new Date();
-        final Long horaAtual = new Date().getTime();
+        final Date horaAtual = new Date();
         final long status = 1;
         dataEntrada = dataAtual;
         horaEntrada = horaAtual;
         posicao = status;
         
 	}
-	
-	
 	
 }

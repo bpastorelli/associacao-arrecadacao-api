@@ -2,17 +2,22 @@ package com.associacao.arrecadacao.api.entities;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
 
 @Entity
 @Table(name = "visitante")
@@ -36,11 +41,10 @@ public class Visitante implements Serializable {
 	private Date   dataCriacao;
 	private Date   dataAtualizacao;
 	private Long   posicao;
+	private List<Visita> visitas;
 	
 	
-	public Visitante(){
-		
-		
+	public Visitante(){		
 		
 	}
 
@@ -170,6 +174,15 @@ public class Visitante implements Serializable {
 		this.uf = uf;
 	}
 
+	@OneToMany(mappedBy = "visitante", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	public List<Visita> getVisitas() {
+		return visitas;
+	}
+
+	public void setVisitas(List<Visita> visitas) {
+		this.visitas = visitas;
+	}
+	
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "data_criacao", nullable = false)
 	public Date getDataCriacao() {
@@ -228,5 +241,5 @@ public class Visitante implements Serializable {
 				+ ", numero=" + numero + ", bairro=" + bairro + ", complemento=" + complemento + ", cidade=" + cidade + ", uf=" + uf + ", dataCriacao="
 				+ dataCriacao + ", dataAtualizacao=" + dataAtualizacao + ", posicao=" + posicao + "]";
 	}
-
+	
 }
