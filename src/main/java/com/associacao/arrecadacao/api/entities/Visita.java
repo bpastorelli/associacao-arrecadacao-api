@@ -25,14 +25,14 @@ public class Visita implements Serializable {
 
 	private static final long serialVersionUID = -5754246207015712520L;
 	
-	private Long id;
-	private Visitante visitante;
+	private Long       id;
+	private Visitante  visitante;
 	private Residencia residencia;
-	private Date dataEntrada;
-	private Date horaEntrada;
-	private Date dataSaida;
-	private Date horaSaida;
-	private Long posicao;
+	private Date       dataEntrada;
+	private Date       horaEntrada;
+	private Date       dataSaida;
+	private Date       horaSaida;
+	private Integer    posicao;
 	
 	public Visita(){
 		
@@ -91,11 +91,11 @@ public class Visita implements Serializable {
 	}
 	
 	@Column(name = "posicao", nullable = false)
-	public Long getPosicao() {
+	public Integer getPosicao() {
 		return posicao;
 	}
 
-	public void setPosicao(Long posicao) {
+	public void setPosicao(Integer posicao) {
 		this.posicao = posicao;
 	}
 	
@@ -122,7 +122,7 @@ public class Visita implements Serializable {
 		
 		final Date dataAtual = new Date();
         final Time time = new Time(dataAtual.getTime());
-        final long status = 1;
+        final int status = 1;
         
         dataEntrada = dataAtual;
         horaEntrada = time;
@@ -136,7 +136,7 @@ public class Visita implements Serializable {
 		
 		final Date dataAtual = new Date();
         final Time time = new Time(dataAtual.getTime());
-        final long status = 0;
+        final int status = 0;
         
         dataSaida = dataAtual;
         horaSaida = time;

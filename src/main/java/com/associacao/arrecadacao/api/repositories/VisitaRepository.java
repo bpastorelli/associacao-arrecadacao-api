@@ -15,20 +15,19 @@ import com.associacao.arrecadacao.api.entities.Visita;
 
 @Transactional(readOnly = true)
 @NamedQueries({
-		@NamedQuery(name = "VisitaRepository.findByIdOrVisitanteRgOrVisitanteCpfAndPosicao", 
-					query = " SELECT a FROM Visitante a "
-							+ "WHERE a.id = :id "
-							+ "OR a.rg = :rg "
-							+ "OR a.cpf = :cpf "
-							+ "AND a.posicao = :posicao")})
+		@NamedQuery(name = "VisitaRepository.findByPosicaoAndVisitanteRgAndVisitanteCpf", 
+					query = "SELECT a FROM Visitante a "
+							+ "WHERE a.posicao = :posicao "
+							+ "OR a.visitante.rg = :rg "
+							+ "OR a.visitante.cpf = :cpf ")})
 		
 public interface VisitaRepository extends JpaRepository<Visita, Long> {
 	
 	Visita findById(Long id);
 	
-	List<Visita> findByIdOrVisitanteRgOrVisitanteCpfAndPosicao(@Param("id") Long id, @Param("rg") String rg, @Param("cpf") String cpf, @Param("posicao") Long posicao);
+	List<Visita> findByPosicaoAndVisitanteRgAndVisitanteCpf(@Param("posicao") Integer posicao, @Param("rg") String rg, @Param("cpf") String cpf);
 	
 	@Transactional(readOnly = true)
-	Page<Visita> findByIdOrVisitanteRgOrVisitanteCpfAndPosicao(@Param("id") Long id, @Param("rg") String rg, @Param("cpf") String cpf, Pageable pageable);	
+	Page<Visita> findByPosicaoAndVisitanteRgAndVisitanteCpf(@Param("posicao") Integer posicao, @Param("rg") String rg, @Param("cpf") String cpf, Pageable pageable);	
 
 }

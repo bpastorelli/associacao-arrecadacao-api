@@ -2,6 +2,7 @@ package com.associacao.arrecadacao.api.controllers;
 
 import java.security.NoSuchAlgorithmException;
 import java.sql.Time;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -111,10 +112,10 @@ public class VisitaController {
 		Visita visita = visitaService.buscarPorId(id);
 		Date dataSaida = new Date();
 		Time horaSaida = new Time(dataSaida.getTime());
-		Long posicao = (long)1;
+		Integer posicao = 1;
 		
 		if(visita.getPosicao() == 0) 
-			result.addError(new ObjectError("visita", " Esta visita já foi encerrada em " + Utils.dateFormat(visita.getDataSaida(), "dd/MM/yyyy") + " às " + new Time(visita.getDataSaida().getTime())));
+			result.addError(new ObjectError("visita", " Esta visita já foi encerrada em " + Utils.dateFormat(visita.getDataSaida(), "dd/MM/yyyy") + " às " + new Time(visita.getDataSaida().getTime()) + "!"));
 		
 		if(!result.hasErrors()) {
 			visita.setDataSaida(dataSaida);
@@ -147,8 +148,9 @@ public class VisitaController {
 		
 		if(!result.hasErrors()) {
 			
-			Long posicao = (long) 1;
-			List<Visita> listVisitas = visitaService.buscarPorIdOrRgOrCpfAndPosicao(null, visitante.get().getRg(), visitante.get().getCpf(), posicao);
+			Integer posicao = 1;
+			List<Visita> listVisitas = new ArrayList<Visita>();
+			listVisitas = visitaService.buscarPorPosicaoOrRgOrCpf(posicao, visitante.get().getRg(), visitante.get().getCpf());
 			
 			if(listVisitas.size() > 0) {
 				result.addError(new ObjectError("visita", " Este visitante já possui " + listVisitas.size() + " registro(s) ativo(s) de entrada!" ));	
@@ -175,8 +177,8 @@ public class VisitaController {
 		visitaResponse.setCpf(visita.getVisitante().getCpf() != null ? visita.getVisitante().getCpf() : "");
 		visitaResponse.setDataEntrada(Utils.dateFormat(visita.getDataEntrada(), "dd/MM/yyyy"));		
 		visitaResponse.setHoraEntrada(new Time(visita.getHoraEntrada().getTime()));
-		visitaResponse.setDataSaida(visita.getDataSaida() != null ? Utils.dateFormat(visita.getDataSaida(), "dd/MM/yyyy") : "" );
-		visitaResponse.setHoraSaida(new Time(visita.getHoraSaida().getTime()));
+		visitaResponse.setDataSaida(visita.getDataSaida() != null ? Utils.dateFormat(visita.getDataSaida(), "dd/MM/yyyy") : null);
+		visitaResponse.setHoraSaida(visita.getHoraSaida() != null ? new Time(visita.getHoraSaida().getTime()) : null);
 		visitaResponse.setEndereco(visita.getResidencia().getEndereco() != null ? visita.getResidencia().getEndereco() : "");
 		visitaResponse.setNumero(visita.getResidencia().getNumero().toString() != null ? visita.getResidencia().getNumero().toString() : "");
 		visitaResponse.setBairro(visita.getResidencia().getBairro());
