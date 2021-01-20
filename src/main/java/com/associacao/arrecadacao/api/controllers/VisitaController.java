@@ -113,10 +113,15 @@ public class VisitaController {
 		Time horaSaida = new Time(dataSaida.getTime());
 		Long posicao = (long)1;
 		
-		visita.setDataSaida(dataSaida);
-		visita.setHoraSaida(horaSaida);
-		visita.setPosicao(posicao);
-		visita.setResidencia(visita.getResidencia());
+		if(visita.getPosicao() == 0) 
+			result.addError(new ObjectError("visita", " Esta visita já foi encerrada em " + Utils.dateFormat(visita.getDataSaida(), "dd/MM/yyyy") + " às " + new Time(visita.getDataSaida().getTime())));
+		
+		if(!result.hasErrors()) {
+			visita.setDataSaida(dataSaida);
+			visita.setHoraSaida(horaSaida);
+			visita.setPosicao(posicao);
+			visita.setResidencia(visita.getResidencia());			
+		}
 		
 		return visita;
 		
@@ -168,10 +173,10 @@ public class VisitaController {
 		visitaResponse.setNome(visita.getVisitante().getNome());
 		visitaResponse.setRg(visita.getVisitante().getRg());
 		visitaResponse.setCpf(visita.getVisitante().getCpf() != null ? visita.getVisitante().getCpf() : "");
-		visitaResponse.setDataEntrada(Utils.dateFormat(visita.getDataEntrada(), "dd/MM/yyyy"));
-		visitaResponse.setHoraEntrada(visita.getHoraEntrada().toString());
+		visitaResponse.setDataEntrada(Utils.dateFormat(visita.getDataEntrada(), "dd/MM/yyyy"));		
+		visitaResponse.setHoraEntrada(new Time(visita.getHoraEntrada().getTime()));
 		visitaResponse.setDataSaida(visita.getDataSaida() != null ? Utils.dateFormat(visita.getDataSaida(), "dd/MM/yyyy") : "" );
-		visitaResponse.setHoraSaida(visita.getHoraSaida() != null ? visita.getHoraSaida().toString() : "" );
+		visitaResponse.setHoraSaida(new Time(visita.getHoraSaida().getTime()));
 		visitaResponse.setEndereco(visita.getResidencia().getEndereco() != null ? visita.getResidencia().getEndereco() : "");
 		visitaResponse.setNumero(visita.getResidencia().getNumero().toString() != null ? visita.getResidencia().getNumero().toString() : "");
 		visitaResponse.setBairro(visita.getResidencia().getBairro());

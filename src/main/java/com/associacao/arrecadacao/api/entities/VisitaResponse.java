@@ -1,6 +1,7 @@
 package com.associacao.arrecadacao.api.entities;
 
 import java.io.Serializable;
+import java.sql.Time;
 
 
 public class VisitaResponse implements Serializable {
@@ -12,9 +13,9 @@ public class VisitaResponse implements Serializable {
 	private String rg;
 	private String cpf;
 	private String dataEntrada;
-	private String horaEntrada;
+	private Time   horaEntrada;
 	private String dataSaida;
-	private String horaSaida;
+	private Time   horaSaida;
 	private String endereco;
 	private String numero;
 	private String bairro;
@@ -62,7 +63,7 @@ public class VisitaResponse implements Serializable {
 		this.dataEntrada = dataEntrada;
 	}
 	
-	public String getHoraEntrada() {
+	public Time getHoraEntrada() {
 		return horaEntrada;
 	}
 	
@@ -74,16 +75,16 @@ public class VisitaResponse implements Serializable {
 		this.dataSaida = dataSaida == null ? "" : dataSaida;
 	}
 	
-	public void setHoraEntrada(String horaEntrada) {
+	public void setHoraEntrada(Time horaEntrada) {
 		this.horaEntrada = horaEntrada;
 	}
 	
-	public String getHoraSaida() {
+	public Time getHoraSaida() {
 		return horaSaida;
 	}
 
-	public void setHoraSaida(String horaSaida) {
-		this.horaSaida = horaSaida == null ? "" : horaSaida;
+	public void setHoraSaida(Time horaSaida) {
+		this.horaSaida = horaSaida;
 	}
 	
 	public String getEndereco() {
