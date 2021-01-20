@@ -145,11 +145,6 @@ public class VisitaController {
 			listVisitas.add(this.converterVisitaParaVisitaResponse(v));
 		});		
 		
-		if (listVisitas.size() == 0) {
-			log.info("A consulta não retornou dados");
-			return ResponseEntity.status(404).body("A consulta não retornou dados!");
-		}
-		
 		return ResponseEntity.status(HttpStatus.OK).body(listVisitas);
 		
 	}
