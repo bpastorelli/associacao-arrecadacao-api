@@ -14,6 +14,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+
 @Entity
 @Table(name = "visitante")
 public class Visitante implements Serializable {
@@ -38,9 +39,7 @@ public class Visitante implements Serializable {
 	private Long   posicao;
 	
 	
-	public Visitante(){
-		
-		
+	public Visitante(){		
 		
 	}
 
@@ -169,7 +168,7 @@ public class Visitante implements Serializable {
 	public void setUf(String uf) {
 		this.uf = uf;
 	}
-
+	
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "data_criacao", nullable = false)
 	public Date getDataCriacao() {
@@ -228,5 +227,5 @@ public class Visitante implements Serializable {
 				+ ", numero=" + numero + ", bairro=" + bairro + ", complemento=" + complemento + ", cidade=" + cidade + ", uf=" + uf + ", dataCriacao="
 				+ dataCriacao + ", dataAtualizacao=" + dataAtualizacao + ", posicao=" + posicao + "]";
 	}
-
+	
 }

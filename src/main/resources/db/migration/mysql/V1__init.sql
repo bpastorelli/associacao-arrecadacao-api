@@ -51,9 +51,9 @@ CREATE TABLE `visita` (
   `visitante_id` bigint(20) NOT NULL,
   `residencia_id` bigint(20) NOT NULL,
   `data_entrada` datetime NOT NULL,
-  `hora_entrada` datetime NOT NULL,
-  `data_saida` datetime NOT NULL,
-  `hora_saida` datetime NOT NULL,	
+  `hora_entrada` time NOT NULL,
+  `data_saida` datetime NULL,
+  `hora_saida` time NULL,	
   `posicao` int(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -112,8 +112,7 @@ ALTER TABLE `vinculo_residencia`
 -- Indexes for table `visita`
 --
 ALTER TABLE `visita`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `FK46i4k5vl8wah7feutye9kbpi4` (`residencia_id`, `visitante_id`); 
+  ADD PRIMARY KEY (`id`);
 
 --
 -- AUTO_INCREMENT for table `residencia`
