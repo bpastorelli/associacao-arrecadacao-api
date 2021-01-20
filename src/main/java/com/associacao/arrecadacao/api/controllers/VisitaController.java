@@ -114,8 +114,12 @@ public class VisitaController {
 		Time horaSaida = new Time(dataSaida.getTime());
 		Integer posicao = 1;
 		
-		if(visita.getPosicao() == 0) 
-			result.addError(new ObjectError("visita", " Esta visita já foi encerrada em " + Utils.dateFormat(visita.getDataSaida(), "dd/MM/yyyy") + " às " + new Time(visita.getDataSaida().getTime()) + "!"));
+		if(visita == null)
+			result.addError(new ObjectError("visita", " O código de visita " + id + " não existe!"));
+		else {
+			if(visita.getPosicao() == 0) 
+				result.addError(new ObjectError("visita", " Esta visita já foi encerrada em " + Utils.dateFormat(visita.getDataSaida(), "dd/MM/yyyy") + " às " + new Time(visita.getDataSaida().getTime()) + "!"));			
+		}
 		
 		if(!result.hasErrors()) {
 			visita.setDataSaida(dataSaida);
