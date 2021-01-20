@@ -1,6 +1,8 @@
 package com.associacao.arrecadacao.api.controllers;
 
 import java.security.NoSuchAlgorithmException;
+import java.sql.Time;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -69,7 +70,7 @@ public class VisitaController {
 		Response<VisitaResponse> response = new Response<VisitaResponse>();
 		
 		Visita visita = new Visita();
-		this.converterVisitaDtoParaVisita(visitaDto, visita, result);
+		visita = this.converterVisitaDtoParaVisita(visitaDto, result);
 		
 		if(result.hasErrors()) {
 			log.error("Erro validando dados para cadastro de visita(s): {}", result.getAllErrors());
@@ -90,9 +91,14 @@ public class VisitaController {
 		log.info("Preparando dados para atualizar a visita");
 		Response<VisitaResponse> response = new Response<VisitaResponse>();
 		
-		Visita visita = this.visitaService.buscarPorId(encerraVisitaDto.getId());
+		Visita visita = new Visita();	
+		visita = this.atualizaVisita(encerraVisitaDto.getId(), result);
 		
-		
+		if(result.hasErrors()) {
+			log.error("Erro validando dados para cadastro de visita(s): {}", result.getAllErrors());
+			result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
+			return ResponseEntity.status(400).body(response.getErrors());
+		}
 		
 		this.visitaService.persistir(visita);
 		response.setData(this.converterDtoParaVisitaResponse(visita));
@@ -100,9 +106,25 @@ public class VisitaController {
 		
 	}
 	
-	
-	public Visita converterVisitaDtoParaVisita(VisitaDto visitaDto, Visita visita, BindingResult result) {
+	public Visita atualizaVisita(Long id, BindingResult result) {
 		
+		Visita visita = visitaService.buscarPorId(id);
+		Date dataSaida = new Date();
+		Time horaSaida = new Time(dataSaida.getTime());
+		Long posicao = (long)1;
+		
+		visita.setDataSaida(dataSaida);
+		visita.setHoraSaida(horaSaida);
+		visita.setPosicao(posicao);
+		visita.setResidencia(visita.getResidencia());
+		
+		return visita;
+		
+	}
+	
+	public Visita converterVisitaDtoParaVisita(VisitaDto visitaDto, BindingResult result) {
+		
+		Visita visita = new Visita();
 		Optional<Visitante> visitante = null;
 		Optional<Residencia> residencia = this.residenciaService.buscarPorId(visitaDto.getResidenciaId());
 		
@@ -121,7 +143,7 @@ public class VisitaController {
 		if(!result.hasErrors()) {
 			
 			Long posicao = (long) 1;
-			List<Visita> listVisitas = visitaService.buscarPorIdOrRgOrCpfAndPosicao(visita.getId(), visitante.get().getRg(), visitante.get().getCpf(), posicao);
+			List<Visita> listVisitas = visitaService.buscarPorIdOrRgOrCpfAndPosicao(null, visitante.get().getRg(), visitante.get().getCpf(), posicao);
 			
 			if(listVisitas.size() > 0) {
 				result.addError(new ObjectError("visita", " Este visitante já possui " + listVisitas.size() + " registro(s) ativo(s) de entrada!" ));	
