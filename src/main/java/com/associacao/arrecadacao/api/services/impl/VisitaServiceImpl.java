@@ -31,4 +31,10 @@ public class VisitaServiceImpl implements VisitaService {
 		return visitaRepository.findByIdOrVisitanteRgOrVisitanteCpfAndPosicao(id, rg, cpf, posicao);
 	}
 
+	@Override
+	public Visita buscarPorId(Long id) {
+		log.info("Buscando visitas por id...");
+		return visitaRepository.findById(id);
+	}
+
 }

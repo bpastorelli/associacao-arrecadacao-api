@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.associacao.arrecadacao.api.dtos.EncerraVisitaDto;
 import com.associacao.arrecadacao.api.dtos.VisitaDto;
 import com.associacao.arrecadacao.api.entities.Residencia;
 import com.associacao.arrecadacao.api.entities.Visita;
@@ -82,25 +83,20 @@ public class VisitaController {
 		
 	}
 	
-	@PutMapping("/encerrar/{id}")
-	public ResponseEntity<?> encerrarVisita(@PathVariable("id") Long id,
-											BindingResult result) throws NoSuchAlgorithmException{
+	@PutMapping("/encerrar")
+	public ResponseEntity<?> encerrarVisita(@Valid @RequestBody EncerraVisitaDto encerraVisitaDto,
+											BindingResult result) {
 		
 		log.info("Preparando dados para atualizar a visita");
 		Response<VisitaResponse> response = new Response<VisitaResponse>();
 		
-		Visita visita = new Visita();
-		//visita = visitaService.buscarPorIdOrRgOrCpfAndPosicao(id, null, null, posicao)
+		Visita visita = this.visitaService.buscarPorId(encerraVisitaDto.getId());
 		
-		if(result.hasErrors()) {
-			log.error("Erro validando dados para cadastro de visita(s): {}", result.getAllErrors());
-			result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
-			return ResponseEntity.status(400).body(response.getErrors());
-		}
+		
 		
 		this.visitaService.persistir(visita);
 		response.setData(this.converterDtoParaVisitaResponse(visita));
-		return ResponseEntity.status(HttpStatus.CREATED).body(response.getData());
+		return ResponseEntity.status(HttpStatus.OK).body(response.getData());
 		
 	}
 	

@@ -13,6 +13,12 @@ public interface VisitaService {
 	 */
 	Visita persistir(Visita visita);
 	
+	/**
+	 * Buscar por id
+	 * @param id
+	 * @return
+	 */
+	Visita buscarPorId(Long id);
 	
 	/**
 	 * Buscar por RG

@@ -24,6 +24,8 @@ import com.associacao.arrecadacao.api.entities.Visita;
 		
 public interface VisitaRepository extends JpaRepository<Visita, Long> {
 	
+	Visita findById(Long id);
+	
 	List<Visita> findByIdOrVisitanteRgOrVisitanteCpfAndPosicao(@Param("id") Long id, @Param("rg") String rg, @Param("cpf") String cpf, @Param("posicao") Long posicao);
 	
 	Page<Visita> findByIdOrVisitanteRgOrVisitanteCpfAndPosicao(@Param("id") Long id, @Param("rg") String rg, @Param("cpf") String cpf, Pageable pageable);	
