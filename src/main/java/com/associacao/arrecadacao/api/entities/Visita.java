@@ -26,8 +26,8 @@ public class Visita implements Serializable {
 	private static final long serialVersionUID = -5754246207015712520L;
 	
 	private Long id;
-	private Long residenciaId;
 	private Visitante visitante;
+	private Residencia residencia;
 	private Date dataEntrada;
 	private Date horaEntrada;
 	private Date dataSaida;
@@ -90,15 +90,6 @@ public class Visita implements Serializable {
 		this.horaSaida = horaSaida;
 	}
 	
-	@Column(name = "residencia_id", nullable = false)
-	public Long getResidenciaId() {
-		return residenciaId;
-	}
-
-	public void setResidenciaId(Long residenciaId) {
-		this.residenciaId = residenciaId;
-	}
-	
 	@Column(name = "posicao", nullable = false)
 	public Long getPosicao() {
 		return posicao;
@@ -115,6 +106,15 @@ public class Visita implements Serializable {
 
 	public void setVisitante(Visitante visitante) {
 		this.visitante = visitante;
+	}
+	
+	@OneToOne(fetch = FetchType.EAGER)
+	public Residencia getResidencia() {
+		return residencia;
+	}
+
+	public void setResidencia(Residencia residencia) {
+		this.residencia = residencia;
 	}
 	
 	@PrePersist

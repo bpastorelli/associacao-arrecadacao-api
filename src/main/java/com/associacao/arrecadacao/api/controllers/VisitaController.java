@@ -14,7 +14,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -44,7 +46,7 @@ public class VisitaController {
 	private VisitanteService visitanteService;
 	
 	@Autowired
-	private ResidenciaService residenciaService; 
+	private ResidenciaService residenciaService;
 	
 	
 	public VisitaController() {
@@ -80,9 +82,36 @@ public class VisitaController {
 		
 	}
 	
+	@PutMapping("/encerrar/{id}")
+	public ResponseEntity<?> encerrarVisita(@PathVariable("id") Long id,
+											BindingResult result) throws NoSuchAlgorithmException{
+		
+		log.info("Preparando dados para atualizar a visita");
+		Response<VisitaResponse> response = new Response<VisitaResponse>();
+		
+		Visita visita = new Visita();
+		//visita = visitaService.buscarPorIdOrRgOrCpfAndPosicao(id, null, null, posicao)
+		
+		if(result.hasErrors()) {
+			log.error("Erro validando dados para cadastro de visita(s): {}", result.getAllErrors());
+			result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
+			return ResponseEntity.status(400).body(response.getErrors());
+		}
+		
+		this.visitaService.persistir(visita);
+		response.setData(this.converterDtoParaVisitaResponse(visita));
+		return ResponseEntity.status(HttpStatus.CREATED).body(response.getData());
+		
+	}
+	
+	
 	public Visita converterVisitaDtoParaVisita(VisitaDto visitaDto, Visita visita, BindingResult result) {
 		
 		Optional<Visitante> visitante = null;
+		Optional<Residencia> residencia = this.residenciaService.buscarPorId(visitaDto.getResidenciaId());
+		
+		if(!residencia.isPresent())
+			result.addError(new ObjectError("visita", " Código de residência " + visitaDto.getResidenciaId() + " inexistente"));
 				
 		if(visitaDto.getCpf().equals("") && visitaDto.getRg().equals("")) {
 			result.addError(new ObjectError("visita", " Você deve infomar ao menos o CPF ou RG do visitante" ));
@@ -96,17 +125,16 @@ public class VisitaController {
 		if(!result.hasErrors()) {
 			
 			Long posicao = (long) 1;
-			List<Visita> listVisitas = visitaService.buscarPorRgOrCpfAndPosicao(visitante.get().getRg(), visitante.get().getCpf(), posicao);
+			List<Visita> listVisitas = visitaService.buscarPorIdOrRgOrCpfAndPosicao(visita.getId(), visitante.get().getRg(), visitante.get().getCpf(), posicao);
 			
 			if(listVisitas.size() > 0) {
 				result.addError(new ObjectError("visita", " Este visitante já possui " + listVisitas.size() + " registro(s) ativo(s) de entrada!" ));	
 			}
-		}
-		
+		}		
 		
 		if(!result.hasErrors()) {
 			visita.setVisitante(visitante.get());
-			visita.setResidenciaId(visitaDto.getResidenciaId());
+			visita.setResidencia(residencia.get());
 		}
 		
 		return visita;
@@ -116,23 +144,21 @@ public class VisitaController {
 	
 	public VisitaResponse converterDtoParaVisitaResponse(Visita visita){
 		
-		Optional<Visitante> visitante = visitanteService.buscarPorRg(visita.getVisitante().getRg());
-		Optional<Residencia> residencia = residenciaService.bucarPorIdOrMatricula(visita.getResidenciaId(), null);
 		
 		VisitaResponse visitaResponse = new VisitaResponse();
 		visitaResponse.setId(visita.getId());
-		visitaResponse.setNome(visitante.get().getNome());
-		visitaResponse.setRg(visitante.get().getRg());
-		visitaResponse.setCpf(visitante.get().getCpf() != null ? visitante.get().getCpf() : "");
+		visitaResponse.setNome(visita.getVisitante().getNome());
+		visitaResponse.setRg(visita.getVisitante().getRg());
+		visitaResponse.setCpf(visita.getVisitante().getCpf() != null ? visita.getVisitante().getCpf() : "");
 		visitaResponse.setDataEntrada(Utils.dateFormat(visita.getDataEntrada(), "dd/MM/yyyy"));
 		visitaResponse.setHoraEntrada(visita.getHoraEntrada().toString());
 		visitaResponse.setDataSaida(visita.getDataSaida() != null ? Utils.dateFormat(visita.getDataSaida(), "dd/MM/yyyy") : "" );
 		visitaResponse.setHoraSaida(visita.getHoraSaida() != null ? visita.getHoraSaida().toString() : "" );
-		visitaResponse.setEndereco(residencia.get().getEndereco());
-		visitaResponse.setNumero(residencia.get().getNumero().toString());
-		visitaResponse.setBairro(residencia.get().getBairro());
-		visitaResponse.setCidade(residencia.get().getCidade());
-		visitaResponse.setUf(residencia.get().getUf());
+		visitaResponse.setEndereco(visita.getResidencia().getEndereco() != null ? visita.getResidencia().getEndereco() : "");
+		visitaResponse.setNumero(visita.getResidencia().getNumero().toString() != null ? visita.getResidencia().getNumero().toString() : "");
+		visitaResponse.setBairro(visita.getResidencia().getBairro());
+		visitaResponse.setCidade(visita.getResidencia().getCidade());
+		visitaResponse.setUf(visita.getResidencia().getUf());
 		
 		return visitaResponse;
 	}

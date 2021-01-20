@@ -17,18 +17,18 @@ public class VisitaServiceImpl implements VisitaService {
 	private static final Logger log = LoggerFactory.getLogger(VisitanteServiceImpl.class);
 	
 	@Autowired
-	private VisitaRepository serviceRepository;
+	private VisitaRepository visitaRepository;
 	
 	@Override
 	public Visita persistir(Visita visita) {
 		log.info("Persistindo visita...");
-		return serviceRepository.save(visita);
+		return visitaRepository.save(visita);
 	}
 
 	@Override
-	public List<Visita> buscarPorRgOrCpfAndPosicao(String rg, String cpf, Long posicao) {
+	public List<Visita> buscarPorIdOrRgOrCpfAndPosicao(Long id, String rg, String cpf, Long posicao) {
 		log.info("Buscando visitas por RG...");
-		return serviceRepository.findByVisitanteRgOrVisitanteCpfAndPosicao(rg, cpf, posicao);
+		return visitaRepository.findByIdOrVisitanteRgOrVisitanteCpfAndPosicao(id, rg, cpf, posicao);
 	}
 
 }

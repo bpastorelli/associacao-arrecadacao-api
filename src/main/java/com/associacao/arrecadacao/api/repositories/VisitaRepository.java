@@ -15,15 +15,17 @@ import com.associacao.arrecadacao.api.entities.Visita;
 
 @Transactional(readOnly = true)
 @NamedQueries({
-		@NamedQuery(name = "VisitaRepository.findByVisitanteRgOrVisitanteCpfAndPosicao", 
-					query = " SELECT a FROM Visitante a WHERE a.rg = :rg "
+		@NamedQuery(name = "VisitaRepository.findByIdOrVisitanteRgOrVisitanteCpfAndPosicao", 
+					query = " SELECT a FROM Visitante a "
+							+ "WHERE a.id = :id "
+							+ "OR a.rg = :rg "
 							+ "OR a.cpf = :cpf "
 							+ "AND a.posicao = :posicao")})
 		
 public interface VisitaRepository extends JpaRepository<Visita, Long> {
 	
-	List<Visita> findByVisitanteRgOrVisitanteCpfAndPosicao(@Param("rg") String rg, @Param("cpf") String cpf, @Param("posicao") Long posicao);
+	List<Visita> findByIdOrVisitanteRgOrVisitanteCpfAndPosicao(@Param("id") Long id, @Param("rg") String rg, @Param("cpf") String cpf, @Param("posicao") Long posicao);
 	
-	Page<Visita> findByVisitanteRgOrVisitanteCpfAndPosicao(@Param("rg") String rg, @Param("cpf") String cpf, Pageable pageable);	
+	Page<Visita> findByIdOrVisitanteRgOrVisitanteCpfAndPosicao(@Param("id") Long id, @Param("rg") String rg, @Param("cpf") String cpf, Pageable pageable);	
 
 }
