@@ -12,15 +12,20 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.associacao.arrecadacao.api.dtos.EncerraVisitaDto;
@@ -80,11 +85,17 @@ public class VisitaController {
 		}
 		
 		this.visitaService.persistir(visita);
-		response.setData(this.converterDtoParaVisitaResponse(visita));
+		response.setData(this.converterVisitaParaVisitaResponse(visita));
 		return ResponseEntity.status(HttpStatus.CREATED).body(response.getData());
 		
 	}
 	
+	/**
+	 * Encerra o periodo de visita aberto
+	 * @param encerraVisitaDto
+	 * @param result
+	 * @return VisitaResponse
+	 */
 	@PutMapping("/encerrar")
 	public ResponseEntity<?> encerrarVisita(@Valid @RequestBody EncerraVisitaDto encerraVisitaDto,
 											BindingResult result) {
@@ -102,8 +113,44 @@ public class VisitaController {
 		}
 		
 		this.visitaService.persistir(visita);
-		response.setData(this.converterDtoParaVisitaResponse(visita));
+		response.setData(this.converterVisitaParaVisitaResponse(visita));
 		return ResponseEntity.status(HttpStatus.OK).body(response.getData());
+		
+	}
+	
+
+	@GetMapping(value = "/filtro")
+	public ResponseEntity<?> buscarVisitasFiltro(
+			@RequestParam(value = "rg", defaultValue = "null") String rg,
+			@RequestParam(value = "cpf", defaultValue = "null") String cpf,
+			@RequestParam(value = "posicao", defaultValue = "2") Integer posicao,
+			@RequestParam(value = "pag", defaultValue = "0") int pag,
+			@RequestParam(value = "ord", defaultValue = "id") String ord,
+			@RequestParam(value = "dir", defaultValue = "DESC") String dir,
+			@RequestParam(value = "size", defaultValue = "10") int size) throws NoSuchAlgorithmException{
+		
+		log.info("Buscando visitas...");
+		
+		PageRequest pageRequest = new PageRequest(pag, size, Direction.valueOf(dir), ord);
+		
+		Page<Visita> visitas = null;
+		List<VisitaResponse> listVisitas = new ArrayList<VisitaResponse>();
+		
+		if(!rg.equals("null") || !cpf.equals("null") || posicao != 2)
+			visitas = this.visitaService.buscarPorPosicaoOrRgOrCpf(posicao, rg, cpf, pageRequest);
+		else
+			visitas = this.visitaService.buscarTodos(pageRequest);
+		
+		visitas.getContent().forEach(v -> {	
+			listVisitas.add(this.converterVisitaParaVisitaResponse(v));
+		});		
+		
+		if (listVisitas.size() == 0) {
+			log.info("A consulta não retornou dados");
+			return ResponseEntity.status(404).body("A consulta não retornou dados!");
+		}
+		
+		return ResponseEntity.status(HttpStatus.OK).body(listVisitas);
 		
 	}
 	
@@ -171,7 +218,7 @@ public class VisitaController {
 	}
 	
 	
-	public VisitaResponse converterDtoParaVisitaResponse(Visita visita){
+	public VisitaResponse converterVisitaParaVisitaResponse(Visita visita){
 		
 		
 		VisitaResponse visitaResponse = new VisitaResponse();
@@ -188,9 +235,10 @@ public class VisitaController {
 		visitaResponse.setBairro(visita.getResidencia().getBairro());
 		visitaResponse.setCidade(visita.getResidencia().getCidade());
 		visitaResponse.setUf(visita.getResidencia().getUf());
+		visitaResponse.setPosicao(visita.getPosicao());
 		
 		return visitaResponse;
 	}
 	
 
-}
+}	

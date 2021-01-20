@@ -8,19 +8,20 @@ public class VisitaResponse implements Serializable {
 	
 	private static final long serialVersionUID = -5754246207015712520L;
 	
-	private Long   id;
-	private String nome;
-	private String rg;
-	private String cpf;
-	private String dataEntrada;
-	private Time   horaEntrada;
-	private String dataSaida;
-	private Time   horaSaida;
-	private String endereco;
-	private String numero;
-	private String bairro;
-	private String cidade;
-	private String uf;
+	private Long    id;
+	private String  nome;
+	private String  rg;
+	private String  cpf;
+	private String  dataEntrada;
+	private Time    horaEntrada;
+	private String  dataSaida;
+	private Time    horaSaida;
+	private String  endereco;
+	private String  numero;
+	private String  bairro;
+	private String  cidade;
+	private String  uf;
+	private Integer posicao;
 	
 	public Long getId() {
 		return id;
@@ -125,5 +126,13 @@ public class VisitaResponse implements Serializable {
 	
 	public void setUf(String uf) {
 		this.uf = uf;
+	}
+
+	public Integer getPosicao() {
+		return posicao;
+	}
+
+	public void setPosicao(Integer posicao) {
+		this.posicao = posicao;
 	}
 }
