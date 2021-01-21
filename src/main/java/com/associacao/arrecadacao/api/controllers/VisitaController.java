@@ -186,10 +186,17 @@ public class VisitaController {
 		if(visitaDto.getCpf().equals("") && visitaDto.getRg().equals("")) {
 			result.addError(new ObjectError("visita", " Você deve infomar ao menos o CPF ou RG do visitante" ));
 		}else {
-			if(!visitaDto.getRg().equals(""))
+			if(!visitaDto.getRg().equals("")) {
 				visitante = visitanteService.buscarPorRg(visitaDto.getRg());
-			else
-				visitante = visitanteService.buscarPorCpf(visitaDto.getCpf());			
+				if(!visitante.isPresent())
+					result.addError(new ObjectError("visita", " Visitante não encontrado para o RG " + visitaDto.getRg() + "!"));				
+			}
+			else {
+				visitante = visitanteService.buscarPorCpf(visitaDto.getCpf());
+				if(!visitante.isPresent())
+					result.addError(new ObjectError("visita", " Visitante não encontrado para o CPF " + visitaDto.getCpf() + "!"));				
+			}
+			
 		}
 		
 		if(!result.hasErrors()) {
