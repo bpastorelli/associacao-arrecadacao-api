@@ -51,6 +51,15 @@ public interface ResidenciaService {
 	 * @return Optional<Residencia>
 	 */	
 	Optional<Residencia> bucarPorEnderecoAndNumero(String string, Long numero);
+	
+	/**
+	 * Retorna uma residência por cep e número
+	 * 
+	 * @param cep
+	 * @param numero
+	 * @return
+	 */
+	Optional<Residencia> buscarPorCepAndNumero(String cep, Long numero);
 		
 	/**
 	 * Busca todas as residências Paginado

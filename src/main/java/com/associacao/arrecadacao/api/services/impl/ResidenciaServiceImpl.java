@@ -64,4 +64,10 @@ public class ResidenciaServiceImpl implements ResidenciaService {
 		log.info("Buscando uma residências paginado {}", pageRequest);
 		return this.residenciaRepository.findByIdOrMatriculaOrEnderecoContainsOrNumero(id, matricula, endereco, numero, pageRequest);
 	}
+
+	@Override
+	public Optional<Residencia> buscarPorCepAndNumero(String cep, Long numero) {
+		log.info("Buscando uma residência por Cep e Número {}", cep, numero);
+		return Optional.ofNullable(this.residenciaRepository.findByCepAndNumero(cep, numero));
+	}
 }
