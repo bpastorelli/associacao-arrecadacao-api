@@ -199,6 +199,7 @@ public class VisitaController {
 			
 		}
 		
+		//Valida se já existem visitas não encerradas.
 		if(!result.hasErrors()) {
 			
 			Integer posicao = 1;
@@ -218,7 +219,6 @@ public class VisitaController {
 		return visita;
 		
 	}
-	
 	
 	public VisitaResponse converterVisitaParaVisitaResponse(Visita visita){
 		

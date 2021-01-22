@@ -101,8 +101,12 @@ class ResidenciaController {
 		}
 		
 		Optional<Morador> morador = moradorService.buscarPorId(cadastroNovaResidenciaDto.getMoradorId());
+		Optional<Residencia> residenciaBusca = residenciaService.buscarPorCepAndNumero(cadastroNovaResidenciaDto.getCep(), cadastroNovaResidenciaDto.getNumero());
+		if(!residenciaBusca.isPresent())
+			this.residenciaService.persistir(residencia);
+		else
+			residencia.setId(residenciaBusca.get().getId());
 		
-		this.residenciaService.persistir(residencia);
 		this.vinculoResidenciaService.persistir(this.converterParaVinculoResidencia(morador.get(), residencia));
 		response.setData(this.converterCadastroResidenciaDto(residencia));
 		return ResponseEntity.status(HttpStatus.CREATED).body(response.getData());
@@ -277,21 +281,12 @@ class ResidenciaController {
 	
 	private void validarDadosExistentes(CadastroResidenciaDto cadastroResidenciaDto, BindingResult result) {
 		
-		this.residenciaService.buscarPorMatricula(cadastroResidenciaDto.getMatricula())
-				.ifPresent(res -> result.addError(new ObjectError("residencia", " Residência já existente")));
-		
-		this.residenciaService.bucarPorEnderecoAndNumero(cadastroResidenciaDto.getEndereco(), cadastroResidenciaDto.getNumero())
+		this.residenciaService.buscarPorCepAndNumero(cadastroResidenciaDto.getCep(), cadastroResidenciaDto.getNumero())
 				.ifPresent(res -> result.addError(new ObjectError("residencia", " Endereço já existente")));
 		
 	}
 	
 	private void validarDadosExistentes(CadastroNovaResidenciaDto cadastroNovaResidenciaDto, BindingResult result) {
-		
-		this.residenciaService.buscarPorMatricula(cadastroNovaResidenciaDto.getMatricula())
-				.ifPresent(res -> result.addError(new ObjectError("residencia", " Residência já existente")));
-		
-		this.residenciaService.bucarPorEnderecoAndNumero(cadastroNovaResidenciaDto.getEndereco(), cadastroNovaResidenciaDto.getNumero())
-				.ifPresent(res -> result.addError(new ObjectError("residencia", " Endereço já existente")));
 		
 		if(!this.moradorService.buscarPorId(cadastroNovaResidenciaDto.getMoradorId()).isPresent())
 				result.addError(new ObjectError("residencia", " O morador código " + cadastroNovaResidenciaDto.getMoradorId() + " não existe" ));

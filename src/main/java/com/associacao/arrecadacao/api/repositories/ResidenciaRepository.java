@@ -22,5 +22,7 @@ public interface ResidenciaRepository extends JpaRepository<Residencia, Long> {
 	Residencia findByIdOrMatricula(Long id, String matricula);
 	
 	Residencia findByEnderecoAndNumero(String endereco, Long numero);
+	
+	Residencia findByCepAndNumero(String cep, Long numero);
 
 }

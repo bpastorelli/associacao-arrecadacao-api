@@ -46,7 +46,6 @@ public class VisitaResponse implements Serializable {
 	public void setCpf(String cpf) {
 		this.cpf = cpf;
 	}	
-
 	
 	public String getRg() {
 		return rg;
