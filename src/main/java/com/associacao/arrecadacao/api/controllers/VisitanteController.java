@@ -153,6 +153,37 @@ public class VisitanteController {
 		
 	}
 	
+	/**
+	 * 
+	 * @param rg rg do visitante
+	 * @param cpf cpf do visitante
+	 * @return Visitante
+	 * @throws NoSuchAlgorithmException
+	 */
+	@GetMapping(value = "/busca")
+	public ResponseEntity<?> buscarVisitante(
+			@RequestParam(value = "rg", defaultValue = "null") String rg,
+			@RequestParam(value = "cpf", defaultValue = "null") String cpf) throws NoSuchAlgorithmException{
+		
+		log.info("Buscando visitante...");
+		
+		Response<Visitante> response = new Response<Visitante>();
+		Optional<Visitante> visitante = null;
+		
+		if(!rg.equals("null") || !cpf.equals("null"))
+			visitante = this.visitanteService.buscarPorRgOrCpf(rg, cpf);
+		
+		if (!visitante.isPresent()) {
+			log.info("A consulta não retornou dados");
+			response.getErrors().add(" Visitante não encontrado!");
+			return ResponseEntity.status(404).body(response.getErrors());
+		}
+		
+		response.setData(visitante.get());
+		return ResponseEntity.status(HttpStatus.OK).body(response.getData());
+		
+	}
+	
 	//Validação dos dados informados no dto
 	public void validarDadosExistentes(CadastroVisitanteDto cadastroVisitanteDto, BindingResult result) {
 		

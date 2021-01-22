@@ -73,4 +73,10 @@ public class VisitanteServiceImpl implements VisitanteService {
 		return visitanteRepository.findById(id);
 	}
 
+	@Override
+	public Optional<Visitante> buscarPorRgOrCpf(String rg, String cpf) {
+		log.info("Buscar por RG ou CPF {}", rg , cpf);
+		return visitanteRepository.findByRgOrCpf(rg, cpf);
+	}
+
 }

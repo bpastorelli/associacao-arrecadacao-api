@@ -76,5 +76,13 @@ public interface VisitanteService {
 	 * @return Page<Visitante>
 	 */
 	Page<Visitante> buscarTodos(PageRequest pageRequest);
+	
+	/**
+	 * Busca visitante por RG ou CPF
+	 * @param rg
+	 * @param cpf
+	 * @return Optional<Visitante>
+	 */
+	Optional<Visitante> buscarPorRgOrCpf(String rg, String cpf);
 
 }
