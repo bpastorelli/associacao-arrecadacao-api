@@ -173,6 +173,12 @@ public class VisitanteController {
 		if(!rg.equals("null") || !cpf.equals("null"))
 			visitante = this.visitanteService.buscarPorRgOrCpf(rg, cpf);
 		
+		if(rg.equals("null") && cpf.equals("null")) {
+			log.info("Não existem parâmetros para busca");
+			response.getErrors().add(" Você deve informar ao menos um parâmetro de busca (RG ou CPF)!");
+			return ResponseEntity.status(400).body(response.getErrors());
+		}
+		
 		if (!visitante.isPresent()) {
 			log.info("A consulta não retornou dados");
 			response.getErrors().add(" Visitante não encontrado!");

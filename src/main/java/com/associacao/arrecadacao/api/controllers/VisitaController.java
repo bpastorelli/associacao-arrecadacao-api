@@ -183,8 +183,8 @@ public class VisitaController {
 		if(!residencia.isPresent())
 			result.addError(new ObjectError("visita", " Código de residência " + visitaDto.getResidenciaId() + " inexistente"));
 				
-		if(visitaDto.getCpf().equals("") && visitaDto.getRg().equals("")) {
-			result.addError(new ObjectError("visita", " Você deve infomar ao menos o CPF ou RG do visitante" ));
+		if(visitaDto.getRg().equals("")) {
+			result.addError(new ObjectError("visita", " Você deve infomar o RG do visitante" ));
 		}else {
 			if(!visitaDto.getRg().equals("")) {
 				visitante = visitanteService.buscarPorRg(visitaDto.getRg());
