@@ -46,5 +46,12 @@ public interface VisitaService {
 	 * @return
 	 */
 	Page<Visita> buscarTodos(PageRequest pageRequest);
+	
+	/**
+	 * Busca visita máxima
+	 * @param id
+	 * @return
+	 */
+	Visita buscarPorVisitanteIdOrderByDataEntradaDesc(Long id);
 
 }

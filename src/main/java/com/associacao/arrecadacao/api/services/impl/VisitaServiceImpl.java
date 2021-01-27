@@ -51,4 +51,10 @@ public class VisitaServiceImpl implements VisitaService {
 		return visitaRepository.findAll(pageRequest);
 	}
 
+	@Override
+	public Visita buscarPorVisitanteIdOrderByDataEntradaDesc(Long id) {
+		log.info("Buscando visita máxima...");
+		return visitaRepository.findFirstByVisitanteIdOrderByDataEntradaDesc(id);
+	}
+
 }

@@ -27,9 +27,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.associacao.arrecadacao.api.commons.ValidaCPF;
 import com.associacao.arrecadacao.api.dtos.CadastroVisitanteDto;
+import com.associacao.arrecadacao.api.entities.Visita;
 import com.associacao.arrecadacao.api.entities.Visitante;
 import com.associacao.arrecadacao.api.response.Response;
+import com.associacao.arrecadacao.api.services.VisitaService;
 import com.associacao.arrecadacao.api.services.VisitanteService;
+import com.associacao.arrecadacao.api.utils.Utils;
 
 @RestController
 @RequestMapping("associados/visitante")
@@ -37,6 +40,9 @@ import com.associacao.arrecadacao.api.services.VisitanteService;
 public class VisitanteController {
 	
 	private static final Logger log = LoggerFactory.getLogger(VisitanteController.class);
+	
+	@Autowired
+	private VisitaService visitaService;
 	
 	@Autowired
 	private VisitanteService visitanteService;
@@ -143,6 +149,12 @@ public class VisitanteController {
 			visitantes = this.visitanteService.buscarPorIdOrNomeOrCpfOrRg(id, nome, cpf, rg, pageRequest);
 		else
 			visitantes = this.visitanteService.buscarTodos(pageRequest);
+		
+		//Busca a data da última visita do visitante
+		visitantes.forEach(v -> {
+			Visita visita = visitaService.buscarPorVisitanteIdOrderByDataEntradaDesc(v.getId());
+			v.setUltimaVisita(Utils.dateFormat(visita.getDataEntrada(),"dd/MM/yyyy"));
+		});		
 		
 		if (visitantes.getSize() == 0) {
 			log.info("A consulta não retornou dados");

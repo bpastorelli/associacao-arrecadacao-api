@@ -32,5 +32,7 @@ public interface VisitaRepository extends JpaRepository<Visita, Long> {
 	
 	@Transactional(readOnly = true)
 	Page<Visita> findAll(Pageable pageable);
+	
+	Visita findFirstByVisitanteIdOrderByDataEntradaDesc(Long id);
 
 }
