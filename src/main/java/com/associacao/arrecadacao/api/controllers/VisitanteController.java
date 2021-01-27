@@ -139,8 +139,7 @@ public class VisitanteController {
 			@RequestParam(value = "dir", defaultValue = "DESC") String dir,
 			@RequestParam(value = "size", defaultValue = "10") int size) throws NoSuchAlgorithmException{
 		
-		log.info("Buscando visitantes...");
-		
+		log.info("Buscando visitantes...");		
 		PageRequest pageRequest = new PageRequest(pag, size, Direction.valueOf(dir), ord);
 		
 		Page<Visitante> visitantes = null;
@@ -149,11 +148,14 @@ public class VisitanteController {
 			visitantes = this.visitanteService.buscarPorIdOrNomeOrCpfOrRg(id, nome, cpf, rg, pageRequest);
 		else
 			visitantes = this.visitanteService.buscarTodos(pageRequest);
-		
+			
 		//Busca a data da última visita do visitante
 		visitantes.forEach(v -> {
-			Visita visita = visitaService.buscarPorVisitanteIdOrderByDataEntradaDesc(v.getId());
-			v.setUltimaVisita(Utils.dateFormat(visita.getDataEntrada(),"dd/MM/yyyy"));
+			Optional<Visita> visita = null;
+			visita = visitaService.buscarPorVisitanteIdOrderByDataEntradaDesc(v.getId());
+			if(visita.isPresent()) {
+				v.setUltimaVisita(Utils.dateFormat(visita.get().getDataEntrada(),"dd/MM/yyyy"));				
+			}
 		});		
 		
 		if (visitantes.getSize() == 0) {

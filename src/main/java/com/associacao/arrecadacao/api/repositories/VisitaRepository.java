@@ -1,6 +1,7 @@
 package com.associacao.arrecadacao.api.repositories;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -34,6 +35,6 @@ public interface VisitaRepository extends JpaRepository<Visita, Long> {
 	@Transactional(readOnly = true)
 	Page<Visita> findAll(Pageable pageable);
 	
-	Visita findFirstByVisitanteIdOrderByDataEntradaDesc(Long id);
+	Optional<Visita> findFirstByVisitanteIdOrderByDataEntradaDesc(Long id);
 
 }

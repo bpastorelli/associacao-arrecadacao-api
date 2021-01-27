@@ -1,6 +1,7 @@
 package com.associacao.arrecadacao.api.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -52,6 +53,6 @@ public interface VisitaService {
 	 * @param id
 	 * @return
 	 */
-	Visita buscarPorVisitanteIdOrderByDataEntradaDesc(Long id);
+	Optional<Visita> buscarPorVisitanteIdOrderByDataEntradaDesc(Long id);
 
 }

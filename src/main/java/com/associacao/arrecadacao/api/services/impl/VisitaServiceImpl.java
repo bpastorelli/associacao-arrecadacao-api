@@ -1,6 +1,7 @@
 package com.associacao.arrecadacao.api.services.impl;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,7 +53,7 @@ public class VisitaServiceImpl implements VisitaService {
 	}
 
 	@Override
-	public Visita buscarPorVisitanteIdOrderByDataEntradaDesc(Long id) {
+	public Optional<Visita> buscarPorVisitanteIdOrderByDataEntradaDesc(Long id) {
 		log.info("Buscando visita máxima...");
 		return visitaRepository.findFirstByVisitanteIdOrderByDataEntradaDesc(id);
 	}
