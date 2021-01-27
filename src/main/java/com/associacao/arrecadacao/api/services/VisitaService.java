@@ -28,7 +28,7 @@ public interface VisitaService {
 	 * @param rg
 	 * @return
 	 */
-	List<Visita> buscarPorPosicaoOrRgOrCpf(Integer posicao, String rg, String cpf);
+	List<Visita> buscarPorPosicaoOrRgOrCpf(Integer posicao, String rg, String cpf, String nome);
 	
 	/**
 	 * Buscar vistas paginado
@@ -38,7 +38,7 @@ public interface VisitaService {
 	 * @param pageRequest
 	 * @return
 	 */
-	Page<Visita> buscarPorPosicaoOrRgOrCpf(Integer posicao, String rg, String cpf, PageRequest pageRequest);
+	Page<Visita> buscarPorPosicaoOrRgOrCpf(Integer posicao, String rg, String cpf, String nome, PageRequest pageRequest);
 	
 	/**
 	 * Busca todas as visitas

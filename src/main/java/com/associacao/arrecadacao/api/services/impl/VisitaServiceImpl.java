@@ -28,9 +28,9 @@ public class VisitaServiceImpl implements VisitaService {
 	}
 
 	@Override
-	public List<Visita> buscarPorPosicaoOrRgOrCpf(Integer posicao, String rg, String cpf) {
+	public List<Visita> buscarPorPosicaoOrRgOrCpf(Integer posicao, String rg, String cpf, String nome) {
 		log.info("Buscando visitas por RG...");
-		return visitaRepository.findByPosicaoAndVisitanteRgAndVisitanteCpf(posicao, rg, cpf);
+		return visitaRepository.findByPosicaoAndVisitanteRgAndVisitanteCpfAndVisitanteNomeContaining(posicao, rg, cpf, nome);
 	}
 
 	@Override
@@ -40,9 +40,9 @@ public class VisitaServiceImpl implements VisitaService {
 	}
 
 	@Override
-	public Page<Visita> buscarPorPosicaoOrRgOrCpf(Integer posicao, String rg, String cpf, PageRequest pageRequest) {
+	public Page<Visita> buscarPorPosicaoOrRgOrCpf(Integer posicao, String rg, String cpf, String nome, PageRequest pageRequest) {
 		log.info("Buscando visitas paginado...");
-		return visitaRepository.findByPosicaoOrVisitanteRgOrVisitanteCpf(posicao, rg, cpf, pageRequest);
+		return visitaRepository.findByPosicaoOrVisitanteRgOrVisitanteCpfOrVisitanteNomeContaining(posicao, rg, cpf, nome, pageRequest);
 	}
 
 	@Override

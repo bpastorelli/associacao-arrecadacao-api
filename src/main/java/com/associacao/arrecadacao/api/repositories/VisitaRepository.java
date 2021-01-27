@@ -19,16 +19,17 @@ import com.associacao.arrecadacao.api.entities.Visita;
 					query = "SELECT a FROM Visitante a "
 							+ "WHERE a.visita.posicao = :posicao "
 							+ "AND a.rg = :rg "
-							+ "AND a.cpf = :cpf ")})
+							+ "AND a.cpf = :cpf "
+							+ "AND a.nome like %:nome%")})
 		
 public interface VisitaRepository extends JpaRepository<Visita, Long> {
 	
 	Visita findById(Long id);
 	
-	List<Visita> findByPosicaoAndVisitanteRgAndVisitanteCpf(@Param("posicao") Integer posicao, @Param("rg") String rg, @Param("cpf") String cpf);
+	List<Visita> findByPosicaoAndVisitanteRgAndVisitanteCpfAndVisitanteNomeContaining(@Param("posicao") Integer posicao, @Param("rg") String rg, @Param("cpf") String cpf, @Param("nome") String nome);
 	
 	@Transactional(readOnly = true)
-	Page<Visita> findByPosicaoOrVisitanteRgOrVisitanteCpf(@Param("posicao") Integer posicao, @Param("rg") String rg, @Param("cpf") String cpf, Pageable pageable);
+	Page<Visita> findByPosicaoOrVisitanteRgOrVisitanteCpfOrVisitanteNomeContaining(@Param("posicao") Integer posicao, @Param("rg") String rg, @Param("cpf") String cpf, @Param("nome") String nome, Pageable pageable);
 	
 	@Transactional(readOnly = true)
 	Page<Visita> findAll(Pageable pageable);
