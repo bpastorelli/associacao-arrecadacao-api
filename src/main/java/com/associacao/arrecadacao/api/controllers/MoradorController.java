@@ -189,6 +189,11 @@ public class MoradorController {
 		list.add(morador.get());		
 		
 		this.moradorService.persistir(list);
+		
+		List<VinculoResidencia> listVinculos = this.vinculoResidenciaService.buscarPorMoradorId(morador.get().getId());
+		if(listVinculos.size() > 0)
+			morador.get().setResidenciaId(listVinculos.get(0).getId());
+		
 		response.setData(morador.get());
 
 		return ResponseEntity.status(HttpStatus.OK).body(response);
