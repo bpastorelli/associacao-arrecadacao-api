@@ -255,6 +255,15 @@ public class MoradorController {
 		else 			
 			moradores = this.moradorService.buscarPorIdOrCpfOrRgOrNomeOrEmail(id, cpf, rg, nome, email, pageRequest);
 		
+		//Busca o código de residência para o morador em edição
+		if(moradores.getContent().size() == 1) {
+			moradores.forEach(m -> {
+				List<VinculoResidencia> list = this.vinculoResidenciaService.buscarPorMoradorId(m.getId());
+				if(list.size() > 0)
+					m.setResidenciaId(list.get(0).getId());
+			});			
+		}
+		
 		if (moradores.getSize() == 0) {
 			log.info("A consulta não retornou dados");
 			return ResponseEntity.badRequest().body("A consulta não retornou dados!");
