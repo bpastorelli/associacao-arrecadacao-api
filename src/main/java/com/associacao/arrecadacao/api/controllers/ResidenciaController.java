@@ -140,7 +140,7 @@ class ResidenciaController {
 		if (result.hasErrors()) {
 			log.error("Erro validando residência: {}", result.getAllErrors());
 			result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
-			return ResponseEntity.badRequest().body(response.getErrors());
+			return ResponseEntity.status(400).body(response.getErrors());
 		}
 		
 		this.residenciaService.persistir(residencia.get());
@@ -332,8 +332,8 @@ class ResidenciaController {
 			.ifPresent(res -> result.addError(new ObjectError("residencia", " Residência já existente")));
 
 		if(residenciaAtual.isPresent())
-			if(residenciaDto.getEndereco() != residenciaAtual.get().getEndereco() && residenciaDto.getNumero() != residenciaAtual.get().getNumero())
-				this.residenciaService.bucarPorEnderecoAndNumero(residenciaDto.getEndereco(), residenciaDto.getNumero())
+			if(residenciaDto.getCep() != residenciaAtual.get().getCep() && residenciaDto.getNumero() != residenciaAtual.get().getNumero())
+				this.residenciaService.buscarPorCepAndNumero(residenciaDto.getCep(), residenciaDto.getNumero())
 					.ifPresent(res -> result.addError(new ObjectError("residencia", " Endereço já existente para a residência codigo " + res.getId() +"")));
 		
 		if(!result.hasErrors()) {

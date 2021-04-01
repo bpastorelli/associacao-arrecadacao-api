@@ -122,15 +122,16 @@ public class MoradorController {
 		//Insere os itens
 		this.moradorService.persistir(listMoradorIncluir);
 		
-		//Vincula o morador
+		//Percorre a lista
 		listMorador.forEach(m -> {			
-			if(m.getResidenciaId() != null) {
+			if(m.getResidenciaId().get() != Long.parseLong("0")) {
 				this.vinculoResidenciaService.buscarPorResidenciaIdAndMoradorId(m.getResidenciaId().get(), morador.getId())
 					.ifPresent(p -> listMorador.removeIf(x -> x.getCpf() == p.getMorador().getCpf()));
 			}		
 		});
 		
-		this.vinculoResidenciaService.persistir(preencheVinculo(listMorador));
+		if(morador.getResidenciaId().get() != Long.parseLong("0"))
+			this.vinculoResidenciaService.persistir(preencheVinculo(listMorador));
 		
 		response.setData(morador);
 		return ResponseEntity.status(HttpStatus.CREATED).body(response);
@@ -328,11 +329,14 @@ public class MoradorController {
 		
 		listMoradores.forEach(m -> {
 			VinculoResidencia vinculo = new VinculoResidencia();
-			residencia.setId(m.getResidenciaId().get());
-			vinculo.setMorador(m);
-			vinculo.setResidencia(residencia);
 			
-			listVinculo.add(vinculo);			
+			if(m.getResidenciaId().get() != Long.parseLong("0")) {
+				residencia.setId(m.getResidenciaId().get());
+				vinculo.setMorador(m);
+				vinculo.setResidencia(residencia);
+				
+				listVinculo.add(vinculo);							
+			}			
 			
 		});
 		
@@ -530,19 +534,19 @@ public class MoradorController {
 		
 		if (!morador.getNome().equals(moradorDto.getNome())) {
 			this.moradorService.buscarPorNome(moradorDto.getNome())
-					.ifPresent(func -> result.addError(new ObjectError("nome", " O nome '" + func.getNome() + "' já existe")));
+					.ifPresent(func -> result.addError(new ObjectError("nome", " O nome '" + func.getNome() + "' já existe!")));
 			morador.setNome(moradorDto.getNome());
 		}
 		
 		if (!morador.getEmail().equals(moradorDto.getEmail())) {
 			this.moradorService.buscarPorEmail(moradorDto.getEmail())
-					.ifPresent(func -> result.addError(new ObjectError("email", " O e-mail '" + func.getEmail() + "' já existe")));
+					.ifPresent(func -> result.addError(new ObjectError("email", " O e-mail '" + func.getEmail() + "' já existe!")));
 			morador.setEmail(moradorDto.getEmail());
 		}
 		
 		if (!morador.getRg().equals(moradorDto.getRg())) {
 			this.moradorService.buscarPorRg(moradorDto.getRg())
-					.ifPresent(func -> result.addError(new ObjectError("rg", " RG '" + func.getRg() + "' já existe")));
+					.ifPresent(func -> result.addError(new ObjectError("rg", " RG '" + func.getRg() + "' já existe!")));
 			morador.setRg(moradorDto.getRg());
 		}
 		

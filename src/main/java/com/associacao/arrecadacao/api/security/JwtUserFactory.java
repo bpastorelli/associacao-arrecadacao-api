@@ -21,7 +21,10 @@ public class JwtUserFactory {
 	 * @return JwtUser
 	 */
 	public static JwtUser create(Morador morador) {
-		return new JwtUser(morador.getId(), morador.getEmail(), morador.getSenha(),
+		return new JwtUser(
+				morador.getId(),
+				morador.getEmail(), 
+				morador.getSenha(),
 				mapToGrantedAuthorities(morador.getPerfil()));
 	}
 
