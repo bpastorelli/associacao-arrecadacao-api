@@ -21,6 +21,8 @@ public interface VisitanteRepository extends JpaRepository<Visitante, Long> {
 	
 	Optional<Visitante> findByRg(String rg);
 	
+	Optional<Visitante> findByRgOrCpf(String rg, String cpf);
+	
 	@Transactional(readOnly = true)
 	Page<Visitante> findByIdOrNomeContainsOrCpfOrRg(Long id, String nome, String cpf, String rg, Pageable pageable);
 

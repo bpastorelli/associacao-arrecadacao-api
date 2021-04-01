@@ -27,9 +27,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.associacao.arrecadacao.api.commons.ValidaCPF;
 import com.associacao.arrecadacao.api.dtos.CadastroVisitanteDto;
+import com.associacao.arrecadacao.api.entities.Visita;
 import com.associacao.arrecadacao.api.entities.Visitante;
 import com.associacao.arrecadacao.api.response.Response;
+import com.associacao.arrecadacao.api.services.VisitaService;
 import com.associacao.arrecadacao.api.services.VisitanteService;
+import com.associacao.arrecadacao.api.utils.Utils;
 
 @RestController
 @RequestMapping("associados/visitante")
@@ -37,6 +40,9 @@ import com.associacao.arrecadacao.api.services.VisitanteService;
 public class VisitanteController {
 	
 	private static final Logger log = LoggerFactory.getLogger(VisitanteController.class);
+	
+	@Autowired
+	private VisitaService visitaService;
 	
 	@Autowired
 	private VisitanteService visitanteService;
@@ -133,8 +139,7 @@ public class VisitanteController {
 			@RequestParam(value = "dir", defaultValue = "DESC") String dir,
 			@RequestParam(value = "size", defaultValue = "10") int size) throws NoSuchAlgorithmException{
 		
-		log.info("Buscando visitantes...");
-		
+		log.info("Buscando visitantes...");		
 		PageRequest pageRequest = new PageRequest(pag, size, Direction.valueOf(dir), ord);
 		
 		Page<Visitante> visitantes = null;
@@ -143,6 +148,15 @@ public class VisitanteController {
 			visitantes = this.visitanteService.buscarPorIdOrNomeOrCpfOrRg(id, nome, cpf, rg, pageRequest);
 		else
 			visitantes = this.visitanteService.buscarTodos(pageRequest);
+			
+		//Busca a data da última visita do visitante
+		visitantes.forEach(v -> {
+			Optional<Visita> visita = null;
+			visita = visitaService.buscarPorVisitanteIdOrderByDataEntradaDesc(v.getId());
+			if(visita.isPresent()) {
+				v.setUltimaVisita(Utils.dateFormat(visita.get().getDataEntrada(),"dd/MM/yyyy"));				
+			}
+		});		
 		
 		if (visitantes.getSize() == 0) {
 			log.info("A consulta não retornou dados");
@@ -150,6 +164,43 @@ public class VisitanteController {
 		}
 		
 		return ResponseEntity.status(HttpStatus.OK).body(visitantes.getContent());
+		
+	}
+	
+	/**
+	 * 
+	 * @param rg rg do visitante
+	 * @param cpf cpf do visitante
+	 * @return Visitante
+	 * @throws NoSuchAlgorithmException
+	 */
+	@GetMapping(value = "/busca")
+	public ResponseEntity<?> buscarVisitante(
+			@RequestParam(value = "rg", defaultValue = "null") String rg,
+			@RequestParam(value = "cpf", defaultValue = "null") String cpf) throws NoSuchAlgorithmException{
+		
+		log.info("Buscando visitante...");
+		
+		Response<Visitante> response = new Response<Visitante>();
+		Optional<Visitante> visitante = null;
+		
+		if(!rg.equals("null") || !cpf.equals("null"))
+			visitante = this.visitanteService.buscarPorRgOrCpf(rg, cpf);
+		
+		if(rg.equals("null") && cpf.equals("null")) {
+			log.info("Não existem parâmetros para busca");
+			response.getErrors().add(" Você deve informar ao menos um parâmetro de busca (RG ou CPF)!");
+			return ResponseEntity.status(400).body(response.getErrors());
+		}
+		
+		if (!visitante.isPresent()) {
+			log.info("A consulta não retornou dados");
+			response.getErrors().add(" Visitante não encontrado!");
+			return ResponseEntity.status(404).body(response.getErrors());
+		}
+		
+		response.setData(visitante.get());
+		return ResponseEntity.status(HttpStatus.OK).body(response.getData());
 		
 	}
 	

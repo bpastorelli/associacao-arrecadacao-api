@@ -121,6 +121,7 @@ public class VisitaController {
 
 	@GetMapping(value = "/filtro")
 	public ResponseEntity<?> buscarVisitasFiltro(
+			@RequestParam(value = "nome", defaultValue = "null") String nome,
 			@RequestParam(value = "rg", defaultValue = "null") String rg,
 			@RequestParam(value = "cpf", defaultValue = "null") String cpf,
 			@RequestParam(value = "posicao", defaultValue = "2") Integer posicao,
@@ -136,8 +137,8 @@ public class VisitaController {
 		Page<Visita> visitas = null;
 		List<VisitaResponse> listVisitas = new ArrayList<VisitaResponse>();
 		
-		if(!rg.equals("null") || !cpf.equals("null") || posicao != 2)
-			visitas = this.visitaService.buscarPorPosicaoOrRgOrCpf(posicao, rg, cpf, pageRequest);
+		if(!nome.equals("null") || !rg.equals("null") || !cpf.equals("null") || posicao != 2)
+			visitas = this.visitaService.buscarPorPosicaoOrRgOrCpf(posicao, rg, cpf, nome, pageRequest);
 		else
 			visitas = this.visitaService.buscarTodos(pageRequest);
 		
@@ -183,8 +184,8 @@ public class VisitaController {
 		if(!residencia.isPresent())
 			result.addError(new ObjectError("visita", " Código de residência " + visitaDto.getResidenciaId() + " inexistente"));
 				
-		if(visitaDto.getCpf().equals("") && visitaDto.getRg().equals("")) {
-			result.addError(new ObjectError("visita", " Você deve infomar ao menos o CPF ou RG do visitante" ));
+		if(visitaDto.getRg().equals("")) {
+			result.addError(new ObjectError("visita", " Você deve infomar o RG do visitante" ));
 		}else {
 			if(!visitaDto.getRg().equals("")) {
 				visitante = visitanteService.buscarPorRg(visitaDto.getRg());
@@ -204,7 +205,7 @@ public class VisitaController {
 			
 			Integer posicao = 1;
 			List<Visita> listVisitas = new ArrayList<Visita>();
-			listVisitas = visitaService.buscarPorPosicaoOrRgOrCpf(posicao, visitante.get().getRg(), visitante.get().getCpf());
+			listVisitas = visitaService.buscarPorPosicaoOrRgOrCpf(posicao, visitante.get().getRg(), visitante.get().getCpf(), visitante.get().getNome());
 			
 			if(listVisitas.size() > 0) {
 				result.addError(new ObjectError("visita", " Este visitante já possui " + listVisitas.size() + " registro(s) ativo(s) de entrada!" ));	

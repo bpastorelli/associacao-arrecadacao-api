@@ -83,7 +83,7 @@ public class VinculoResidencia implements Serializable {
     
 	@Override
 	public String toString() {
-		return "Vinculo [id=" + id + ", dataVinculo=" + dataVinculo + "]";
+		return "Vinculo [id=" + id + ", residencia_id=" + residencia.getId() + ", dataVinculo=" + dataVinculo + "]";
 	}
 
 }

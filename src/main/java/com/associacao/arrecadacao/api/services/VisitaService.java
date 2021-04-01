@@ -1,6 +1,7 @@
 package com.associacao.arrecadacao.api.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -28,7 +29,7 @@ public interface VisitaService {
 	 * @param rg
 	 * @return
 	 */
-	List<Visita> buscarPorPosicaoOrRgOrCpf(Integer posicao, String rg, String cpf);
+	List<Visita> buscarPorPosicaoOrRgOrCpf(Integer posicao, String rg, String cpf, String nome);
 	
 	/**
 	 * Buscar vistas paginado
@@ -38,7 +39,7 @@ public interface VisitaService {
 	 * @param pageRequest
 	 * @return
 	 */
-	Page<Visita> buscarPorPosicaoOrRgOrCpf(Integer posicao, String rg, String cpf, PageRequest pageRequest);
+	Page<Visita> buscarPorPosicaoOrRgOrCpf(Integer posicao, String rg, String cpf, String nome, PageRequest pageRequest);
 	
 	/**
 	 * Busca todas as visitas
@@ -46,5 +47,12 @@ public interface VisitaService {
 	 * @return
 	 */
 	Page<Visita> buscarTodos(PageRequest pageRequest);
+	
+	/**
+	 * Busca visita máxima
+	 * @param id
+	 * @return
+	 */
+	Optional<Visita> buscarPorVisitanteIdOrderByDataEntradaDesc(Long id);
 
 }

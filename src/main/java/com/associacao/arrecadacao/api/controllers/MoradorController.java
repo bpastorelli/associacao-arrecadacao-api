@@ -97,7 +97,12 @@ public class MoradorController {
 		CadastroMoradorDto dto = new CadastroMoradorDto();
 		
 		List<Morador> listMorador = new ArrayList<Morador>();
+		List<Morador> listMoradorIncluir = new ArrayList<Morador>();
+		
 		listMorador.add(morador);
+		//Recebe os itens da listMorador
+		listMoradorIncluir.addAll(listMorador);
+		
 		dto.setMoradores(listMorador);
 		
 		validarDadosExistentes(dto, result);
@@ -106,9 +111,27 @@ public class MoradorController {
 			log.error("Erro validando dados para cadastro do(s) morador(es): {}", result.getAllErrors());
 			result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
 			return ResponseEntity.badRequest().body(response.getErrors());
-		}	
+		}
 		
-		this.moradorService.persistir(listMorador);
+		//Valida se o CPF já existe, se existir sai da lista de inclusão
+		listMoradorIncluir.forEach(m -> {
+			this.moradorService.buscarPorCpf(m.getCpf())
+				.ifPresent(p -> listMoradorIncluir.removeIf(x -> x.getCpf() == p.getCpf()));
+		});
+		
+		//Insere os itens
+		this.moradorService.persistir(listMoradorIncluir);
+		
+		//Vincula o morador
+		listMorador.forEach(m -> {			
+			if(m.getResidenciaId() != null) {
+				this.vinculoResidenciaService.buscarPorResidenciaIdAndMoradorId(m.getResidenciaId().get(), morador.getId())
+					.ifPresent(p -> listMorador.removeIf(x -> x.getCpf() == p.getMorador().getCpf()));
+			}		
+		});
+		
+		this.vinculoResidenciaService.persistir(preencheVinculo(listMorador));
+		
 		response.setData(morador);
 		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 		
@@ -189,6 +212,11 @@ public class MoradorController {
 		list.add(morador.get());		
 		
 		this.moradorService.persistir(list);
+		
+		List<VinculoResidencia> listVinculos = this.vinculoResidenciaService.buscarPorMoradorId(morador.get().getId());
+		if(listVinculos.size() > 0)
+			morador.get().setResidenciaId(listVinculos.get(0).getId());
+		
 		response.setData(morador.get());
 
 		return ResponseEntity.status(HttpStatus.OK).body(response);
@@ -255,6 +283,15 @@ public class MoradorController {
 		else 			
 			moradores = this.moradorService.buscarPorIdOrCpfOrRgOrNomeOrEmail(id, cpf, rg, nome, email, pageRequest);
 		
+		//Busca o código de residência para o morador em edição
+		if(moradores.getContent().size() == 1) {
+			moradores.forEach(m -> {
+				List<VinculoResidencia> list = this.vinculoResidenciaService.buscarPorMoradorId(m.getId());
+				if(list.size() > 0)
+					m.setResidenciaId(list.get(0).getId());
+			});			
+		}
+		
 		if (moradores.getSize() == 0) {
 			log.info("A consulta não retornou dados");
 			return ResponseEntity.badRequest().body("A consulta não retornou dados!");
@@ -281,6 +318,25 @@ public class MoradorController {
 		}
 		
 		return new ResponseEntity<>(moradores.getContent(), HttpStatus.OK);
+	}
+	
+	//Prepara o objeto de vinculo de residencia
+	private List<VinculoResidencia> preencheVinculo(List<Morador> listMoradores) {
+		
+		Residencia residencia = new Residencia();
+		List<VinculoResidencia> listVinculo = new ArrayList<VinculoResidencia>();		
+		
+		listMoradores.forEach(m -> {
+			VinculoResidencia vinculo = new VinculoResidencia();
+			residencia.setId(m.getResidenciaId().get());
+			vinculo.setMorador(m);
+			vinculo.setResidencia(residencia);
+			
+			listVinculo.add(vinculo);			
+			
+		});
+		
+		return listVinculo;
 	}
 	
 	private void validarDadosExistentes(CadastroMoradorDto cadastroMoradorDto, BindingResult result) {

@@ -55,7 +55,7 @@ public class AuthenticationController {
 	 * @throws AuthenticationException
 	 */
 	@PostMapping
-	public ResponseEntity<Response<TokenDto>> gerarTokenJwt(
+	public ResponseEntity<?> gerarTokenJwt(
 			@Valid @RequestBody JwtAuthenticationDto authenticationDto, BindingResult result)
 			throws AuthenticationException {
 		Response<TokenDto> response = new Response<TokenDto>();
@@ -75,7 +75,7 @@ public class AuthenticationController {
 		String token = jwtTokenUtil.obterToken(userDetails);
 		response.setData(new TokenDto(token));
 
-		return ResponseEntity.ok(response);
+		return ResponseEntity.ok(response.getData());
 	}
 
 	/**

@@ -13,6 +13,7 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 
 @Entity
@@ -36,6 +37,7 @@ public class Visitante implements Serializable {
 	private String celular;
 	private Date   dataCriacao;
 	private Date   dataAtualizacao;
+	private String ultimaVisita;
 	private Long   posicao;
 	
 	
@@ -199,6 +201,15 @@ public class Visitante implements Serializable {
 
 	public void setPosicao(Long posicao) {
 		this.posicao = posicao;
+	}
+	
+	@Transient
+	public String getUltimaVisita() {
+		return ultimaVisita;
+	}
+
+	public void setUltimaVisita(String ultimaVisita) {
+		this.ultimaVisita = ultimaVisita;
 	}
 	
 	@PreUpdate
