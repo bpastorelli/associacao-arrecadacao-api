@@ -140,7 +140,7 @@ class ResidenciaController {
 		if (result.hasErrors()) {
 			log.error("Erro validando residência: {}", result.getAllErrors());
 			result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
-			return ResponseEntity.badRequest().body(response.getErrors());
+			return ResponseEntity.status(400).body(response.getErrors());
 		}
 		
 		this.residenciaService.persistir(residencia.get());
