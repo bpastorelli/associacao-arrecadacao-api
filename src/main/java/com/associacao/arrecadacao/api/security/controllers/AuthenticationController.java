@@ -23,10 +23,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.associacao.arrecadacao.api.entities.Morador;
 import com.associacao.arrecadacao.api.response.Response;
 import com.associacao.arrecadacao.api.security.dto.JwtAuthenticationDto;
 import com.associacao.arrecadacao.api.security.dto.TokenDto;
 import com.associacao.arrecadacao.api.security.utils.JwtTokenUtil;
+import com.associacao.arrecadacao.api.services.MoradorService;
+
 
 @RestController
 @RequestMapping("/token")
@@ -37,6 +40,9 @@ public class AuthenticationController {
 	private static final String TOKEN_HEADER = "Authorization";
 	private static final String BEARER_PREFIX = "Bearer ";
 
+	@Autowired
+	private MoradorService moradorService;
+	
 	@Autowired
 	private AuthenticationManager authenticationManager;
 
@@ -63,7 +69,7 @@ public class AuthenticationController {
 		if (result.hasErrors()) {
 			log.error("Erro validando lançamento: {}", result.getAllErrors());
 			result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
-			return ResponseEntity.badRequest().body(response);
+			return ResponseEntity.badRequest().body(response.getErrors());
 		}
 
 		log.info("Gerando token para o email {}.", authenticationDto.getEmail());
@@ -73,7 +79,13 @@ public class AuthenticationController {
 
 		UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationDto.getEmail());
 		String token = jwtTokenUtil.obterToken(userDetails);
-		response.setData(new TokenDto(token));
+		
+		Optional<Morador> morador = moradorService.buscarPorEmail(authenticationDto.getEmail());
+		
+		TokenDto tokenDto = new TokenDto();
+		tokenDto.setToken(token);
+		tokenDto.setNome(morador.get().getNome());
+		response.setData(tokenDto);
 
 		return ResponseEntity.ok(response.getData());
 	}

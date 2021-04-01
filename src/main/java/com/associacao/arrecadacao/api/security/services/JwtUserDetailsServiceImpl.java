@@ -26,7 +26,7 @@ public class JwtUserDetailsServiceImpl implements UserDetailsService {
 			return JwtUserFactory.create(funcionario.get());
 		}
 
-		throw new UsernameNotFoundException("Email não encontrado.");
+		throw new UsernameNotFoundException("Usuário " + username + " não encontrado!");
 	}
 
 }
