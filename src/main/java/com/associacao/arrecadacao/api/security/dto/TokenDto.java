@@ -3,6 +3,7 @@ package com.associacao.arrecadacao.api.security.dto;
 public class TokenDto {
 	
 	private String nome;
+	private String login;
 	private String token; 
 	
 	public TokenDto() {
@@ -26,6 +27,14 @@ public class TokenDto {
 
 	public void setNome(String nome) {
 		this.nome = nome;
+	}
+
+	public String getLogin() {
+		return login;
+	}
+
+	public void setLogin(String login) {
+		this.login = login;
 	}
 
 }

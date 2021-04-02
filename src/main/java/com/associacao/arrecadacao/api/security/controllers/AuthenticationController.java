@@ -83,8 +83,9 @@ public class AuthenticationController {
 		Optional<Morador> morador = moradorService.buscarPorEmail(authenticationDto.getEmail());
 		
 		TokenDto tokenDto = new TokenDto();
-		tokenDto.setToken(token);
 		tokenDto.setNome(morador.get().getNome());
+		tokenDto.setLogin(morador.get().getEmail());
+		tokenDto.setToken(token);
 		response.setData(tokenDto);
 
 		return ResponseEntity.ok(response.getData());
