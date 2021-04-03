@@ -109,7 +109,7 @@ class ResidenciaController {
 		
 		this.vinculoResidenciaService.persistir(this.converterParaVinculoResidencia(morador.get(), residencia));
 		response.setData(this.converterCadastroResidenciaDto(residencia));
-		return ResponseEntity.status(HttpStatus.CREATED).body(response.getData());
+		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 		
 	}
 	
