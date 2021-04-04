@@ -24,7 +24,8 @@ CREATE TABLE `morador` (
   `perfil` varchar(255) NOT NULL,
   `data_atualizacao` datetime NOT NULL,
   `data_criacao` datetime NOT NULL,
-  `posicao` int(1) NOT NULL
+  `posicao` int(1) NOT NULL,
+  `associado` int(1) NOT NULL,
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `visitante` (

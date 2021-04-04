@@ -38,6 +38,7 @@ public class Morador implements Serializable {
 	private Date dataCriacao;
 	private Date dataAtualizacao;
 	private Long residenciaId;
+	private Long associado;
 	private Long posicao;
 
 	public Morador() {
@@ -180,11 +181,22 @@ public class Morador implements Serializable {
 		this.posicao = posicao;
 	}
 	
+	@Column(name = "associado", nullable = false)
+	public Long getAssociado() {
+		return associado;
+	}
+
+	public void setAssociado(Long associado) {
+		this.associado = associado;
+	}
+	
 	@Override
 	public String toString() {
 		return "Morador [id=" + id + ", nome=" + nome + ", email=" + email + ", senha=" + senha + ", cpf=" + cpf
 				+ ", rg=" + rg + ", telefone=" + telefone + ", celular=" + celular + ", perfil=" + perfil + ", dataCriacao="
-				+ dataCriacao + ", dataAtualizacao=" + dataAtualizacao + ", posicao=" + posicao + "]";
+				+ dataCriacao + ", dataAtualizacao=" + dataAtualizacao + ", posicao=" + posicao + ", associado=" + associado + "]";
 	}
+
+
 
 }

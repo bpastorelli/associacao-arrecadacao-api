@@ -458,6 +458,7 @@ public class MoradorController {
 		item.setTelefone(morador.getTelefone());
 		item.setCelular(morador.getCelular());
 		item.setResidenciaId(!morador.getResidenciaId().isPresent() ? 0 : morador.getResidenciaId().get());
+		item.setAssociado(morador.getAssociado());
 		item.setPosicao(morador.getPosicao());
 		
 		return item;
@@ -553,6 +554,7 @@ public class MoradorController {
 		morador.setTelefone(moradorDto.getTelefone());
 		morador.setCelular(moradorDto.getCelular());
 		morador.setPosicao(moradorDto.getPosicao());
+		morador.setAssociado(moradorDto.getAssociado());
 
 	}
 }
