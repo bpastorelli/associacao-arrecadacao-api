@@ -49,8 +49,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeRequests()
 				.antMatchers(
 						"/token", 
-						"/associacao/morador", 
-						"/associacao/residencia", 
+						"/associados/morador/**", 
+						"/associados/residencia/**", 
 						"/v2/api-docs",
 						"/swagger-resources/**", 
 						"/configuration/security", 
