@@ -50,7 +50,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers(
 						"/token", 
 						"/associados/morador/**", 
-						"/associados/residencia/**", 
+						"/associados/residencia/**",
+						"/associados/visitante/**",
+						"/associados/visita/**",
+						"/associados/vinculo-residencia/**",
+						"/associados/processo/**",
 						"/v2/api-docs",
 						"/swagger-resources/**", 
 						"/configuration/security", 
