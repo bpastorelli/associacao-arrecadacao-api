@@ -31,7 +31,6 @@ public class MoradorRepositoryTest {
 	private ResidenciaRepository residenciaRepository;
 
 	private static final String EMAIL = "email@email.com";
-	private static final String MATRICULA = "789765";
 	private static final String CPF = "24291173474";
 	private static final String RG = "342739930";
 
@@ -104,7 +103,6 @@ public class MoradorRepositoryTest {
 
 	private Residencia obterDadosResidencia() {
 		Residencia residencia = new Residencia();
-		residencia.setMatricula(MATRICULA);
 		residencia.setEndereco("Rua Antonio Candido de Oliveira");
 		residencia.setNumero(5L);
 		residencia.setBairro("Chacara Tres Marias");

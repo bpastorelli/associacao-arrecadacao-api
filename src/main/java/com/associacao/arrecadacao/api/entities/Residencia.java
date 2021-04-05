@@ -23,7 +23,6 @@ public class Residencia implements Serializable {
 	private static final long serialVersionUID = 3960436649365666213L;
 	
 	private Long   id;
-	private String matricula;
 	private String endereco;
 	private Long   numero;
 	private String complemento;
@@ -47,15 +46,6 @@ public class Residencia implements Serializable {
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	@Column(name = "matricula", nullable = true)
-	public String getMatricula() {
-		return matricula;
-	}
-
-	public void setMatricula(String matricula) {
-		this.matricula = matricula;
 	}
 
 	@Column(name = "endereco", nullable = false)
@@ -172,7 +162,7 @@ public class Residencia implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Residencia [id=" + id + ", matricula=" + matricula + ", endereco=" + endereco + ", numero=" + numero + ", complemento=" + complemento + ", bairro=" + bairro + ", cidade=" + cidade + ", uf=" + uf + ", dataCriacao=" + dataCriacao
+		return "Residencia [id=" + id + ", endereco=" + endereco + ", numero=" + numero + ", complemento=" + complemento + ", bairro=" + bairro + ", cidade=" + cidade + ", uf=" + uf + ", dataCriacao=" + dataCriacao
 				+ ", dataAtualizacao=" + dataAtualizacao + "]";
 	}
 

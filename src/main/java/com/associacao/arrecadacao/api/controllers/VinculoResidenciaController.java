@@ -252,7 +252,6 @@ public class VinculoResidenciaController {
 		
 		ResidenciaResponse residencia = new ResidenciaResponse();
 		residencia.setId(vinculo.get().getResidencia().getId());
-		residencia.setMatricula(vinculo.get().getResidencia().getMatricula());
 		residencia.setEndereco(vinculo.get().getResidencia().getEndereco());
 		residencia.setNumero(vinculo.get().getResidencia().getNumero());
 		residencia.setBairro(vinculo.get().getResidencia().getBairro());
@@ -312,7 +311,6 @@ public class VinculoResidenciaController {
 		vinculos.forEach(r -> {	
 			ResidenciaResponse residencia = new ResidenciaResponse();
 			residencia.setId(r.getResidencia().getId());
-			residencia.setMatricula(r.getResidencia().getMatricula());
 			residencia.setEndereco(r.getResidencia().getEndereco());
 			residencia.setNumero(r.getResidencia().getNumero());
 			residencia.setBairro(r.getResidencia().getBairro());
@@ -347,7 +345,6 @@ public class VinculoResidenciaController {
 		
 		ResidenciaResponse residencia = new ResidenciaResponse();
 		residencia.setId(vinculos.get(0).getResidencia().getId());
-		residencia.setMatricula(vinculos.get(0).getResidencia().getMatricula());
 		residencia.setEndereco(vinculos.get(0).getResidencia().getEndereco());
 		residencia.setNumero(vinculos.get(0).getResidencia().getNumero());
 		residencia.setBairro(vinculos.get(0).getResidencia().getBairro());

@@ -1,6 +1,5 @@
 CREATE TABLE `residencia` (
   `id` bigint(20) NOT NULL,
-  `matricula` varchar(20) NOT NULL,
   `endereco` varchar(100) NOT NULL,
   `numero` bigint(20) NOT NULL,
   `complemento` varchar(50) NULL,

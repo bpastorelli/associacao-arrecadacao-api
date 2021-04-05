@@ -13,13 +13,7 @@ public interface ResidenciaRepository extends JpaRepository<Residencia, Long> {
 	Residencia findById(Long id);
 	
 	@Transactional(readOnly = true)
-	Page<Residencia> findByIdOrMatriculaOrEnderecoContainsOrNumero(Long id, String matricula, String endereco, Long numero, Pageable pageable);
-	
-	Residencia findByMatricula(String Matricula);
-	
-	Page<Residencia> findByMatricula(String Matricula, Pageable pageable);
-	
-	Residencia findByIdOrMatricula(Long id, String matricula);
+	Page<Residencia> findByIdOrEnderecoContainsOrNumero(Long id, String endereco, Long numero, Pageable pageable);
 	
 	Residencia findByEnderecoAndNumero(String endereco, Long numero);
 	

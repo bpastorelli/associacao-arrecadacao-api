@@ -22,12 +22,6 @@ public class ResidenciaServiceImpl implements ResidenciaService {
 
 	@Autowired
 	private ResidenciaRepository residenciaRepository;
-	
-	@Cacheable("lancamentoPorId")
-	public Optional<Residencia> buscarPorMatricula(String matricula) {
-		log.info("Buscando uma residência para a matricula {}", matricula);
-		return Optional.ofNullable(residenciaRepository.findByMatricula(matricula));
-	}
 
 	@CachePut("lancamentoPorId")
 	public Optional<Residencia> persistir(Residencia residencia) {
@@ -39,12 +33,6 @@ public class ResidenciaServiceImpl implements ResidenciaService {
 	public Optional<Residencia> buscarPorId(Long id) {
 		log.info("Buscando uma residência para o ID {}", id);
 		return Optional.ofNullable(this.residenciaRepository.findById(id));
-	}
-	
-	@Cacheable("lancamentoPorId")
-	public Optional<Residencia> bucarPorIdOrMatricula(Long id, String matricula){
-		log.info("Buscando uma residência para o ID {}", id);
-		return Optional.ofNullable(this.residenciaRepository.findByIdOrMatricula(id, matricula));
 	}
 
 	@Override
@@ -60,9 +48,9 @@ public class ResidenciaServiceImpl implements ResidenciaService {
 	}
 	
 	@Override
-	public Page<Residencia> buscarPorIdOrMatriculaOrEnderecoOrNumero(Long id, String matricula, String endereco, Long numero, PageRequest pageRequest) {
+	public Page<Residencia> buscarPorIdOrEnderecoOrNumero(Long id, String endereco, Long numero, PageRequest pageRequest) {
 		log.info("Buscando uma residências paginado {}", pageRequest);
-		return this.residenciaRepository.findByIdOrMatriculaOrEnderecoContainsOrNumero(id, matricula, endereco, numero, pageRequest);
+		return this.residenciaRepository.findByIdOrEnderecoContainsOrNumero(id, endereco, numero, pageRequest);
 	}
 
 	@Override
