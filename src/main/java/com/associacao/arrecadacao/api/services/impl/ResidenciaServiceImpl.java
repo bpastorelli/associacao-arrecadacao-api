@@ -23,7 +23,7 @@ public class ResidenciaServiceImpl implements ResidenciaService {
 	@Autowired
 	private ResidenciaRepository residenciaRepository;
 
-	@CachePut("BuscarTodos")
+	@CachePut(value="BuscarTodos")
 	public Optional<Residencia> persistir(Residencia residencia) {
 		log.info("Persistindo a residência: {}", residencia);
 		return Optional.ofNullable(this.residenciaRepository.save(residencia));
