@@ -32,7 +32,7 @@ public class ResidenciaRepositoryTest {
 	
 	@After
     public final void tearDown() { 
-		//this.residenciaRepository.deleteAll();
+		this.residenciaRepository.deleteAll();
 	}
 
 }
