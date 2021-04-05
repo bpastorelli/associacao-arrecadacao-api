@@ -10,14 +10,6 @@ import com.associacao.arrecadacao.api.entities.Residencia;
 public interface ResidenciaService {
 	
 	/**
-	 * Retorna uma residência dado uma matricula.
-	 * 
-	 * @param matricula
-	 * @return Optional<Residencia>
-	 */
-	Optional<Residencia> buscarPorMatricula(String matricula);
-	
-	/**
 	 * Retorna uma residência dado um ID.
 	 * 
 	 * @param residenciaId
@@ -32,16 +24,6 @@ public interface ResidenciaService {
 	 * @return Residencia
 	 */
 	Optional<Residencia> persistir(Residencia residencia);
-
-	
-	/**
-	 * Retorna uma residência dado um ID.
-	 * 
-	 * @param residenciaId
-	 * @param matricula
-	 * @return Optional<Residencia>
-	 */	
-	Optional<Residencia> bucarPorIdOrMatricula(Long id, String matricula);
 	
 	/**
 	 * Retorna uma residência dado Endereço e Número.
@@ -75,6 +57,6 @@ public interface ResidenciaService {
 	 * @param pageRequest
 	 * @return Page<Residencia>
 	 */
-	Page<Residencia> buscarPorIdOrMatriculaOrEnderecoOrNumero(Long id, String matricula, String endereco, Long numero, PageRequest pageRequest);
+	Page<Residencia> buscarPorIdOrEnderecoOrNumero(Long id, String endereco, Long numero, PageRequest pageRequest);
 
 }

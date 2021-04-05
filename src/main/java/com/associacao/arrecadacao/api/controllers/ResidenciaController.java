@@ -153,33 +153,6 @@ class ResidenciaController {
 	/**
 	 * Busca uma residência pelo ID ou pel Matricula.
 	 * 
-	 * @param id
-	 * @param matricula
-	 * @param result
-	 * @return ResponseEntity<Response<CadastroResidenciaDto>>
-	 * @throws NoSuchAlgorithmException
-	 */
-	@GetMapping(value = "/id/{id}/matricula/{matricula}")
-	public ResponseEntity<Response<CadastroResidenciaDto>> buscarPorIdOrMatricula(@PathVariable("id") Long id, @PathVariable("matricula") String matricula) throws NoSuchAlgorithmException {
-		
-		log.info("Buscando residência: {}", id);
-		Response<CadastroResidenciaDto> response = new Response<CadastroResidenciaDto>();
-		
-		Optional<Residencia> residencia = this.residenciaService.bucarPorIdOrMatricula(id, matricula);
-		if (!residencia.isPresent()) {
-			log.info("Residência não encontrada para o ID: {}", id);
-			response.getErrors().add("Residência não encontrada para o ID " + id);
-			return ResponseEntity.status(404).body(response);
-		}
-		
-		response.setData(this.converterCadastroResidenciaDto(residencia.get()));
-		return ResponseEntity.status(HttpStatus.OK).body(response);
-		
-	}
-	
-	/**
-	 * Busca uma residência pelo ID ou pel Matricula.
-	 * 
 	 * @param result
 	 * @return ResponseEntity<?>
 	 * @throws NoSuchAlgorithmException
@@ -200,7 +173,7 @@ class ResidenciaController {
 		Page<Residencia> residencias;
 		
 		if(id != 0 || !matricula.equals("null") || !endereco.equals("null") || numero != 0)
-			residencias = this.residenciaService.buscarPorIdOrMatriculaOrEnderecoOrNumero(id, matricula, endereco, numero, pageRequest);
+			residencias = this.residenciaService.buscarPorIdOrEnderecoOrNumero(id, endereco, numero, pageRequest);
 		else
 			residencias = this.residenciaService.bucarTodos(pageRequest);
 		
@@ -248,7 +221,6 @@ class ResidenciaController {
 	private Residencia converterDtoParaResidencia(CadastroResidenciaDto cadastroResidenciaDto) {
 		
 		Residencia residencia = new Residencia();
-		residencia.setMatricula(cadastroResidenciaDto.getMatricula());
 		residencia.setEndereco(cadastroResidenciaDto.getEndereco());
 		residencia.setNumero(cadastroResidenciaDto.getNumero());
 		residencia.setComplemento(cadastroResidenciaDto.getComplemento());
@@ -268,7 +240,6 @@ class ResidenciaController {
 	private Residencia converterNovaDtoParaResidencia(CadastroNovaResidenciaDto cadastroNovaResidenciaDto) {
 		
 		Residencia residencia = new Residencia();
-		residencia.setMatricula(cadastroNovaResidenciaDto.getMatricula());
 		residencia.setEndereco(cadastroNovaResidenciaDto.getEndereco());
 		residencia.setNumero(cadastroNovaResidenciaDto.getNumero());
 		residencia.setComplemento(cadastroNovaResidenciaDto.getComplemento());
@@ -303,7 +274,6 @@ class ResidenciaController {
 		
 		CadastroResidenciaDto cadastroResidenciaDto = new CadastroResidenciaDto();
 		cadastroResidenciaDto.setId(residencia.getId());
-		cadastroResidenciaDto.setMatricula(residencia.getMatricula());
 		cadastroResidenciaDto.setEndereco(residencia.getEndereco());
 		cadastroResidenciaDto.setNumero(residencia.getNumero());
 		cadastroResidenciaDto.setComplemento(residencia.getComplemento());
@@ -327,9 +297,6 @@ class ResidenciaController {
 			throws NoSuchAlgorithmException {	
 		
 		Optional<Residencia> residenciaAtual = this.residenciaService.buscarPorId(residencia.getId());
-		
-		this.residenciaService.buscarPorMatricula(residenciaDto.getMatricula())
-			.ifPresent(res -> result.addError(new ObjectError("residencia", " Residência já existente")));
 
 		if(residenciaAtual.isPresent())
 			if(residenciaDto.getCep() != residenciaAtual.get().getCep() && residenciaDto.getNumero() != residenciaAtual.get().getNumero())

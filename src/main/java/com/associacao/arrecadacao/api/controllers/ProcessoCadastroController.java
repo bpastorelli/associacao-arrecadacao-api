@@ -98,9 +98,6 @@ public class ProcessoCadastroController {
 	
 	private void validarDadosExistentes(CadastroProcessoDto cadastroResidenciaDto, BindingResult result) {
 		
-		this.residenciaService.buscarPorMatricula(cadastroResidenciaDto.getMatricula())
-				.ifPresent(res -> result.addError(new ObjectError("residencia", "Residência já existente")));
-		
 		this.residenciaService.bucarPorEnderecoAndNumero(cadastroResidenciaDto.getEndereco(), cadastroResidenciaDto.getNumero())
 				.ifPresent(res -> result.addError(new ObjectError("residencia", "Endereço já existente")));
 		
@@ -221,7 +218,6 @@ public class ProcessoCadastroController {
 	private Residencia converterDtoParaResidencia(CadastroProcessoDto cadastroProcessoDto) {
 		
 		Residencia residencia = new Residencia();
-		residencia.setMatricula(cadastroProcessoDto.getMatricula());
 		residencia.setEndereco(cadastroProcessoDto.getEndereco());
 		residencia.setNumero(cadastroProcessoDto.getNumero());
 		residencia.setBairro(cadastroProcessoDto.getBairro());
@@ -306,7 +302,6 @@ public class ProcessoCadastroController {
 		
 		CadastroProcessoDto cadastroProcessoDto = new CadastroProcessoDto();
 		cadastroProcessoDto.setId(residencia.getId());
-		cadastroProcessoDto.setMatricula(residencia.getMatricula());
 		cadastroProcessoDto.setEndereco(residencia.getEndereco());
 		cadastroProcessoDto.setNumero(residencia.getNumero());
 		cadastroProcessoDto.setBairro(residencia.getBairro());

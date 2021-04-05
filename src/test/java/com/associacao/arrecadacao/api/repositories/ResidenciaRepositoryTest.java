@@ -1,10 +1,7 @@
 package com.associacao.arrecadacao.api.repositories;
 
-import static org.junit.Assert.assertEquals;
-
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,13 +17,10 @@ public class ResidenciaRepositoryTest {
 	
 	@Autowired
 	private ResidenciaRepository residenciaRepository;
-	
-	private static final String MATRICULA = "789765";
 
 	@Before
 	public void setUp() throws Exception {
 		Residencia residencia = new Residencia();
-		residencia.setMatricula(MATRICULA);
 		residencia.setEndereco("Rua Antonio Candido de Oliveira");
 		residencia.setNumero(5L);
 		residencia.setBairro("Chacara Tres Marias");
@@ -39,13 +33,6 @@ public class ResidenciaRepositoryTest {
 	@After
     public final void tearDown() { 
 		//this.residenciaRepository.deleteAll();
-	}
-
-	@Test
-	public void testBuscarPorMatricula() {
-		Residencia residencia = this.residenciaRepository.findByMatricula(MATRICULA);
-		
-		assertEquals(MATRICULA, residencia.getMatricula());
 	}
 
 }
