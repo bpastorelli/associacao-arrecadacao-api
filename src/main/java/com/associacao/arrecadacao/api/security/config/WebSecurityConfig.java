@@ -55,6 +55,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 						"/associados/visita/**",
 						"/associados/vinculo-residencia/**",
 						"/associados/processo/**",
+						"/api/**",
 						"/v2/api-docs",
 						"/swagger-resources/**", 
 						"/configuration/security", 
