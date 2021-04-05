@@ -2,7 +2,6 @@ package com.associacao.arrecadacao.api.dtos;
 
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
-import org.hibernate.validator.constraints.br.CPF;
 
 public class VisitaDto {
 	
@@ -20,8 +19,6 @@ public class VisitaDto {
 		this.rg = rg;
 	}
 
-	
-	@CPF(message = "CPF inválido!")
 	public String getCpf() {
 		return cpf;
 	}
@@ -30,7 +27,6 @@ public class VisitaDto {
 		this.cpf = cpf;
 	}
 	
-	@NotEmpty(message = "Não foi informada uma residência de destino de visita!")
 	public Long getResidenciaId() {
 		return residenciaId;
 	}
