@@ -13,7 +13,6 @@ import com.associacao.arrecadacao.api.entities.Morador;
 public class CadastroProcessoDto {
 	
 	private Long   id;
-	private String matricula;
 	private String endereco;
 	private Long   numero;
 	private String complemento;
@@ -34,16 +33,6 @@ public class CadastroProcessoDto {
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-	
-	@NotEmpty(message = "Matrícula não pode ser nulo.")
-	@Length(min = 3, max = 10, message = "Matricula deve conter entre 3 e 10 caracteres.")
-	public String getMatricula() {
-		return matricula;
-	}
-
-	public void setMatricula(String matricula) {
-		this.matricula = matricula;
 	}
 
 	@NotEmpty(message = "Endereço não pode ser nulo.")

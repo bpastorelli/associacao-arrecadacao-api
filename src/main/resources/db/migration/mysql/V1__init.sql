@@ -53,7 +53,8 @@ CREATE TABLE `visita` (
   `data_entrada` datetime NOT NULL,
   `hora_entrada` time NOT NULL,
   `data_saida` datetime NULL,
-  `hora_saida` time NULL,	
+  `hora_saida` time NULL,
+  `placa` varchar(8) NULL,	
   `posicao` int(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

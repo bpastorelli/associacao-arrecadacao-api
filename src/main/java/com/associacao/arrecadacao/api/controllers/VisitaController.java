@@ -215,6 +215,7 @@ public class VisitaController {
 		if(!result.hasErrors()) {
 			visita.setVisitante(visitante.get());
 			visita.setResidencia(residencia.get());
+			visita.setPlaca(visitaDto.getPlaca().toUpperCase());
 		}
 		
 		return visita;
@@ -238,6 +239,7 @@ public class VisitaController {
 		visitaResponse.setBairro(visita.getResidencia().getBairro());
 		visitaResponse.setCidade(visita.getResidencia().getCidade());
 		visitaResponse.setUf(visita.getResidencia().getUf());
+		visitaResponse.setPlaca(visita.getPlaca());
 		visitaResponse.setPosicao(visita.getPosicao());
 		
 		return visitaResponse;

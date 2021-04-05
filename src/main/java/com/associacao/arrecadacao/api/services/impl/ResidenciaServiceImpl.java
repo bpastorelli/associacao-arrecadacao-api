@@ -41,7 +41,7 @@ public class ResidenciaServiceImpl implements ResidenciaService {
 		return Optional.ofNullable(this.residenciaRepository.findByEnderecoAndNumero(endereco, numero));
 	}
 
-	@Override
+	@Cacheable("buscarTodos")
 	public Page<Residencia> bucarTodos(PageRequest pageRequest) {
 		log.info("Buscando uma residências paginado {}", pageRequest);
 		return this.residenciaRepository.findAll(pageRequest);
