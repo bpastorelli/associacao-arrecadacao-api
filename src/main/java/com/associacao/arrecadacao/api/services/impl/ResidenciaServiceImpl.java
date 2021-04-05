@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -22,7 +23,7 @@ public class ResidenciaServiceImpl implements ResidenciaService {
 	@Autowired
 	private ResidenciaRepository residenciaRepository;
 
-	@CachePut("BuscarTodos")
+	@CachePut(value="BuscarTodos")
 	public Optional<Residencia> persistir(Residencia residencia) {
 		log.info("Persistindo a residência: {}", residencia);
 		return Optional.ofNullable(this.residenciaRepository.save(residencia));
@@ -40,7 +41,7 @@ public class ResidenciaServiceImpl implements ResidenciaService {
 		return Optional.ofNullable(this.residenciaRepository.findByEnderecoAndNumero(endereco, numero));
 	}
 
-	@Override
+	@Cacheable("BuscarTodos")
 	public Page<Residencia> bucarTodos(PageRequest pageRequest) {
 		log.info("Buscando uma residências paginado {}", pageRequest);
 		return this.residenciaRepository.findAll(pageRequest);
