@@ -32,6 +32,7 @@ public class Visita implements Serializable {
 	private Date       horaEntrada;
 	private Date       dataSaida;
 	private Date       horaSaida;
+	private String     placa;
 	private Integer    posicao;
 	
 	public Visita(){
@@ -97,6 +98,15 @@ public class Visita implements Serializable {
 
 	public void setPosicao(Integer posicao) {
 		this.posicao = posicao;
+	}
+	
+	@Column(name = "placa", nullable = true)
+	public String getPlaca() {
+		return placa;
+	}
+
+	public void setPlaca(String placa) {
+		this.placa = placa;
 	}
 	
 	@OneToOne(fetch = FetchType.EAGER)

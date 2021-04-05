@@ -21,6 +21,7 @@ public class VisitaResponse implements Serializable {
 	private String  bairro;
 	private String  cidade;
 	private String  uf;
+	private String  placa;
 	private Integer posicao;
 	
 	public Long getId() {
@@ -127,6 +128,14 @@ public class VisitaResponse implements Serializable {
 		this.uf = uf;
 	}
 
+	public String getPlaca() {
+		return placa;
+	}
+
+	public void setPlaca(String placa) {
+		this.placa = placa;
+	}
+	
 	public Integer getPosicao() {
 		return posicao;
 	}
@@ -134,4 +143,6 @@ public class VisitaResponse implements Serializable {
 	public void setPosicao(Integer posicao) {
 		this.posicao = posicao;
 	}
+
+
 }
