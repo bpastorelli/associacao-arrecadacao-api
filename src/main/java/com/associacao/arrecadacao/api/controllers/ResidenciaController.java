@@ -151,7 +151,7 @@ class ResidenciaController {
 	}
 	
 	/**
-	 * Busca uma residência pelo ID ou pel Matricula.
+	 * Busca uma residência por id, endereço ou numero .
 	 * 
 	 * @param result
 	 * @return ResponseEntity<?>
@@ -160,7 +160,6 @@ class ResidenciaController {
 	@GetMapping("/filtro")
 	public ResponseEntity<?> buscarResidenciaPaginado(
 			@RequestParam(value = "id", defaultValue = "0") Long id,
-			@RequestParam(value = "matricula", defaultValue = "null") String matricula,
 			@RequestParam(value = "endereco", defaultValue = "null") String endereco,
 			@RequestParam(value = "numero", defaultValue = "0") Long numero,
 			@RequestParam(value = "pag", defaultValue = "0") int pag,
@@ -172,7 +171,7 @@ class ResidenciaController {
 		
 		Page<Residencia> residencias;
 		
-		if(id != 0 || !matricula.equals("null") || !endereco.equals("null") || numero != 0)
+		if(id != 0 || !endereco.equals("null") || numero != 0)
 			residencias = this.residenciaService.buscarPorIdOrEnderecoOrNumero(id, endereco, numero, pageRequest);
 		else
 			residencias = this.residenciaService.bucarTodos(pageRequest);
