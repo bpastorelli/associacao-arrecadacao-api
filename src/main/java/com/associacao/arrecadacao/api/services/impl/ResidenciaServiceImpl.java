@@ -23,13 +23,13 @@ public class ResidenciaServiceImpl implements ResidenciaService {
 	@Autowired
 	private ResidenciaRepository residenciaRepository;
 
-	@CachePut("lancamentoPorId")
+	@CachePut("BuscarTodos")
 	public Optional<Residencia> persistir(Residencia residencia) {
 		log.info("Persistindo a residência: {}", residencia);
 		return Optional.ofNullable(this.residenciaRepository.save(residencia));
 	}
 
-	@Cacheable("lancamentoPorId")
+	@Override
 	public Optional<Residencia> buscarPorId(Long id) {
 		log.info("Buscando uma residência para o ID {}", id);
 		return Optional.ofNullable(this.residenciaRepository.findById(id));
@@ -41,7 +41,7 @@ public class ResidenciaServiceImpl implements ResidenciaService {
 		return Optional.ofNullable(this.residenciaRepository.findByEnderecoAndNumero(endereco, numero));
 	}
 
-	@Cacheable("buscarTodos")
+	@Cacheable("BuscarTodos")
 	public Page<Residencia> bucarTodos(PageRequest pageRequest) {
 		log.info("Buscando uma residências paginado {}", pageRequest);
 		return this.residenciaRepository.findAll(pageRequest);
