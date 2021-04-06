@@ -71,7 +71,7 @@ public class VisitanteController {
 		if(result.hasErrors()) {
 			log.error("Erro validando dados para cadastro do(s) visitante(s): {}", result.getAllErrors());
 			result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
-			return ResponseEntity.status(400).body(response.getErrors());
+			return ResponseEntity.status(400).body(response);
 		}
 		
 		this.visitanteService.persistir(visitanteDto);

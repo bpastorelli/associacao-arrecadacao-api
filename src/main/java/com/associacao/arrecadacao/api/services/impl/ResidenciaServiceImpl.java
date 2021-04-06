@@ -23,7 +23,7 @@ public class ResidenciaServiceImpl implements ResidenciaService {
 	@Autowired
 	private ResidenciaRepository residenciaRepository;
 
-	@CachePut(value="BuscarTodos")
+	@CachePut(value = "mycache")
 	public Optional<Residencia> persistir(Residencia residencia) {
 		log.info("Persistindo a residência: {}", residencia);
 		return Optional.ofNullable(this.residenciaRepository.save(residencia));
@@ -35,13 +35,13 @@ public class ResidenciaServiceImpl implements ResidenciaService {
 		return Optional.ofNullable(this.residenciaRepository.findById(id));
 	}
 
-	@Override
+	@Cacheable(value = "mycache")
 	public Optional<Residencia> bucarPorEnderecoAndNumero(String endereco, Long numero) {
 		log.info("Buscando uma residência por Endereço e Número {}", endereco, numero);
 		return Optional.ofNullable(this.residenciaRepository.findByEnderecoAndNumero(endereco, numero));
 	}
 
-	@Cacheable("BuscarTodos")
+	@Override
 	public Page<Residencia> bucarTodos(PageRequest pageRequest) {
 		log.info("Buscando uma residências paginado {}", pageRequest);
 		return this.residenciaRepository.findAll(pageRequest);
