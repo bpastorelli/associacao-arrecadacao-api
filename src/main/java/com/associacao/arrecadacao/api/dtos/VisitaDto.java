@@ -35,7 +35,7 @@ public class VisitaDto {
 		this.residenciaId = residenciaId;
 	}
 
-	@Length(min = 8, max = 8, message = "Placa deve conter 8 caracteres no formato ___-____.")
+	@Length(min = 8, max = 8, message = "A placa deve conter 8 caracteres.")
 	public String getPlaca() {
 		return placa;
 	}
