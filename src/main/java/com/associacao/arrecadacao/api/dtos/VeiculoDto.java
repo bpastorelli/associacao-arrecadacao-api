@@ -23,7 +23,6 @@ public class VeiculoDto {
 		this.placa = placa;
 	}
 	
-	@NotEmpty(message = "Campo Marca é obrigatório!")
 	public String getMarca() {
 		return marca;
 	}

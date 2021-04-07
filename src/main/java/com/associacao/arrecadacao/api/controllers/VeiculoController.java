@@ -1,22 +1,33 @@
 package com.associacao.arrecadacao.api.controllers;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.associacao.arrecadacao.api.dtos.AtualizaVeiculoDto;
 import com.associacao.arrecadacao.api.dtos.VeiculoDto;
 import com.associacao.arrecadacao.api.entities.Veiculo;
 import com.associacao.arrecadacao.api.response.Response;
@@ -60,11 +71,60 @@ public class VeiculoController {
 			return ResponseEntity.status(400).body(response.getErrors());
 		}
 		
-		Veiculo veiculo = converterDtoVeiculo(veiculoRequestBody);
+		Veiculo veiculo = converterVeiculoDto(veiculoRequestBody);
 		this.veiculoService.persistir(veiculo);
 		
 		response.setData(veiculo);
 		return ResponseEntity.status(HttpStatus.CREATED).body(response);
+		
+	}
+	
+	@PutMapping(value = "/veiculo/{id}")
+	public ResponseEntity<?> CadastrarNovo(
+			@PathVariable("id") Long id,
+			@Valid @RequestBody AtualizaVeiculoDto veiculoRequestBody, 
+			BindingResult result) throws NoSuchAlgorithmException{
+		
+		log.info("Cadastro de veiculo: {}", veiculoRequestBody.toString());
+		Response<Veiculo> response = new Response<Veiculo>();
+		
+		Optional<Veiculo> veiculo = this.veiculoService.buscarPorId(id);
+		atualizaVeiculo(veiculoRequestBody, veiculo.get(), result);
+		
+		this.veiculoService.persistir(veiculo.get());
+		
+		response.setData(veiculo.get());
+		return ResponseEntity.status(HttpStatus.OK).body(response);
+		
+	}
+		
+	@GetMapping(value = "/filtro")
+	public ResponseEntity<?> buscarVeiculos(
+			@RequestParam(value = "placa", defaultValue = "null") String placa,
+			@RequestParam(value = "marca", defaultValue = "null") String marca,
+			@RequestParam(value = "modelo", defaultValue = "null") String modelo,
+			@RequestParam(value = "ano", defaultValue = "0") Integer ano,
+			@RequestParam(value = "pag", defaultValue = "0") int pag,
+			@RequestParam(value = "ord", defaultValue = "id") String ord,
+			@RequestParam(value = "dir", defaultValue = "DESC") String dir,
+			@RequestParam(value = "size", defaultValue = "10") int size) throws NoSuchAlgorithmException {
+		
+		log.info("Buscando veiculos...");
+		
+		PageRequest pageRequest = new PageRequest(pag, size, Direction.valueOf(dir), ord);
+		Page<Veiculo> veiculos = null;
+		List<Veiculo> listVeiculos = new ArrayList<Veiculo>();
+		
+		if(!placa.equals("null") || !marca.equals("null") || !modelo.equals("null") || ano != 0)
+			veiculos = this.veiculoService.bucarPorIdAndPlacaAndMarcaAndModelo(0L, placa, marca, modelo, pageRequest);
+		else
+			veiculos = this.veiculoService.bucarTodos(pageRequest);
+		
+		veiculos.getContent().forEach(v -> {	
+			listVeiculos.add(v);
+		});		
+		
+		return ResponseEntity.status(HttpStatus.OK).body(listVeiculos);
 		
 	}
 	
@@ -84,7 +144,7 @@ public class VeiculoController {
 	
 	}
 	
-	public Veiculo converterDtoVeiculo(VeiculoDto dto) {
+	public Veiculo converterVeiculoDto(VeiculoDto dto) {
 		
 		Veiculo veiculo = new Veiculo();
 		veiculo.setPlaca(dto.getPlaca());
@@ -93,6 +153,24 @@ public class VeiculoController {
 		veiculo.setAno(dto.getAno());
 		
 		return veiculo;
+		
+	}
+	
+	public Veiculo converterAtualizaVeiculoDto(AtualizaVeiculoDto dto) {
+		
+		Veiculo veiculo = new Veiculo();
+		veiculo.setMarca(dto.getMarca());
+		veiculo.setAno(dto.getAno());
+		
+		return veiculo;
+		
+	}
+	
+	public void atualizaVeiculo(AtualizaVeiculoDto dto, Veiculo veiculo, BindingResult result) {
+		
+		veiculo.setMarca(dto.getMarca());
+		veiculo.setModelo(dto.getModelo());
+		veiculo.setAno(dto.getAno());
 		
 	}
 
