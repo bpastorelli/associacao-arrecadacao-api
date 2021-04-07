@@ -34,7 +34,7 @@ public interface VeiculoService {
 	 * @param modelo
 	 * @return Optional<Veiculo>
 	 */	
-	Optional<Veiculo> bucarPorIdAndPlacaAndMarcaAndModelo(Long id, String placa, String marca, String modelo);
+	Page<Veiculo> bucarPorIdAndPlacaAndMarcaAndModelo(Long id, String placa, String marca, String modelo, PageRequest pageRequest);
 	
 	/**
 	 * Retorna um veiculo por placa
