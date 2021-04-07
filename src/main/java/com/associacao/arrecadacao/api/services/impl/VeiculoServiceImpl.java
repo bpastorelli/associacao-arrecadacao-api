@@ -7,11 +7,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
 
 import com.associacao.arrecadacao.api.entities.Veiculo;
 import com.associacao.arrecadacao.api.repositories.VeiculoRepository;
 import com.associacao.arrecadacao.api.services.VeiculoService;
 
+@Service
 public class VeiculoServiceImpl implements VeiculoService {
 	
 	private static final Logger log = LoggerFactory.getLogger(VeiculoServiceImpl.class);
