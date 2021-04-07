@@ -11,6 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "veiculo")
@@ -86,12 +88,25 @@ public class Veiculo implements Serializable {
 		this.posicao = posicao;
 	}
 
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "data_criacao", nullable = false)
 	public Date getDataCriacao() {
 		return dataCriacao;
 	}
 
 	public void setDataCriacao(Date dataCriacao) {
 		this.dataCriacao = dataCriacao;
+	}
+	
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "data_atualizacao", nullable = false)
+	public Date getDataAtualizacao() {
+		return dataAtualizacao;
+	}
+
+
+	public void setDataAtualizacao(Date dataAtualizacao) {
+		this.dataAtualizacao = dataAtualizacao;
 	}
 	
 	@PreUpdate
@@ -103,6 +118,8 @@ public class Veiculo implements Serializable {
     public void prePersist() {
         final Date atual = new Date();
         this.dataCriacao = atual;
+        this.dataAtualizacao = atual;
+        this.posicao = 1L;
     }
 
 	@Override

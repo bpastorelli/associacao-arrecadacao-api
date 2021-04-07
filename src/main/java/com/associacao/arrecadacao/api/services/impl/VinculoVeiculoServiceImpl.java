@@ -45,6 +45,12 @@ public class VinculoVeiculoServiceImpl implements VinculoVeiculoService {
 	}
 
 	@Override
+	public Optional<VinculoVeiculo> buscarPorPlacaAndVisitanteId(String placa, Long visitanteId) {
+		log.info("Buscando vinculo por placa e visitante id");
+		return Optional.ofNullable(this.vinculoVeiculoRepository.findByVeiculoPlacaAndVisitanteId(placa, visitanteId));
+	}
+	
+	@Override
 	public void remover(Long id) {
 		log.info("Removendo vinculo por id {}", id);
 		this.vinculoVeiculoRepository.delete(id);

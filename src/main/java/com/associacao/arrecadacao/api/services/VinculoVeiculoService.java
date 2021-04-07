@@ -33,13 +33,22 @@ public interface VinculoVeiculoService {
 	List<VinculoVeiculo> buscarPorVeiculoId(Long veiculoId);
 	
 	/**
+	 * Buscar por Placa e Visitante ID
+	 * @param placa
+	 * @param visitanteId
+	 * @return Optional<VinculoVeiculo>
+	 */
+	Optional<VinculoVeiculo> buscarPorPlacaAndVisitanteId(String placa, Long visitanteId);
+	
+	/**
 	 * Persistir um vínculo de veiculo
 	 * 
 	 * @param vinculoVeiculo
 	 * @return List<VinculoVeiculo>
 	 */
 	List<VinculoVeiculo> persistir(List<VinculoVeiculo> vinculoVeiculo);
-
+	
+	
 	/**
 	 * Remove um vinculo de visitante a veiculo
 	 * 
