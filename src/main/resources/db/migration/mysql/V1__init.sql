@@ -58,6 +58,17 @@ CREATE TABLE `visita` (
   `posicao` int(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `veiculo` (
+  `id` bigint(20) NOT NULL,
+  `placa` varchar(8) NOT NULL,
+  `marca` varchar(50) NULL,
+  `modelo` varchar(100) NULL,
+  `ano` bigint(20) NULL,
+  `data_criacao` datetime NULL,
+  `data_atualizacao` datetime NOT NULL,	
+  `posicao` int(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 CREATE TABLE `lancamento` (
   `id` bigint(20) NOT NULL,
   `data_pagamento` datetime NOT NULL,
@@ -73,6 +84,14 @@ CREATE TABLE `vinculo_residencia` (
 	`morador_id` bigint(20) NOT NULL,
 	`residencia_id` bigint(20) NOT NULL,
 	`data_vinculo` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `vinculo_veiculo` (
+	`id` bigint(20) NOT NULL,
+	`veiculo_id` bigint(20) NOT NULL,
+	`visitante_id` bigint(20) NOT NULL,
+	`data_vinculo` datetime NOT NULL,
+	`posicao` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -94,6 +113,13 @@ ALTER TABLE `morador`
 ALTER TABLE `visitante`
   ADD PRIMARY KEY (`id`),
   ADD KEY `FK4cm1kg523jlopyexjbmi6y55j` (`rg`);
+  
+ --
+-- Indexes for table `visitante`
+--
+ALTER TABLE `veiculo`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `FK4cm1kg523jlopyexjbmi6y55j` (`placa`);
 
 --
 -- Indexes for table `lancamento`
@@ -102,12 +128,19 @@ ALTER TABLE `lancamento`
   ADD PRIMARY KEY (`id`),
   ADD KEY `FK46i4k5vl8wah7feutye9kbpi4` (`residencia_id`);
   
- --
+--
 -- Indexes for table `vinculo_residencia`
 --
 ALTER TABLE `vinculo_residencia`
   ADD PRIMARY KEY (`id`),
   ADD KEY `FK46i4k5vl8wah7feutye9kbpi4` (`residencia_id`, `morador_id`);
+  
+--
+-- Indexes for table `vinculo_veiculo`
+--
+ALTER TABLE `vinculo_veiculo`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `FK46i4k5vl8wah7feutye9kbpi4` (`visitante_id`, `veiculo_id`);
   
  --
 -- Indexes for table `visita`
@@ -140,11 +173,24 @@ ALTER TABLE `visita`
 ALTER TABLE `lancamento`
   MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
   
+ --
+-- AUTO_INCREMENT for table `veiculo`
+--
+ALTER TABLE `veiculo`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+  
 --
 -- AUTO_INCREMENT for table `vinculo_residencia`
 --
 ALTER TABLE `vinculo_residencia`
   MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+  
+--
+-- AUTO_INCREMENT for table `vinculo_veiculo`
+--
+ALTER TABLE `vinculo_veiculo`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+  
 --
 -- Constraints for dumped tables
 --
@@ -172,3 +218,9 @@ ALTER TABLE `visita`
   --
 ALTER TABLE `visita`
   ADD CONSTRAINT `FK46i4k5vl8wah7feutye9kbpi58` FOREIGN KEY (`visitante_id`) REFERENCES `visitante` (`id`);
+  
+ALTER TABLE `vinculo_veiculo`
+  ADD CONSTRAINT `FK46i4k5vl8wah7feutye9kbpi60` FOREIGN KEY (`veiculo_id`) REFERENCES `veiculo` (`id`);
+  
+ ALTER TABLE `vinculo_veiculo`
+  ADD CONSTRAINT `FK46i4k5vl8wah7feutye9kbpi61` FOREIGN KEY (`visitante_id`) REFERENCES `visitante` (`id`);
