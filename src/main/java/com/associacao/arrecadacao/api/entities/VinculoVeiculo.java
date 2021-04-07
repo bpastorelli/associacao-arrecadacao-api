@@ -19,11 +19,11 @@ public class VinculoVeiculo implements Serializable {
 	
 	private static final long serialVersionUID = 3960436649365666214L;
 	
-	private Long id;
-	private Veiculo veiculo;
+	private Long      id;
+	private Veiculo   veiculo;
 	private Visitante visitante;
-	private Date dataVinculo;
-	private Long posicao;
+	private Date      dataVinculo;
+	private Long      posicao;
 
 	public VinculoVeiculo() {
 		

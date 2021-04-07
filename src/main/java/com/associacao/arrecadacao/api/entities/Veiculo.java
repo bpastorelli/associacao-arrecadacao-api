@@ -18,14 +18,14 @@ public class Veiculo implements Serializable {
 	
 	private static final long serialVersionUID = 3960436649365666213L;
 	
-	private Long id;
+	private Long   id;
 	private String placa;
 	private String marca;
 	private String modelo;
-	private String ano;
-	private Date dataAtualizacao;
-	private Date dataCriacao;
-	private Long posicao;
+	private Long   ano;
+	private Date   dataAtualizacao;
+	private Date   dataCriacao;
+	private Long   posicao;
 	
 	public Veiculo() {
 		
@@ -69,11 +69,11 @@ public class Veiculo implements Serializable {
 	}
 
 	@Column(name = "ano", nullable = false)
-	public String getAno() {
+	public Long getAno() {
 		return ano;
 	}
 
-	public void setAno(String ano) {
+	public void setAno(Long ano) {
 		this.ano = ano;
 	}
 
