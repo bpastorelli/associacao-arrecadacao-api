@@ -81,6 +81,7 @@ public class VinculoVeiculo implements Serializable {
     public void prePersist() {
         final Date atual = new Date();
         dataVinculo = atual;
+        posicao = 1L;
     }
     
 	@Override

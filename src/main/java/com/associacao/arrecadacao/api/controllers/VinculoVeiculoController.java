@@ -40,7 +40,7 @@ public class VinculoVeiculoController {
 		
 	}
 	
-	@PostMapping(name = "/novo")
+	@PostMapping(value = "/novo")
 	public ResponseEntity<?> vincularVeiculo(
 			@Valid @RequestBody VinculoVeiculoDto vinculoRequestBody, BindingResult result) throws NoSuchAlgorithmException {
 		
@@ -74,6 +74,10 @@ public class VinculoVeiculoController {
 		
 		Veiculo veiculo = new Veiculo();
 		Visitante visitante = new Visitante();
+		
+		veiculo.setId(dto.getVeiculoId());
+		visitante.setId(dto.getVisitanteId());
+		
 		VinculoVeiculo vinculo = new VinculoVeiculo();
 		vinculo.setVeiculo(veiculo);
 		vinculo.setVisitante(visitante);
