@@ -1,8 +1,6 @@
 package com.associacao.arrecadacao.api.controllers;
 
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import javax.validation.Valid;
@@ -113,18 +111,18 @@ public class VeiculoController {
 		
 		PageRequest pageRequest = new PageRequest(pag, size, Direction.valueOf(dir), ord);
 		Page<Veiculo> veiculos = null;
-		List<Veiculo> listVeiculos = new ArrayList<Veiculo>();
 		
 		if(!placa.equals("null") || !marca.equals("null") || !modelo.equals("null") || ano != 0)
 			veiculos = this.veiculoService.bucarPorIdAndPlacaAndMarcaAndModelo(0L, placa, marca, modelo, pageRequest);
 		else
 			veiculos = this.veiculoService.bucarTodos(pageRequest);
 		
-		veiculos.getContent().forEach(v -> {	
-			listVeiculos.add(v);
-		});		
+		if (veiculos.getSize() == 0) {
+			log.info("A consulta não retornou dados");
+			return ResponseEntity.status(404).body("A consulta não retornou dados!");
+		}
 		
-		return ResponseEntity.status(HttpStatus.OK).body(listVeiculos);
+		return ResponseEntity.status(HttpStatus.OK).body(veiculos.getContent());
 		
 	}
 	
