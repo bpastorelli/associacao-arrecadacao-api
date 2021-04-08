@@ -1,6 +1,5 @@
 package com.associacao.arrecadacao.api.dtos;
 
-import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
 public class VisitaDto {
@@ -35,7 +34,6 @@ public class VisitaDto {
 		this.residenciaId = residenciaId;
 	}
 
-	@Length(min = 8, max = 8, message = "A placa deve conter 8 caracteres.")
 	public String getPlaca() {
 		return placa;
 	}
