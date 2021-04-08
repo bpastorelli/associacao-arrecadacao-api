@@ -1,32 +1,28 @@
 package com.associacao.arrecadacao.api.dtos;
 
-import com.associacao.arrecadacao.api.entities.Veiculo;
-import com.associacao.arrecadacao.api.entities.Visitante;
-
 public class VinculoVeiculoDto {
 	
-	private Veiculo   veiculo;
-	private Visitante visitante;
+	private Long veiculoId;
+	private Long visitanteId;
 	
-	public VinculoVeiculoDto() {
+	public VinculoVeiculoDto() {	
 		
-		
 	}
 
-	public Veiculo getVeiculo() {
-		return veiculo;
+	public Long getVeiculoId() {
+		return veiculoId;
 	}
 
-	public void setVeiculo(Veiculo veiculo) {
-		this.veiculo = veiculo;
+	public void setVeiculoId(Long veiculoId) {
+		this.veiculoId = veiculoId;
 	}
 
-	public Visitante getVisitante() {
-		return visitante;
+	public Long getVisitanteId() {
+		return visitanteId;
 	}
 
-	public void setVisitante(Visitante visitante) {
-		this.visitante = visitante;
+	public void setVisitanteId(Long visitanteId) {
+		this.visitanteId = visitanteId;
 	}
 
 }

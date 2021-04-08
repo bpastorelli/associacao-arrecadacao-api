@@ -25,8 +25,8 @@ public class Veiculo implements Serializable {
 	private String marca;
 	private String modelo;
 	private Long   ano;
-	private Date   dataAtualizacao;
 	private Date   dataCriacao;
+	private Date   dataAtualizacao;
 	private Long   posicao;
 	
 	public Veiculo() {
