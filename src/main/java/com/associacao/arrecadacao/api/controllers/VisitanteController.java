@@ -76,7 +76,7 @@ public class VisitanteController {
 		
 		this.visitanteService.persistir(visitanteDto);
 		response.setData(visitanteDto);
-		return ResponseEntity.status(HttpStatus.CREATED).body(response.getData());
+		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 		
 	}
 	
@@ -111,7 +111,7 @@ public class VisitanteController {
 		
 		this.visitanteService.persistir(visitante.get());
 		response.setData(visitante.get());
-		return ResponseEntity.status(HttpStatus.OK).body(response.getData());
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 		
 	}
 	
