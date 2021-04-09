@@ -533,7 +533,7 @@ public class MoradorController {
 	private void atualizarDadosMorador(Morador morador, AtualizaMoradorDto moradorDto, BindingResult result)
 			throws NoSuchAlgorithmException {
 		
-		if (!morador.getNome().equals(moradorDto.getNome())) {
+		if (!morador.getNome().toUpperCase().equals(moradorDto.getNome().toUpperCase())) {
 			this.moradorService.buscarPorNome(moradorDto.getNome())
 					.ifPresent(func -> result.addError(new ObjectError("nome", " O nome '" + func.getNome() + "' já existe!")));
 			morador.setNome(moradorDto.getNome());
