@@ -127,7 +127,7 @@ public class VeiculoController {
 	}
 	
 	@GetMapping(value = "/id/{id}")
-	public ResponseEntity<?> buscarVeiculos(
+	public ResponseEntity<?> buscarVeiculoPorId(
 			@PathVariable("id") Long id) throws NoSuchAlgorithmException {
 		
 		log.info("Buscando veiculo...");
@@ -138,6 +138,25 @@ public class VeiculoController {
 		if(!veiculo.isPresent()) {
 			log.info("Veiculo não encontrado para o ID: {}", id);
 			response.getErrors().add("Veículo não encontrada para o ID " + id);
+			return ResponseEntity.badRequest().body(response);
+		}
+		
+		return ResponseEntity.status(HttpStatus.OK).body(veiculo);
+		
+	}
+	
+	@GetMapping(value = "/placa/{placa}")
+	public ResponseEntity<?> buscarVeiculoPorPlaca(
+			@PathVariable("placa") String placa) throws NoSuchAlgorithmException {
+		
+		log.info("Buscando veiculo...");
+		Response<Veiculo> response = new Response<Veiculo>();
+		
+		Optional<Veiculo> veiculo = null;
+		veiculo = this.veiculoService.buscarPorPlaca(placa);
+		if(!veiculo.isPresent()) {
+			log.info("Veiculo não encontrado para o ID: {}", placa);
+			response.getErrors().add("Veículo não encontrada para a placa " + placa);
 			return ResponseEntity.badRequest().body(response);
 		}
 		
