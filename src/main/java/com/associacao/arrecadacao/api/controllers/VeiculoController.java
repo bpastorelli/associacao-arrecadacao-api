@@ -183,10 +183,10 @@ public class VeiculoController {
 	public Veiculo converterVeiculoDto(VeiculoDto dto) {
 		
 		Veiculo veiculo = new Veiculo();
-		veiculo.setPlaca(dto.getPlaca());
-		veiculo.setMarca(dto.getMarca());
-		veiculo.setModelo(dto.getModelo());
-		veiculo.setCor(dto.getCor());
+		veiculo.setPlaca(dto.getPlaca().toUpperCase());
+		veiculo.setMarca(dto.getMarca().toUpperCase());
+		veiculo.setModelo(dto.getModelo().toUpperCase());
+		veiculo.setCor(dto.getCor().toUpperCase());
 		veiculo.setAno(dto.getAno());
 		
 		return veiculo;
@@ -196,8 +196,9 @@ public class VeiculoController {
 	public Veiculo converterAtualizaVeiculoDto(AtualizaVeiculoDto dto) {
 		
 		Veiculo veiculo = new Veiculo();
-		veiculo.setMarca(dto.getMarca());
-		veiculo.setCor(dto.getCor());
+		veiculo.setMarca(dto.getMarca().toUpperCase());
+		veiculo.setModelo(dto.getModelo().toUpperCase());
+		veiculo.setCor(dto.getCor().toUpperCase());
 		veiculo.setAno(dto.getAno());
 		
 		return veiculo;
