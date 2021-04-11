@@ -7,6 +7,7 @@ public class VeiculoDto {
 	private String placa;
 	private String marca;
 	private String modelo;
+	private String cor;
 	private Long   ano;
 	private Long   visitanteId;
 	
@@ -40,6 +41,15 @@ public class VeiculoDto {
 		this.modelo = modelo;
 	}
 
+	@NotEmpty(message = "O campo Cor é obrigatório!")
+	public String getCor() {
+		return cor;
+	}
+
+	public void setCor(String cor) {
+		this.cor = cor;
+	}
+	
 	public Long getAno() {
 		return ano;
 	}
