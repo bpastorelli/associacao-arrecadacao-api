@@ -63,6 +63,7 @@ CREATE TABLE `veiculo` (
   `placa` varchar(8) NOT NULL,
   `marca` varchar(50) NULL,
   `modelo` varchar(100) NULL,
+  `cor` varchar(20) NULL,
   `ano` bigint(20) NULL,
   `data_criacao` datetime NULL,
   `data_atualizacao` datetime NOT NULL,	

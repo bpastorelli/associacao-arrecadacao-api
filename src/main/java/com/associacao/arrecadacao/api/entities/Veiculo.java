@@ -24,6 +24,7 @@ public class Veiculo implements Serializable {
 	private String placa;
 	private String marca;
 	private String modelo;
+	private String cor;
 	private Long   ano;
 	private Date   dataCriacao;
 	private Date   dataAtualizacao;
@@ -70,7 +71,16 @@ public class Veiculo implements Serializable {
 		this.modelo = modelo;
 	}
 
-	@Column(name = "ano", nullable = false)
+	@Column(name = "cor", nullable = true)
+	public String getCor() {
+		return cor;
+	}
+
+	public void setCor(String cor) {
+		this.cor = cor;
+	}
+	
+	@Column(name = "ano", nullable = true)
 	public Long getAno() {
 		return ano;
 	}
@@ -124,7 +134,7 @@ public class Veiculo implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Residencia [id=" + id + ", placa=" + placa + ", modelo=" + modelo + ", ano=" + ano + ", posicao=" + posicao + ", dataCriacao=" + dataCriacao + ", dataAtualizacao=" + dataAtualizacao + "]";
+		return "Residencia [id=" + id + ", placa=" + placa + ", modelo=" + modelo + ", cor=" + cor + ", ano=" + ano + ", posicao=" + posicao + ", dataCriacao=" + dataCriacao + ", dataAtualizacao=" + dataAtualizacao + "]";
 	}
 
 }
