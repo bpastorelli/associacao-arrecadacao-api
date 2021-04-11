@@ -4,6 +4,7 @@ public class AtualizaVeiculoDto {
 	
 	private String marca;
 	private String modelo;
+	private String cor;
 	private Long   ano;
 	private Long   posicao;
 	
@@ -19,6 +20,22 @@ public class AtualizaVeiculoDto {
 		this.marca = marca;
 	}
 
+	public String getModelo() {
+		return modelo;
+	}
+
+	public void setModelo(String modelo) {
+		this.modelo = modelo;
+	}
+	
+	public String getCor() {
+		return cor;
+	}
+
+	public void setCor(String cor) {
+		this.cor = cor;
+	}
+	
 	public Long getAno() {
 		return ano;
 	}
@@ -33,14 +50,6 @@ public class AtualizaVeiculoDto {
 
 	public void setPosicao(Long posicao) {
 		this.posicao = posicao;
-	}
-
-	public String getModelo() {
-		return modelo;
-	}
-
-	public void setModelo(String modelo) {
-		this.modelo = modelo;
 	}
 
 }
