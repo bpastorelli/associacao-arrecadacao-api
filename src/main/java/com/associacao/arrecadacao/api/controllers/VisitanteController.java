@@ -26,7 +26,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.associacao.arrecadacao.api.commons.ValidaCPF;
-import com.associacao.arrecadacao.api.dtos.CadastroVisitanteDto;
+import com.associacao.arrecadacao.api.dtos.AtualizaVisitanteDto;
+import com.associacao.arrecadacao.api.dtos.VisitanteDto;
 import com.associacao.arrecadacao.api.entities.Visita;
 import com.associacao.arrecadacao.api.entities.Visitante;
 import com.associacao.arrecadacao.api.response.Response;
@@ -60,11 +61,12 @@ public class VisitanteController {
 	 * @throws NoSuchAlgorithmException
 	 */
 	@PostMapping("/incluir")
-	public ResponseEntity<?> cadastrarVisitante(@Valid @RequestBody Visitante visitanteDto,
+	public ResponseEntity<?> cadastrarVisitante(@Valid @RequestBody VisitanteDto visitanteDto,
 												BindingResult result) throws NoSuchAlgorithmException{
 		
 		log.info("Preparando dados para cadastro de visitante", visitanteDto);
-		Response<Visitante> response = new Response<Visitante>();
+		Visitante visitante = new Visitante();
+		Response<Visitante> response = new Response<Visitante>();		
 		
 		this.validarDadosExistentes(visitanteDto, result);
 		
@@ -74,8 +76,10 @@ public class VisitanteController {
 			return ResponseEntity.status(400).body(response.getErrors());
 		}
 		
-		this.visitanteService.persistir(visitanteDto);
-		response.setData(visitanteDto);
+		atualizarDadosVisitante(visitanteDto, visitante, result);
+		
+		this.visitanteService.persistir(visitante);
+		response.setData(visitante);
 		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 		
 	}
@@ -89,7 +93,7 @@ public class VisitanteController {
 	 */
 	@PutMapping("/{id}")
 	public ResponseEntity<?> atualizarVisitante(@PathVariable("id") Long id,
-												@Valid @RequestBody Visitante visitanteDto,
+												@Valid @RequestBody AtualizaVisitanteDto visitanteDto,
 												BindingResult result) throws NoSuchAlgorithmException{
 		
 		log.info("Preparando dados para atualização de visitante", visitanteDto);
@@ -205,45 +209,34 @@ public class VisitanteController {
 	}
 	
 	//Validação dos dados informados no dto
-	public void validarDadosExistentes(CadastroVisitanteDto cadastroVisitanteDto, BindingResult result) {
-		
-		if(cadastroVisitanteDto.getVisitantes().size() == 0)
-			result.addError(new ObjectError("visitante", " Não existem dados para inclusão"));
-		
-		cadastroVisitanteDto.getVisitantes().forEach(v -> {
+	public void validarDadosExistentes(VisitanteDto dto, BindingResult result) {
 			
-			if(v.getNome().isEmpty())
+			if(dto.getNome().isEmpty())
 				result.addError(new ObjectError("visitante", " O campo nome é obrigatório"));
 			
-			if(!v.getCpf().isEmpty()) {
-				if(!ValidaCPF.isCPF(v.getCpf()))
+			if(!dto.getCpf().isEmpty()) {
+				if(!ValidaCPF.isCPF(dto.getCpf()))
 					result.addError(new ObjectError("visitante", " O campo RG é obrigatório"));			
 			}
 			
-			this.visitanteService.buscarPorRg(v.getRg())
-				.ifPresent(res -> result.addError(new ObjectError("visitante", " Vistante já cadastrado para o rg "+ v.getRg() +"")));
+			this.visitanteService.buscarPorRg(dto.getRg())
+				.ifPresent(res -> result.addError(new ObjectError("visitante", " Vistante já cadastrado para o rg "+ dto.getRg() +"")));
 			
-			this.visitanteService.buscarPorCpf(v.getRg())
-				.ifPresent(res -> result.addError(new ObjectError("visitante", " Vistante já cadastrado para o cpf "+ v.getCpf() +"")));
+			this.visitanteService.buscarPorCpf(dto.getRg())
+				.ifPresent(res -> result.addError(new ObjectError("visitante", " Vistante já cadastrado para o cpf "+ dto.getCpf() +"")));
 			
-			this.visitanteService.buscarPorNome(v.getNome())
-				.ifPresent(res -> result.addError(new ObjectError("visitante", " Vistante já cadastrado para o nome "+ v.getNome() +"")));
+			this.visitanteService.buscarPorNome(dto.getNome())
+				.ifPresent(res -> result.addError(new ObjectError("visitante", " Vistante já cadastrado para o nome "+ dto.getNome() +"")));
 			
-		});
 		
 	}
 	
-	//Validação dos dados informados no dto para um cadastro
-	public void atualizarDadosVisitante(Visitante visitanteDto, Visitante visitante, BindingResult result) {
+	//Validação dos dados informados no dto para um cadastro para PUT
+	public void atualizarDadosVisitante(AtualizaVisitanteDto visitanteDto, Visitante visitante, BindingResult result) {
 		
 
 			if(visitanteDto.getNome().isEmpty())
 				result.addError(new ObjectError("visitante", " O campo nome é obrigatório"));
-			
-			if(!visitanteDto.getNome().equals(visitante.getNome())) {
-				this.visitanteService.buscarPorNome(visitanteDto.getNome())
-					.ifPresent(res -> result.addError(new ObjectError("visitante", " Visitante já cadastrado para o nome "+ visitanteDto.getNome() +"")));
-			}
 			
 			if(!visitanteDto.getCpf().isEmpty()) {
 				if(!ValidaCPF.isCPF(visitanteDto.getCpf()))
@@ -252,15 +245,47 @@ public class VisitanteController {
 			
 			if(!result.hasErrors()) {
 				
-				visitante.setNome(visitanteDto.getNome());
+				visitante.setNome(visitanteDto.getNome().toUpperCase());
+				visitante.setRg(visitante.getRg());
 				visitante.setCpf(visitanteDto.getCpf());
 				visitante.setCep(visitanteDto.getCep());
-				visitante.setEndereco(visitanteDto.getEndereco());
+				visitante.setEndereco(visitanteDto.getEndereco().toUpperCase());
 				visitante.setNumero(visitanteDto.getNumero());
-				visitante.setComplemento(visitanteDto.getComplemento());
-				visitante.setBairro(visitanteDto.getBairro());
-				visitante.setCidade(visitanteDto.getCidade());
-				visitante.setUf(visitanteDto.getUf());
+				visitante.setComplemento(visitanteDto.getComplemento() != null ? visitanteDto.getComplemento().toUpperCase() : null);
+				visitante.setBairro(visitanteDto.getBairro().toUpperCase());
+				visitante.setCidade(visitanteDto.getCidade().toUpperCase());
+				visitante.setUf(visitanteDto.getUf().toUpperCase());
+				visitante.setTelefone(visitanteDto.getTelefone());
+				visitante.setCelular(visitanteDto.getCelular());
+				visitante.setPosicao(visitanteDto.getPosicao());
+			}
+		
+	}
+	
+	//Validação dos dados informados no dto para um cadastro para POST
+	public void atualizarDadosVisitante(VisitanteDto visitanteDto, Visitante visitante, BindingResult result) {
+		
+
+			if(visitanteDto.getNome().isEmpty())
+				result.addError(new ObjectError("visitante", " O campo nome é obrigatório"));
+			
+			if(!visitanteDto.getCpf().isEmpty()) {
+				if(!ValidaCPF.isCPF(visitanteDto.getCpf()))
+					result.addError(new ObjectError("visitante", " CPF inválido"));
+			}
+			
+			if(!result.hasErrors()) {
+				
+				visitante.setNome(visitanteDto.getNome().toUpperCase());
+				visitante.setRg(visitanteDto.getRg());
+				visitante.setCpf(visitanteDto.getCpf());
+				visitante.setCep(visitanteDto.getCep());
+				visitante.setEndereco(visitanteDto.getEndereco().toUpperCase());
+				visitante.setNumero(visitanteDto.getNumero());
+				visitante.setComplemento(visitanteDto.getComplemento() != null ? visitanteDto.getComplemento().toUpperCase() : null);
+				visitante.setBairro(visitanteDto.getBairro().toUpperCase());
+				visitante.setCidade(visitanteDto.getCidade().toUpperCase());
+				visitante.setUf(visitanteDto.getUf().toUpperCase());
 				visitante.setTelefone(visitanteDto.getTelefone());
 				visitante.setCelular(visitanteDto.getCelular());
 				
