@@ -186,6 +186,7 @@ public class VeiculoController {
 		veiculo.setPlaca(dto.getPlaca());
 		veiculo.setMarca(dto.getMarca());
 		veiculo.setModelo(dto.getModelo());
+		veiculo.setCor(dto.getCor());
 		veiculo.setAno(dto.getAno());
 		
 		return veiculo;
@@ -196,6 +197,7 @@ public class VeiculoController {
 		
 		Veiculo veiculo = new Veiculo();
 		veiculo.setMarca(dto.getMarca());
+		veiculo.setCor(dto.getCor());
 		veiculo.setAno(dto.getAno());
 		
 		return veiculo;
