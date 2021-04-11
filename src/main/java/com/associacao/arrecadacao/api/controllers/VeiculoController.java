@@ -207,8 +207,9 @@ public class VeiculoController {
 	
 	public void atualizaVeiculo(AtualizaVeiculoDto dto, Veiculo veiculo, BindingResult result) {
 		
-		veiculo.setMarca(dto.getMarca());
-		veiculo.setModelo(dto.getModelo());
+		veiculo.setMarca(dto.getMarca().toUpperCase());
+		veiculo.setModelo(dto.getModelo().toUpperCase());
+		veiculo.setCor(dto.getCor().toUpperCase());
 		veiculo.setAno(dto.getAno());
 		
 	}
