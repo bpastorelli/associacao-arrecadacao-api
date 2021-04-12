@@ -200,7 +200,7 @@ public class VisitanteController {
 		if (!visitante.isPresent()) {
 			log.info("A consulta não retornou dados");
 			response.getErrors().add(" Visitante não encontrado!");
-			return ResponseEntity.status(404).body(response.getErrors());
+			return ResponseEntity.status(404).body(response);
 		}
 		
 		response.setData(visitante.get());
