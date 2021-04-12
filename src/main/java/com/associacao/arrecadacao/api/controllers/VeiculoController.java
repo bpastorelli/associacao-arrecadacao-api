@@ -1,6 +1,8 @@
 package com.associacao.arrecadacao.api.controllers;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import javax.validation.Valid;
@@ -28,6 +30,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.associacao.arrecadacao.api.dtos.AtualizaVeiculoDto;
 import com.associacao.arrecadacao.api.dtos.VeiculoDto;
 import com.associacao.arrecadacao.api.entities.Veiculo;
+import com.associacao.arrecadacao.api.entities.VinculoVeiculo;
+import com.associacao.arrecadacao.api.entities.Visitante;
 import com.associacao.arrecadacao.api.response.Response;
 import com.associacao.arrecadacao.api.services.VeiculoService;
 import com.associacao.arrecadacao.api.services.VinculoVeiculoService;
@@ -70,7 +74,25 @@ public class VeiculoController {
 		}
 		
 		Veiculo veiculo = converterVeiculoDto(veiculoRequestBody);
+		Visitante visitante = new Visitante(); 
+		visitante.setId(veiculoRequestBody.getVisitanteId());
 		this.veiculoService.persistir(veiculo);
+		
+		List<VinculoVeiculo> vinculos = new ArrayList<VinculoVeiculo>();
+		VinculoVeiculo vinculo = new VinculoVeiculo();
+		vinculo.setVeiculo(veiculo);
+		vinculo.setVisitante(visitante);
+		vinculos.add(vinculo);
+		
+		this.validarVinculoVeiculo(veiculo, visitante, result);
+		
+		if(result.hasErrors()) {
+			log.error("Erro validando dados para cadastro de vinculo: {}", result.getAllErrors());
+			result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
+			return ResponseEntity.status(400).body(response.getErrors());
+		}
+		
+		this.vinculoVeiculoService.persistir(vinculos);
 		
 		response.setData(veiculo);
 		return ResponseEntity.status(HttpStatus.CREATED).body(response);
@@ -178,6 +200,19 @@ public class VeiculoController {
 		this.vinculoVeiculoService.buscarPorPlacaAndVisitanteId(dto.getPlaca().replace("-", ""), dto.getVisitanteId()).
 			ifPresent(res -> result.addError(new ObjectError("veiculo", "Veiculo de placa " + dto.getPlaca() + " já vinculado para esta pessoa!")));
 	
+	}
+	
+	public void validarVinculoVeiculo(Veiculo veiculo, Visitante visitante, BindingResult result) {
+		
+		this.vinculoVeiculoService.buscarPorVeiculoIdAndVisitanteId(veiculo.getId(), visitante.getId())
+			.ifPresent(res -> result.addError(new ObjectError("vinculo","O veiculo já está associado para este visitante")));
+		
+		if(this.veiculoService.buscarPorId(veiculo.getId()).get().getPlaca().isEmpty())
+			result.addError(new ObjectError("vinculo","O veiculo não existe"));
+		
+		if(this.visitanteService.buscarPorId(visitante.getId()).get().getNome().isEmpty())
+			result.addError(new ObjectError("vinculo","O visitante não existe"));
+		
 	}
 	
 	public Veiculo converterVeiculoDto(VeiculoDto dto) {
