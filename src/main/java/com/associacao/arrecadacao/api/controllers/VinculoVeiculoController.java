@@ -14,11 +14,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.associacao.arrecadacao.api.dtos.VeiculosVisitanteDto;
 import com.associacao.arrecadacao.api.dtos.VinculoVeiculoDto;
 import com.associacao.arrecadacao.api.entities.Veiculo;
 import com.associacao.arrecadacao.api.entities.VinculoVeiculo;
@@ -63,6 +66,20 @@ public class VinculoVeiculoController {
 		
 	}
 	
+	@GetMapping(value = "/visitante/{id}")
+	public ResponseEntity<?> buscarPorVisitanteId(
+			@PathVariable("id") Long id) throws NoSuchAlgorithmException{
+		
+		log.info("Buscando veiculos por visitanteId {}", id);
+		Response<VeiculosVisitanteDto> response = new Response<VeiculosVisitanteDto>();		
+		List<VinculoVeiculo> vinculos = vinculoVeiculoService.buscarPorVisitanteId(id);
+		
+		response.setData(this.converterVinculoVeiculoParaVeiculoVisitanteDto(vinculos));
+		
+		return new ResponseEntity<>(response.getData().getVeiculos(), HttpStatus.OK);
+		
+	}
+	
 	public void validarDadosExistentes(VinculoVeiculoDto vinculo, BindingResult result){
 		
 		this.vinculoVeiculoService.buscarPorVeiculoIdAndVisitanteId(vinculo.getVeiculoId(), vinculo.getVisitanteId()).
@@ -83,6 +100,38 @@ public class VinculoVeiculoController {
 		vinculo.setVisitante(visitante);
 		
 		return vinculo;
+		
+	}
+	
+	/**
+	 * Converter Vinculo de Veiculo em VeiculosVisitanteDto
+	 * 
+	 * @param vinculo
+	 * @return VeiculosVisitanteDto
+	 */
+	public VeiculosVisitanteDto converterVinculoVeiculoParaVeiculoVisitanteDto(List<VinculoVeiculo> vinculos) {
+		
+		VeiculosVisitanteDto dto = new VeiculosVisitanteDto();
+		
+		List<Veiculo> veiculos = new ArrayList<Veiculo>();
+		
+		vinculos.forEach(r -> {	
+			Veiculo veiculo = new Veiculo();
+			veiculo.setPlaca(r.getVeiculo().getPlaca());
+			veiculo.setId(r.getVeiculo().getId());
+			veiculo.setMarca(r.getVeiculo().getMarca());
+			veiculo.setModelo(r.getVeiculo().getModelo());
+			veiculo.setAno(r.getVeiculo().getAno());
+			veiculo.setCor(r.getVeiculo().getCor());
+			veiculo.setDataCriacao(r.getVeiculo().getDataCriacao());
+			veiculo.setDataAtualizacao(r.getVeiculo().getDataAtualizacao());
+			veiculo.setPosicao(r.getVeiculo().getPosicao());
+			veiculos.add(veiculo);
+		});
+		
+		dto.setVeiculos(veiculos);
+		
+		return dto;
 		
 	}
 
