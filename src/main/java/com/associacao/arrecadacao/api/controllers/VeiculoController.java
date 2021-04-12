@@ -153,7 +153,7 @@ public class VeiculoController {
 		Response<Veiculo> response = new Response<Veiculo>();
 		
 		Optional<Veiculo> veiculo = null;
-		veiculo = this.veiculoService.buscarPorPlaca(placa);
+		veiculo = this.veiculoService.buscarPorPlaca(placa.replace("-", ""));
 		if(!veiculo.isPresent()) {
 			log.info("Veiculo não encontrado para o ID: {}", placa.replace("-", ""));
 			response.getErrors().add("Veículo não encontrada para a placa " + placa);
@@ -175,7 +175,7 @@ public class VeiculoController {
 		if(!this.visitanteService.buscarPorId(dto.getVisitanteId()).isPresent())
 			result.addError(new ObjectError("veiculo", "Visitante inexistente!"));		
 		
-		this.vinculoVeiculoService.buscarPorPlacaAndVisitanteId(dto.getPlaca(), dto.getVisitanteId()).
+		this.vinculoVeiculoService.buscarPorPlacaAndVisitanteId(dto.getPlaca().replace("-", ""), dto.getVisitanteId()).
 			ifPresent(res -> result.addError(new ObjectError("veiculo", "Veiculo de placa " + dto.getPlaca() + " já vinculado para esta pessoa!")));
 	
 	}
