@@ -113,7 +113,7 @@ public class VeiculoController {
 		Page<Veiculo> veiculos = null;
 		
 		if(!placa.replace("-", "").equals("null") || !marca.equals("null") || !modelo.equals("null") || ano != 0)
-			veiculos = this.veiculoService.bucarPorIdAndPlacaAndMarcaAndModelo(0L, placa, marca, modelo, pageRequest);
+			veiculos = this.veiculoService.bucarPorIdAndPlacaAndMarcaAndModelo(0L, placa.replace("-", ""), marca, modelo, pageRequest);
 		else
 			veiculos = this.veiculoService.bucarTodos(pageRequest);
 		
