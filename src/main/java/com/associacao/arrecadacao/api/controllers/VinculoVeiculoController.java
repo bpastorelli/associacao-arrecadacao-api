@@ -81,7 +81,7 @@ public class VinculoVeiculoController {
 	}
 	
 	@GetMapping(value = "/visitante/rg/{rg}")
-	public ResponseEntity<?> buscarPorVisitanteId(
+	public ResponseEntity<?> buscarPorVisitanteRg(
 			@PathVariable("rg") String rg) throws NoSuchAlgorithmException{
 		
 		log.info("Buscando veiculos por RG {}", rg);
