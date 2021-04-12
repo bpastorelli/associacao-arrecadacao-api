@@ -31,11 +31,15 @@ import org.springframework.web.bind.annotation.RestController;
 import com.associacao.arrecadacao.api.dtos.EncerraVisitaDto;
 import com.associacao.arrecadacao.api.dtos.VisitaDto;
 import com.associacao.arrecadacao.api.entities.Residencia;
+import com.associacao.arrecadacao.api.entities.Veiculo;
+import com.associacao.arrecadacao.api.entities.VinculoVeiculo;
 import com.associacao.arrecadacao.api.entities.Visita;
 import com.associacao.arrecadacao.api.entities.VisitaResponse;
 import com.associacao.arrecadacao.api.entities.Visitante;
 import com.associacao.arrecadacao.api.response.Response;
 import com.associacao.arrecadacao.api.services.ResidenciaService;
+import com.associacao.arrecadacao.api.services.VeiculoService;
+import com.associacao.arrecadacao.api.services.VinculoVeiculoService;
 import com.associacao.arrecadacao.api.services.VisitaService;
 import com.associacao.arrecadacao.api.services.VisitanteService;
 import com.associacao.arrecadacao.api.utils.Utils;
@@ -56,6 +60,11 @@ public class VisitaController {
 	@Autowired
 	private ResidenciaService residenciaService;
 	
+	@Autowired
+	private VinculoVeiculoService vinculoVeiculoService;
+	
+	@Autowired
+	private VeiculoService veiculoService;
 	
 	public VisitaController() {
 		
@@ -77,6 +86,26 @@ public class VisitaController {
 		
 		Visita visita = new Visita();
 		visita = this.converterVisitaDtoParaVisita(visitaDto, result);
+		
+		//Vincula o veiculo ao visitante
+		if(visitaDto.getPlaca() != null) {
+			Optional<Veiculo> veiculo = veiculoService.buscarPorPlaca(visitaDto.getPlaca().replace("-", ""));
+			Optional<Visitante> visitante = visitanteService.buscarPorRg(visitaDto.getRg());
+			
+			if(veiculo.isPresent() && visitante.isPresent()) {
+				if(!vinculoVeiculoService.buscarPorPlacaAndVisitanteId(veiculo.get().getPlaca().replace("-", ""), visitante.get().getId()).isPresent()) {
+					List<VinculoVeiculo> vinculos = new ArrayList<VinculoVeiculo>();
+					VinculoVeiculo vinculo = new VinculoVeiculo();
+					vinculo.setVeiculo(veiculo.get());
+					vinculo.setVisitante(visitante.get());
+					vinculos.add(vinculo);				
+					
+					this.vinculoVeiculoService.persistir(vinculos);
+				}
+			}
+			
+		}
+		
 		
 		if(result.hasErrors()) {
 			log.error("Erro validando dados para cadastro de visita(s): {}", result.getAllErrors());
@@ -198,6 +227,10 @@ public class VisitaController {
 					result.addError(new ObjectError("visita", " Visitante não encontrado para o CPF " + visitaDto.getCpf() + "!"));				
 			}
 			
+		}
+		
+		if(!veiculoService.buscarPorPlaca(visitaDto.getPlaca().replace("-", "")).isPresent()) {
+			result.addError(new ObjectError("visita", "Veiculo não cadastrado para a placa " + visitaDto.getPlaca()));
 		}
 		
 		//Valida se já existem visitas não encerradas.
