@@ -112,8 +112,8 @@ public class VeiculoController {
 		PageRequest pageRequest = new PageRequest(pag, size, Direction.valueOf(dir), ord);
 		Page<Veiculo> veiculos = null;
 		
-		if(!placa.equals("null") || !marca.equals("null") || !modelo.equals("null") || ano != 0)
-			veiculos = this.veiculoService.bucarPorIdAndPlacaAndMarcaAndModelo(0L, placa, marca, modelo, pageRequest);
+		if(!placa.replace("-", "").equals("null") || !marca.equals("null") || !modelo.equals("null") || ano != 0)
+			veiculos = this.veiculoService.bucarPorIdAndPlacaAndMarcaAndModelo(0L, placa.replace("-", ""), marca, modelo, pageRequest);
 		else
 			veiculos = this.veiculoService.bucarTodos(pageRequest);
 		
@@ -153,9 +153,9 @@ public class VeiculoController {
 		Response<Veiculo> response = new Response<Veiculo>();
 		
 		Optional<Veiculo> veiculo = null;
-		veiculo = this.veiculoService.buscarPorPlaca(placa);
+		veiculo = this.veiculoService.buscarPorPlaca(placa.replace("-", ""));
 		if(!veiculo.isPresent()) {
-			log.info("Veiculo não encontrado para o ID: {}", placa);
+			log.info("Veiculo não encontrado para o ID: {}", placa.replace("-", ""));
 			response.getErrors().add("Veículo não encontrada para a placa " + placa);
 			return ResponseEntity.badRequest().body(response);
 		}
@@ -169,13 +169,13 @@ public class VeiculoController {
 		if(dto.getPlaca() == null) 
 			result.addError(new ObjectError("veiculo", " Não existem veículos para cadastro!"));
 		
-		this.veiculoService.buscarPorPlaca(dto.getPlaca()).
+		this.veiculoService.buscarPorPlaca(dto.getPlaca().replace("-", "")).
 			ifPresent(res -> result.addError(new ObjectError("veiculo", "A placa informada (" + dto.getPlaca() + ") já existe para o veiculo id " + res.getId() + "!") ));
 		
 		if(!this.visitanteService.buscarPorId(dto.getVisitanteId()).isPresent())
 			result.addError(new ObjectError("veiculo", "Visitante inexistente!"));		
 		
-		this.vinculoVeiculoService.buscarPorPlacaAndVisitanteId(dto.getPlaca(), dto.getVisitanteId()).
+		this.vinculoVeiculoService.buscarPorPlacaAndVisitanteId(dto.getPlaca().replace("-", ""), dto.getVisitanteId()).
 			ifPresent(res -> result.addError(new ObjectError("veiculo", "Veiculo de placa " + dto.getPlaca() + " já vinculado para esta pessoa!")));
 	
 	}
