@@ -1,6 +1,8 @@
 package com.associacao.arrecadacao.api.controllers;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import javax.validation.Valid;
@@ -28,6 +30,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.associacao.arrecadacao.api.dtos.AtualizaVeiculoDto;
 import com.associacao.arrecadacao.api.dtos.VeiculoDto;
 import com.associacao.arrecadacao.api.entities.Veiculo;
+import com.associacao.arrecadacao.api.entities.VinculoVeiculo;
+import com.associacao.arrecadacao.api.entities.Visitante;
 import com.associacao.arrecadacao.api.response.Response;
 import com.associacao.arrecadacao.api.services.VeiculoService;
 import com.associacao.arrecadacao.api.services.VinculoVeiculoService;
@@ -70,7 +74,16 @@ public class VeiculoController {
 		}
 		
 		Veiculo veiculo = converterVeiculoDto(veiculoRequestBody);
+		Visitante visitante = new Visitante(); 
+		visitante.setId(veiculoRequestBody.getVisitanteId());
 		this.veiculoService.persistir(veiculo);
+		
+		List<VinculoVeiculo> vinculos = new ArrayList<VinculoVeiculo>();
+		VinculoVeiculo vinculo = new VinculoVeiculo();
+		vinculo.setVeiculo(veiculo);
+		vinculo.setVisitante(visitante);
+		vinculos.add(vinculo);
+		this.vinculoVeiculoService.persistir(vinculos);
 		
 		response.setData(veiculo);
 		return ResponseEntity.status(HttpStatus.CREATED).body(response);
