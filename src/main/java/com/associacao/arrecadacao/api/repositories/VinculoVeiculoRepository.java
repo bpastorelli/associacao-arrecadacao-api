@@ -31,5 +31,7 @@ public interface VinculoVeiculoRepository extends JpaRepository<VinculoVeiculo, 
 	List<VinculoVeiculo> findByVisitanteId(Long visitanteId);
 	
 	List<VinculoVeiculo> findByVeiculoId(Long veiculoId);
+	
+	List<VinculoVeiculo> findByVisitanteRg(String rg);
 
 }
