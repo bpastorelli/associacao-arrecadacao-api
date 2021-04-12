@@ -80,6 +80,20 @@ public class VinculoVeiculoController {
 		
 	}
 	
+	@GetMapping(value = "/visitante/rg/{rg}")
+	public ResponseEntity<?> buscarPorVisitanteId(
+			@PathVariable("rg") String rg) throws NoSuchAlgorithmException{
+		
+		log.info("Buscando veiculos por RG {}", rg);
+		Response<VeiculosVisitanteDto> response = new Response<VeiculosVisitanteDto>();		
+		List<VinculoVeiculo> vinculos = vinculoVeiculoService.buscarPorVisitanteRg(rg);
+		
+		response.setData(this.converterVinculoVeiculoParaVeiculoVisitanteDto(vinculos));
+		
+		return new ResponseEntity<>(response.getData().getVeiculos(), HttpStatus.OK);
+		
+	}
+	
 	public void validarDadosExistentes(VinculoVeiculoDto vinculo, BindingResult result){
 		
 		this.vinculoVeiculoService.buscarPorVeiculoIdAndVisitanteId(vinculo.getVeiculoId(), vinculo.getVisitanteId()).

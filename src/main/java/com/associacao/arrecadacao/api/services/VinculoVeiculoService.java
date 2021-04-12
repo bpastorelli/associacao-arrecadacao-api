@@ -25,6 +25,14 @@ public interface VinculoVeiculoService {
 	List<VinculoVeiculo> buscarPorVisitanteId(Long visitanteId);
 	
 	/**
+	 * Buscar por Visitante RG
+	 * 
+	 * @param RG
+	 * @return List<VinculoVeiculo>
+	 */
+	List<VinculoVeiculo> buscarPorVisitanteRg(String rg);
+	
+	/**
 	 * Buscar por Veiculo ID
 	 * 
 	 * @param VeiculoId

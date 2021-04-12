@@ -55,5 +55,11 @@ public class VinculoVeiculoServiceImpl implements VinculoVeiculoService {
 		log.info("Removendo vinculo por id {}", id);
 		this.vinculoVeiculoRepository.delete(id);
 	}
+
+	@Override
+	public List<VinculoVeiculo> buscarPorVisitanteRg(String rg) {
+		log.info("Buscando vinculo por visitante RG {}", rg);
+		return this.vinculoVeiculoRepository.findByVisitanteRg(rg);
+	}
 	
 }
