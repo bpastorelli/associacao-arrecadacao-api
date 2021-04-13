@@ -60,7 +60,7 @@ public class VisitanteServiceImpl implements VisitanteService {
 	@Cacheable("visitante")
 	public Page<Visitante> buscarTodos(PageRequest pageRequest) {
 		log.info("Buscar todos os visitantes");
-		return visitanteRepository.findAll(pageRequest);
+		return visitanteRepository.findAll(pageRequest); 	
 	}
 
 	@Override

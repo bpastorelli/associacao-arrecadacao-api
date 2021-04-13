@@ -8,10 +8,12 @@ import javax.persistence.NamedQuery;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.associacao.arrecadacao.api.entities.VinculoVeiculo;
 
+@Repository
 @Transactional(readOnly = true)
 @NamedQueries({
 	@NamedQuery(name = "VinculoVeiculoRepository.findByPlacaAndVisitanteId", 
