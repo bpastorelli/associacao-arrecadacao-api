@@ -2,6 +2,6 @@
 	xsi:noNamespaceSchemaLocation="ehcache.xsd">
 	<cache name="visitante" 
 		maxEntriesLocalHeap="200"
-		timeToLiveSeconds="3600">
+		timeToLiveSeconds="10000">
 	</cache>	
 </ehcache>
