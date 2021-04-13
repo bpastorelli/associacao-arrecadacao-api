@@ -3,5 +3,5 @@
 	<cache name="visitante" 
 		maxEntriesLocalHeap="200"
 		timeToLiveSeconds="3600">
-	</cache>
+	</cache>	
 </ehcache>

@@ -6,6 +6,8 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -22,7 +24,7 @@ public class VisitaServiceImpl implements VisitaService {
 	@Autowired
 	private VisitaRepository visitaRepository;
 	
-	@Override
+	@CachePut("visitante")
 	public Visita persistir(Visita visita) {
 		log.info("Persistindo visita...");
 		return visitaRepository.save(visita);
@@ -52,7 +54,7 @@ public class VisitaServiceImpl implements VisitaService {
 		return visitaRepository.findAll(pageRequest);
 	}
 
-	@Override
+	@Cacheable("visitante")
 	public Optional<Visita> buscarPorVisitanteIdOrderByDataEntradaDesc(Long id) {
 		log.info("Buscando visita máxima...");
 		return visitaRepository.findFirstByVisitanteIdOrderByDataEntradaDesc(id);
