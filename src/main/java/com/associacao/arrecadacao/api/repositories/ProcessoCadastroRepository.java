@@ -6,10 +6,12 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.associacao.arrecadacao.api.entities.Residencia;
 
+@Repository
 @Transactional(readOnly = true)
 @NamedQueries({
 		@NamedQuery(name = "ProcessoCadastroRepository.findByResidenciaId", 
