@@ -26,13 +26,13 @@ public class VisitanteServiceImpl implements VisitanteService {
 	private VisitanteRepository visitanteRepository;
 	
 	
-	@CachePut("visitante")	
+	@CachePut(value="visitante")	
 	public List<Visitante> persitir(List<Visitante> visitantes) {
 		log.info("Persistir visitantes {}", visitantes);
 		return visitanteRepository.save(visitantes);
 	}
 
-	@CachePut("visitante")
+	@CachePut(value ="visitante")
 	public Optional<Visitante> persistir(Visitante visitante) {
 		log.info("Persistir visitante {}", visitante);
 		return Optional.ofNullable(visitanteRepository.save(visitante));
