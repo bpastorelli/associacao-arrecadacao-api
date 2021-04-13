@@ -7,6 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -24,13 +26,13 @@ public class VisitanteServiceImpl implements VisitanteService {
 	private VisitanteRepository visitanteRepository;
 	
 	
-	@Override
+	@CachePut("visitante")
 	public List<Visitante> persitir(List<Visitante> visitantes) {
 		log.info("Persistir visitantes {}", visitantes);
 		return visitanteRepository.save(visitantes);
 	}
 
-	@Override
+	@CachePut("visitante")
 	public Optional<Visitante> persistir(Visitante visitante) {
 		log.info("Persistir visitante {}", visitante);
 		return Optional.ofNullable(visitanteRepository.save(visitante));
@@ -55,7 +57,7 @@ public class VisitanteServiceImpl implements VisitanteService {
 		return visitanteRepository.findByIdOrNomeContainsOrCpfOrRg(id, nome, cpf, rg, pageRequest);
 	}
 
-	@Override
+	@Cacheable("visitante")
 	public Page<Visitante> buscarTodos(PageRequest pageRequest) {
 		log.info("Buscar todos os visitantes");
 		return visitanteRepository.findAll(pageRequest);
