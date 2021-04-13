@@ -26,7 +26,7 @@ public class VisitanteServiceImpl implements VisitanteService {
 	private VisitanteRepository visitanteRepository;
 	
 	
-	@CachePut("visitante")
+	@CachePut("visitante")	
 	public List<Visitante> persitir(List<Visitante> visitantes) {
 		log.info("Persistir visitantes {}", visitantes);
 		return visitanteRepository.save(visitantes);
