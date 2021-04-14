@@ -82,6 +82,7 @@ public class MoradorController {
 		response.setData(this.converterCadastroMoradorDto(moradores));
 		return ResponseEntity.ok(response);
 		
+		
 	}
 	
 	@PostMapping(value = "/novo")
