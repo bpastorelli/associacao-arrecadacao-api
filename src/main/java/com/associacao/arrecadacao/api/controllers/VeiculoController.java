@@ -176,11 +176,11 @@ public class VeiculoController {
 		
 		Optional<Veiculo> veiculo = null;
 		veiculo = this.veiculoService.buscarPorPlaca(placa.replace("-", ""));
-		if(!veiculo.isPresent()) {
+		/*if(!veiculo.isPresent()) {
 			log.info("Veiculo não encontrado para o ID: {}", placa.replace("-", ""));
 			response.getErrors().add("Veículo não encontrada para a placa " + placa);
 			return ResponseEntity.badRequest().body(response);
-		}
+		}*/
 		
 		return ResponseEntity.status(HttpStatus.OK).body(veiculo);
 		
