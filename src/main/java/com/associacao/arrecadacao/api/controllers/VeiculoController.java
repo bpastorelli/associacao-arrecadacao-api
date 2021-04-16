@@ -172,15 +172,8 @@ public class VeiculoController {
 			@PathVariable("placa") String placa) throws NoSuchAlgorithmException {
 		
 		log.info("Buscando veiculo...");
-		Response<Veiculo> response = new Response<Veiculo>();
-		
 		Optional<Veiculo> veiculo = null;
 		veiculo = this.veiculoService.buscarPorPlaca(placa.replace("-", ""));
-		/*if(!veiculo.isPresent()) {
-			log.info("Veiculo não encontrado para o ID: {}", placa.replace("-", ""));
-			response.getErrors().add("Veículo não encontrada para a placa " + placa);
-			return ResponseEntity.badRequest().body(response);
-		}*/
 		
 		return ResponseEntity.status(HttpStatus.OK).body(veiculo);
 		
