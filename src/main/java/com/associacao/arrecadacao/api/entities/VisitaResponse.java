@@ -23,6 +23,7 @@ public class VisitaResponse implements Serializable {
 	private String  uf;
 	private String  placa;
 	private Integer posicao;
+	private Veiculo veiculo;
 	
 	public Long getId() {
 		return id;
@@ -144,5 +145,12 @@ public class VisitaResponse implements Serializable {
 		this.posicao = posicao;
 	}
 
+	public Veiculo getVeiculo() {
+		return veiculo;
+	}
+
+	public void setVeiculo(Veiculo veiculo) {
+		this.veiculo = veiculo;
+	}
 
 }

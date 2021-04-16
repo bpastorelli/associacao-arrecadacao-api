@@ -50,7 +50,7 @@ public class Veiculo implements Serializable {
 	}
 
 	public void setPlaca(String placa) {
-		this.placa = placa;
+		this.placa = placa.toUpperCase();
 	}
 
 	@Column(name = "marca", nullable = false)
@@ -59,7 +59,7 @@ public class Veiculo implements Serializable {
 	}
 
 	public void setMarca(String marca) {
-		this.marca = marca;
+		this.marca = marca.toUpperCase();
 	}
 
 	@Column(name = "modelo", nullable = false)
@@ -68,7 +68,7 @@ public class Veiculo implements Serializable {
 	}
 
 	public void setModelo(String modelo) {
-		this.modelo = modelo;
+		this.modelo = modelo.toUpperCase();
 	}
 
 	@Column(name = "cor", nullable = true)
@@ -77,7 +77,7 @@ public class Veiculo implements Serializable {
 	}
 
 	public void setCor(String cor) {
-		this.cor = cor;
+		this.cor = cor.toUpperCase();
 	}
 	
 	@Column(name = "ano", nullable = true)

@@ -8,6 +8,7 @@ public class VisitaDto {
 	private String cpf;
 	private Long residenciaId;
 	private String placa;
+	private VeiculoVisitaDto veiculo;
 	
 	@NotEmpty(message = "Campo RG é obrigatório!")
 	public String getRg() {
@@ -40,6 +41,14 @@ public class VisitaDto {
 
 	public void setPlaca(String placa) {
 		this.placa = placa;
+	}
+
+	public VeiculoVisitaDto getVeiculo() {
+		return veiculo;
+	}
+
+	public void setVeiculo(VeiculoVisitaDto veiculo) {
+		this.veiculo = veiculo;
 	}
 
 }

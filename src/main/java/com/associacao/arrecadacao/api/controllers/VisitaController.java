@@ -89,23 +89,33 @@ public class VisitaController {
 		
 		//Vincula o veiculo ao visitante
 		if(visitaDto.getPlaca() != null) {
+			
 			Optional<Veiculo> veiculo = veiculoService.buscarPorPlaca(visitaDto.getPlaca().replace("-", ""));
 			Optional<Visitante> visitante = visitanteService.buscarPorRg(visitaDto.getRg());
+		
+			List<VinculoVeiculo> vinculos = new ArrayList<VinculoVeiculo>();
 			
 			if(veiculo.isPresent() && visitante.isPresent()) {
-				if(!vinculoVeiculoService.buscarPorPlacaAndVisitanteId(veiculo.get().getPlaca().replace("-", ""), visitante.get().getId()).isPresent()) {
-					List<VinculoVeiculo> vinculos = new ArrayList<VinculoVeiculo>();
+				if(!vinculoVeiculoService.buscarPorPlacaAndVisitanteId(veiculo.get().getPlaca().replace("-", ""), visitante.get().getId()).isPresent()) {					
 					VinculoVeiculo vinculo = new VinculoVeiculo();
 					vinculo.setVeiculo(veiculo.get());
 					vinculo.setVisitante(visitante.get());
-					vinculos.add(vinculo);				
+					vinculos.add(vinculo);
 					
 					this.vinculoVeiculoService.persistir(vinculos);
 				}
+			}else if(!veiculo.isPresent() && visitante.isPresent()) {
+				
+				veiculo = veiculoService.persistir(this.converterVisitaDtoParaVeiculo(visitaDto, result));	
+				VinculoVeiculo vinculo = new VinculoVeiculo();
+				vinculo.setVeiculo(veiculo.get());
+				vinculo.setVisitante(visitante.get());
+				vinculos.add(vinculo);
+				
+				this.vinculoVeiculoService.persistir(vinculos);
 			}
 			
-		}
-		
+		}	
 		
 		if(result.hasErrors()) {
 			log.error("Erro validando dados para cadastro de visita(s): {}", result.getAllErrors());
@@ -229,10 +239,6 @@ public class VisitaController {
 			
 		}
 		
-		if(!veiculoService.buscarPorPlaca(visitaDto.getPlaca().replace("-", "")).isPresent()) {
-			result.addError(new ObjectError("visita", "Veiculo não cadastrado para a placa " + visitaDto.getPlaca()));
-		}
-		
 		//Valida se já existem visitas não encerradas.
 		if(!result.hasErrors()) {
 			
@@ -252,6 +258,19 @@ public class VisitaController {
 		}
 		
 		return visita;
+		
+	}
+	
+	public Veiculo converterVisitaDtoParaVeiculo(VisitaDto visitaDto, BindingResult result) {
+		
+		Veiculo veiculo = new Veiculo();
+		veiculo.setPlaca(visitaDto.getPlaca().replace("-", ""));
+		veiculo.setMarca(visitaDto.getVeiculo().getMarca());
+		veiculo.setModelo(visitaDto.getVeiculo().getModelo());
+		veiculo.setCor(visitaDto.getVeiculo().getCor());
+		veiculo.setAno(visitaDto.getVeiculo().getAno());
+		
+		return veiculo;
 		
 	}
 	
