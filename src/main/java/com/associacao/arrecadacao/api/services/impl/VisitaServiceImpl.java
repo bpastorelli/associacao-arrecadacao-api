@@ -24,7 +24,7 @@ public class VisitaServiceImpl implements VisitaService {
 	@Autowired
 	private VisitaRepository visitaRepository;
 	
-	@CachePut("visitante")
+	@CachePut("visita")
 	public Visita persistir(Visita visita) {
 		log.info("Persistindo visita...");
 		return visitaRepository.save(visita);
@@ -48,7 +48,7 @@ public class VisitaServiceImpl implements VisitaService {
 		return visitaRepository.findByPosicaoOrVisitanteRgOrVisitanteCpfOrVisitanteNomeContaining(posicao, rg, cpf, nome, pageRequest);
 	}
 
-	@Override
+	@Cacheable("visita")
 	public Page<Visita> buscarTodos(PageRequest pageRequest) {
 		log.info("Buscando visitas paginado...");
 		return visitaRepository.findAll(pageRequest);

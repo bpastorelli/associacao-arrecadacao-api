@@ -4,5 +4,25 @@
 		maxEntriesLocalHeap="200"
 		timeToLiveSeconds="60"
 		timeToIdleSeconds="60">
+	</cache>
+	<cache name="residencia" 
+		maxEntriesLocalHeap="200"
+		timeToLiveSeconds="60"
+		timeToIdleSeconds="60">
+	</cache>
+	<cache name="veiculo" 
+		maxEntriesLocalHeap="200"
+		timeToLiveSeconds="60"
+		timeToIdleSeconds="60">
+	</cache>
+	<cache name="morador" 
+		maxEntriesLocalHeap="200"
+		timeToLiveSeconds="60"
+		timeToIdleSeconds="60">
+	</cache>	
+	<cache name="visita" 
+		maxEntriesLocalHeap="200"
+		timeToLiveSeconds="60"
+		timeToIdleSeconds="60">
 	</cache>	
 </ehcache>

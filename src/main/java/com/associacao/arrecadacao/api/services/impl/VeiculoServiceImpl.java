@@ -5,6 +5,8 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -27,7 +29,7 @@ public class VeiculoServiceImpl implements VeiculoService {
 		return Optional.ofNullable(this.veiculoRepository.findById(id));
 	}
 
-	@Override
+	@CachePut("veiculo")
 	public Optional<Veiculo> persistir(Veiculo veiculo) {
 		log.info("Persistindo veiculo {}", veiculo);
 		return Optional.ofNullable(this.veiculoRepository.save(veiculo));
@@ -45,7 +47,7 @@ public class VeiculoServiceImpl implements VeiculoService {
 		return Optional.ofNullable(this.veiculoRepository.findByPlaca(placa));
 	}
 
-	@Override
+	@Cacheable("veiculo")
 	public Page<Veiculo> bucarTodos(PageRequest pageRequest) {
 		log.info("Buscando todos veiculos");
 		return this.veiculoRepository.findAll(pageRequest);
