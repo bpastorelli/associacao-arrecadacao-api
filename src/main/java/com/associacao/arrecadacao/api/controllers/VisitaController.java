@@ -88,7 +88,7 @@ public class VisitaController {
 		visita = this.converterVisitaDtoParaVisita(visitaDto, result);
 		
 		//Vincula o veiculo ao visitante
-		if(visitaDto.getPlaca() != null) {
+		if(visitaDto.getPlaca() != null && visitaDto.getPlaca() != "") {
 			
 			Optional<Veiculo> veiculo = veiculoService.buscarPorPlaca(visitaDto.getPlaca().replace("-", ""));
 			Optional<Visitante> visitante = visitanteService.buscarPorRg(visitaDto.getRg());
@@ -97,7 +97,9 @@ public class VisitaController {
 			
 			if(veiculo.isPresent() && visitante.isPresent()) {
 				if(!vinculoVeiculoService.buscarPorPlacaAndVisitanteId(veiculo.get().getPlaca().replace("-", ""), visitante.get().getId()).isPresent()) {					
+					
 					VinculoVeiculo vinculo = new VinculoVeiculo();
+					
 					vinculo.setVeiculo(veiculo.get());
 					vinculo.setVisitante(visitante.get());
 					vinculos.add(vinculo);
@@ -106,12 +108,21 @@ public class VisitaController {
 				}
 			}else if(!veiculo.isPresent() && visitante.isPresent()) {
 				
-				veiculo = veiculoService.persistir(this.converterVisitaDtoParaVeiculo(visitaDto, result));	
+				veiculo = this.converterVisitaDtoParaVeiculo(visitaDto, result);
+				
+				if(result.hasErrors()) {
+					log.error("Erro validando dados para cadastro de visita(s): {}", result.getAllErrors());
+					result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
+					return ResponseEntity.status(400).body(response.getErrors());
+				}
+				
+				veiculo = veiculoService.persistir(veiculo.get());
+				
 				VinculoVeiculo vinculo = new VinculoVeiculo();
 				vinculo.setVeiculo(veiculo.get());
 				vinculo.setVisitante(visitante.get());
 				vinculos.add(vinculo);
-				
+					
 				this.vinculoVeiculoService.persistir(vinculos);
 			}
 			
@@ -261,16 +272,27 @@ public class VisitaController {
 		
 	}
 	
-	public Veiculo converterVisitaDtoParaVeiculo(VisitaDto visitaDto, BindingResult result) {
+	public Optional<Veiculo> converterVisitaDtoParaVeiculo(VisitaDto visitaDto, BindingResult result) {
+		
+		if(visitaDto.getVeiculo().getMarca().length() < 2)
+			result.addError(new ObjectError("veiculo", "Campo Marca é obrigatório"));
+		
+		if(visitaDto.getVeiculo().getModelo().length() < 2)
+			result.addError(new ObjectError("veiculo","Campo Modelo é obrigatório"));
+		
+		if(visitaDto.getVeiculo().getCor().length() < 2)
+			result.addError(new ObjectError("veiculo","Campo Cor é obrigatório"));
 		
 		Veiculo veiculo = new Veiculo();
-		veiculo.setPlaca(visitaDto.getPlaca().replace("-", ""));
-		veiculo.setMarca(visitaDto.getVeiculo().getMarca());
-		veiculo.setModelo(visitaDto.getVeiculo().getModelo());
-		veiculo.setCor(visitaDto.getVeiculo().getCor());
-		veiculo.setAno(visitaDto.getVeiculo().getAno());
+		if(!result.hasErrors()) {			
+			veiculo.setPlaca(visitaDto.getPlaca().replace("-", ""));
+			veiculo.setMarca(visitaDto.getVeiculo().getMarca());
+			veiculo.setModelo(visitaDto.getVeiculo().getModelo());
+			veiculo.setCor(visitaDto.getVeiculo().getCor());
+			veiculo.setAno(visitaDto.getVeiculo().getAno());
+		}		
 		
-		return veiculo;
+		return Optional.ofNullable(veiculo);
 		
 	}
 	
