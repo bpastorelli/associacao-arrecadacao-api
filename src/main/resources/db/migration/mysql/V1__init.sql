@@ -95,6 +95,29 @@ CREATE TABLE `vinculo_veiculo` (
 	`posicao` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `acessos` (
+  `id` bigint(20) NOT NULL,
+  `id_usuario` bigint(20) NOT NULL,
+  `id_modulo` bigint(20) NOT NULL,
+  `id_funcionalidade` bigint(20) NOT NULL,
+  `data_cadastro` datetime NOT NULL,
+  `posicao` int(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `modulos` (
+	`id` bigint(20) NOT NULL,
+	`descricao` varchar(30) NOT NULL,
+	`path_modulo` varchar(40) NOT NULL,
+	`posicao` bigint(10) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8; 
+
+CREATE TABEL `funcionalidades` (
+	`id` bigint(20) NOT NULL,
+	`descricao` varchar(30)	NOT NULL,
+	`path_funcionalidade` varchar(40) NOT NULL,
+	`posicao` bigint(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 --
 -- Indexes for table `residencia`
 --
@@ -142,7 +165,26 @@ ALTER TABLE `vinculo_residencia`
 ALTER TABLE `vinculo_veiculo`
   ADD PRIMARY KEY (`id`),
   ADD KEY `FK46i4k5vl8wah7feutye9kbpi4` (`visitante_id`, `veiculo_id`);
-  
+
+--
+-- Indexes for table `acesso`
+-- 
+ ALTER TABLE `acesso`
+ 	ADD PRIMARY KEY (`id`),
+ 	ADD KEY `FK46i4k5vl8wah7feutye9kbpi5` (`id_usuario`, `id_modulo`, `id_funcionalidade`);
+
+ --
+-- Indexes for table `modulo`
+--
+ALTER TABLE `modulo`
+  ADD PRIMARY KEY (`id`);
+ 
+ --
+-- Indexes for table `funcionalidade`
+--
+ALTER TABLE `funcionalidade`
+  ADD PRIMARY KEY (`id`);
+ 
  --
 -- Indexes for table `visita`
 --
@@ -225,3 +267,12 @@ ALTER TABLE `vinculo_veiculo`
   
  ALTER TABLE `vinculo_veiculo`
   ADD CONSTRAINT `FK46i4k5vl8wah7feutye9kbpi61` FOREIGN KEY (`visitante_id`) REFERENCES `visitante` (`id`);
+  
+  ALTER TABLE `acesso`
+  ADD CONSTRAINT `FK46i4k5vl8wah7feutye9kbpi62` FOREIGN KEY (`id_usuario`) REFERENCES `morador` (`id`);
+  
+ ALTER TABLE `acesso`
+  ADD CONSTRAINT `FK46i4k5vl8wah7feutye9kbpi63` FOREIGN KEY (`id_modulo`) REFERENCES `modulo` (`id`);
+  
+ ALTER TABLE `acesso`
+  ADD CONSTRAINT `FK46i4k5vl8wah7feutye9kbpi64` FOREIGN KEY (`id_funcionalidade`) REFERENCES `funcionalidade` (`id`);
