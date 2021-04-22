@@ -6,3 +6,18 @@ VALUES (NULL, 'Bruno Dias Pastorelli', 'bruno@gmail.com', '35979769056', '342729
 
 INSERT INTO `vinculo_residencia` (`id`,`morador_id`, `residencia_id`, `data_vinculo`)
 VALUES (NULL, (SELECT `id` FROM `morador` WHERE `cpf`='35979769056'), (SELECT `id` FROM `residencia` WHERE `id`=1), CURRENT_DATE());
+
+INSERT INTO `modulo` (`id`, `descricao`, `path_modulo`, `posicao`)
+VALUES (NULL, 'Residencia', '/residencia', 1);
+
+INSERT INTO `modulo` (`id`, `descricao`, `path_modulo`, `posicao`)
+VALUES (NULL, 'Morador', '/morador', 1);
+
+INSERT INTO `funcionalidade` (`id`, `descricao`, `path_funcionalidade`, `posicao`)
+VALUES (NULL, 'Lista Residencias', '/residencias', 1);
+
+INSERT INTO `funcionalidade` (`id`, `descricao`, `path_funcionalidade`, `posicao`)
+VALUES (NULL, 'Lista Moradores', '/moradores', 1);
+
+INSERT INTO `acesso` (`id`, `id_usuario`,`id_modulo`, `id_funcionalidade`, `data_cadastro`, `posicao`)
+VALUES (NULL, 1, 1, 1, CURRENT_DATE(), 1);

@@ -95,7 +95,7 @@ CREATE TABLE `vinculo_veiculo` (
 	`posicao` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `acessos` (
+CREATE TABLE `acesso` (
   `id` bigint(20) NOT NULL,
   `id_usuario` bigint(20) NOT NULL,
   `id_modulo` bigint(20) NOT NULL,
@@ -104,14 +104,14 @@ CREATE TABLE `acessos` (
   `posicao` int(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `modulos` (
+CREATE TABLE `modulo` (
 	`id` bigint(20) NOT NULL,
 	`descricao` varchar(30) NOT NULL,
 	`path_modulo` varchar(40) NOT NULL,
 	`posicao` bigint(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8; 
 
-CREATE TABEL `funcionalidades` (
+CREATE TABLE `funcionalidade` (
 	`id` bigint(20) NOT NULL,
 	`descricao` varchar(30)	NOT NULL,
 	`path_funcionalidade` varchar(40) NOT NULL,
@@ -232,6 +232,24 @@ ALTER TABLE `vinculo_residencia`
 -- AUTO_INCREMENT for table `vinculo_veiculo`
 --
 ALTER TABLE `vinculo_veiculo`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+  
+  --
+-- AUTO_INCREMENT for table `acesso`
+--
+ALTER TABLE `acesso`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+  
+ --
+-- AUTO_INCREMENT for table `modulo`
+--
+ALTER TABLE `modulo`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+  
+--
+-- AUTO_INCREMENT for table `funcionalidade`
+--
+ALTER TABLE `funcionalidade`
   MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
   
 --
