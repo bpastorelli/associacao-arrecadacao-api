@@ -3,6 +3,8 @@ package com.associacao.arrecadacao.api.access.repositories;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,5 +18,7 @@ public interface FuncionalidadeRepository extends JpaRepository<Funcionalidade, 
 	Optional<Funcionalidade> findById(Long id);
 	
 	List<Funcionalidade> findByDescricao(String descricao);
+	
+	Page<Funcionalidade> findByDescricao(String descricao, Pageable pageRequest);
 
 }

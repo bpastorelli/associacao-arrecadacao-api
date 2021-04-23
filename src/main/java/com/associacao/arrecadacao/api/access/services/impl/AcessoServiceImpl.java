@@ -13,12 +13,11 @@ import org.springframework.stereotype.Service;
 import com.associacao.arrecadacao.api.access.entities.Acesso;
 import com.associacao.arrecadacao.api.access.repositories.AcessoRepository;
 import com.associacao.arrecadacao.api.access.services.AcessoService;
-import com.associacao.arrecadacao.api.services.impl.LancamentoServiceImpl;
 
 @Service
 public class AcessoServiceImpl implements AcessoService {
 	
-	private static final Logger log = LoggerFactory.getLogger(LancamentoServiceImpl.class);
+	private static final Logger log = LoggerFactory.getLogger(AcessoServiceImpl.class);
 	
 	@Autowired
 	private AcessoRepository acessoRepository;
