@@ -18,6 +18,8 @@ public interface ModuloRepository extends JpaRepository<Modulo, Long> {
 	
 	Optional<Modulo> findByDescricao(String descricao);
 	
+	Page<Modulo> findByDescricao(String descricao, Pageable pageable);
+	
 	Page<Modulo> findAll(Pageable pageable);
 
 }
