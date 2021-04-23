@@ -11,17 +11,17 @@ import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "modulo")
-public class Modulo implements Serializable {
+@Table(name = "funcionalidade")
+public class Funcionalidade implements Serializable {
 	
 	private static final long serialVersionUID = 6524560251526772839L;
 	
 	private Long id;
 	private String descricao;
-	private String pathModulo;
+	private String pathFuncionalidade;
 	private Long posicao;
 	
-	public Modulo() {
+	public Funcionalidade() {
 		
 		
 	}
@@ -45,13 +45,13 @@ public class Modulo implements Serializable {
 		this.descricao = descricao;
 	}
 
-	@Column(name = "path_modulo", nullable = false)
-	public String getPathModulo() {
-		return pathModulo;
+	@Column(name = "path_funcionalidade", nullable = false)
+	public String getPathFuncionalidade() {
+		return pathFuncionalidade;
 	}
 
-	public void setPathModulo(String pathModulo) {
-		this.pathModulo = pathModulo;
+	public void setPathFuncionalidade(String pathFuncionalidade) {
+		this.pathFuncionalidade = pathFuncionalidade;
 	}
 
 	@Column(name = "posicao", nullable = false)
