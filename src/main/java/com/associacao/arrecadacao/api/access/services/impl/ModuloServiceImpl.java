@@ -36,13 +36,13 @@ public class ModuloServiceImpl implements ModuloService {
 
 	@Override
 	public Page<Modulo> buscarPorDescricao(String descricao, PageRequest pageRequest) {
-		log.info("Bucando módulo por descrição", descricao);
+		log.info("Buscando módulo por descrição", descricao);
 		return this.moduloRepository.findByDescricao(descricao, pageRequest);
 	}
 
 	@Override
 	public Optional<Modulo> buscarPorId(Long id) {
-		log.info("Bucando módulo por id", id);
+		log.info("Buscando módulo por id", id);
 		return this.moduloRepository.findById(id);
 	}
 	

@@ -19,6 +19,7 @@ public class Acesso implements Serializable {
 	
 	private Long id;
 	private Long idUsuario;
+	private Long idModulo;
 	private Long idFuncionalidade;
 	private Date dataCadastro;
 	private Long posicao;
@@ -46,6 +47,15 @@ public class Acesso implements Serializable {
 		this.idUsuario = id_usuario;
 	}
 
+    @Column(name = "id_modulo", nullable = false)
+	public Long getIdModulo() {
+		return idModulo;
+	}
+
+	public void setIdModulo(Long idModulo) {
+		this.idModulo = idModulo;
+	}
+	
 	@Column(name = "id_funcionalidade", nullable = false)
 	public Long getIdFuncionalidade() {
 		return idFuncionalidade;
@@ -80,4 +90,5 @@ public class Acesso implements Serializable {
         dataCadastro = atual;
         posicao = status;
     }
+
 }

@@ -25,7 +25,15 @@ public interface AcessoService {
 	 * @param pageRequest
 	 * @return Page<Acesso>
 	 */
-	Page<Acesso> buscarPorUsuarioId(Long usuarioId, PageRequest pageRequest);
+	Page<List<Acesso>> buscarPorUsuarioId(Long usuarioId, PageRequest pageRequest);
+	
+	/**
+	 * Busca todos os acessos por usuarioId
+	 * 
+	 * @param pageRequest
+	 * @return Page<Acesso>
+	 */
+	Page<List<Acesso>> buscarTodos(PageRequest pageRequest);
 	
 	/**
 	 * Busca tosos os acessos por usuarioId
