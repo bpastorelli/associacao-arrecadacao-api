@@ -7,6 +7,7 @@ public class CadastroAcessoDto {
 	private Long idUsuario;
 	private Long idModulo;
 	private Long idFuncionalidade;
+	private boolean acesso;
 	
 	public CadastroAcessoDto() {
 		
@@ -37,6 +38,14 @@ public class CadastroAcessoDto {
 
 	public void setIdFuncionalidade(Long idFuncionalidade) {
 		this.idFuncionalidade = idFuncionalidade;
+	}
+	
+	public boolean isAcesso() {
+		return acesso;
+	}
+
+	public void setAcesso(boolean acesso) {
+		this.acesso = acesso;
 	}
 
 }

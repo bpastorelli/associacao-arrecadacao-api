@@ -29,7 +29,7 @@ public class AcessoServiceImpl implements AcessoService {
 	}
 
 	@Override
-	public Page<List<Acesso>> buscarPorUsuarioId(Long usuarioId, PageRequest pageRequest) {
+	public Page<Acesso> buscarPorUsuarioId(Long usuarioId, PageRequest pageRequest) {
 		log.info("Buscando acessos por usuarioId", usuarioId);
 		return this.acessoRepository.findByIdUsuario(usuarioId, pageRequest);
 	}
@@ -43,13 +43,20 @@ public class AcessoServiceImpl implements AcessoService {
 	@Override
 	public Optional<Acesso> buscarPorId(Long id) {
 		log.info("Buscando acesso por id", id);
-		return this.buscarPorId(id);
+		return this.acessoRepository.findById(id);
 	}
 
 	@Override
-	public Page<List<Acesso>> buscarTodos(PageRequest pageRequest) {
+	public Page<Acesso> buscarTodos(PageRequest pageRequest) {
 		log.info("Buscando todos os acessos");
-		return this.buscarTodos(pageRequest);
+		return this.acessoRepository.findAll(pageRequest);
+	}
+
+	@Override
+	public Optional<Acesso> buscarPorIdUsuarioAndIdModuloAndIdFuncionalidade(Long idUsuario, Long idModulo,
+			Long idFuncionalidade) {
+		log.info("Buscando acesso por id usuario, id módulo e id funcionalidade");
+		return this.acessoRepository.findByIdUsuarioAndIdModuloAndIdFuncionalidade(idUsuario, idModulo, idFuncionalidade);
 	}
 
 }

@@ -11,13 +11,19 @@ INSERT INTO `modulo` (`id`, `descricao`, `path_modulo`, `posicao`)
 VALUES (NULL, 'Residencia', '/residencia', 1);
 
 INSERT INTO `modulo` (`id`, `descricao`, `path_modulo`, `posicao`)
-VALUES (NULL, 'Morador', '/morador', 1);
+VALUES (NULL, 'Moradores', '/moradores', 1);
+
+INSERT INTO `modulo` (`id`, `descricao`, `path_modulo`, `posicao`)
+VALUES (NULL, 'Residencias', '/residencias', 1);
 
 INSERT INTO `funcionalidade` (`id`, `descricao`, `path_funcionalidade`, `posicao`)
-VALUES (NULL, 'Lista Residencias', '/residencias', 1);
+VALUES (NULL, 'Residencias', '/residencias', 1);
 
 INSERT INTO `funcionalidade` (`id`, `descricao`, `path_funcionalidade`, `posicao`)
-VALUES (NULL, 'Lista Moradores', '/moradores', 1);
+VALUES (NULL, 'Moradores', '/moradores', 1);
 
-INSERT INTO `acesso` (`id`, `id_usuario`,`id_modulo`, `id_funcionalidade`, `data_cadastro`, `posicao`)
-VALUES (NULL, 1, 1, 1, CURRENT_DATE(), 1);
+INSERT INTO `funcionalidade` (`id`, `descricao`, `path_funcionalidade`, `posicao`)
+VALUES (NULL, 'Visitas', '/visitas', 1);
+
+INSERT INTO `acesso` (`id`, `id_usuario`,`id_modulo`, `id_funcionalidade`, `acesso`, `data_cadastro`, `posicao`)
+VALUES (NULL, 1, 1, 1, 1, CURRENT_DATE(), 1);

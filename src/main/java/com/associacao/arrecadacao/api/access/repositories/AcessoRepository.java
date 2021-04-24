@@ -17,8 +17,10 @@ public interface AcessoRepository extends JpaRepository<Acesso, Long> {
 	
 	List<Acesso> findByIdUsuario(Long idUsuario);
 	
-	Page<List<Acesso>> findByIdUsuario(Long idUsuario, Pageable pageable);
+	Page<Acesso> findByIdUsuario(Long idUsuario, Pageable pageable);
 	
 	Optional<Acesso> findById(Long id);
+	
+	Optional<Acesso> findByIdUsuarioAndIdModuloAndIdFuncionalidade(Long idUsuario, Long idModulo, Long idFuncionalidade);
 
 }

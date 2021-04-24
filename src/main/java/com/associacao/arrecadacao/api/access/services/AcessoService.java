@@ -25,7 +25,7 @@ public interface AcessoService {
 	 * @param pageRequest
 	 * @return Page<Acesso>
 	 */
-	Page<List<Acesso>> buscarPorUsuarioId(Long usuarioId, PageRequest pageRequest);
+	Page<Acesso> buscarPorUsuarioId(Long usuarioId, PageRequest pageRequest);
 	
 	/**
 	 * Busca todos os acessos por usuarioId
@@ -33,7 +33,7 @@ public interface AcessoService {
 	 * @param pageRequest
 	 * @return Page<Acesso>
 	 */
-	Page<List<Acesso>> buscarTodos(PageRequest pageRequest);
+	Page<Acesso> buscarTodos(PageRequest pageRequest);
 	
 	/**
 	 * Busca tosos os acessos por usuarioId
@@ -50,6 +50,16 @@ public interface AcessoService {
 	 * @return Optional<Acesso>
 	 */
 	Optional<Acesso> buscarPorId(Long id);
+	
+	/**
+	 * Busca um acesso por id Usuario, id Modulo e id Funcionalidade
+	 * 
+	 * @param idUsuario
+	 * @param idModulo
+	 * @param idFuncionalidade
+	 * @return Optional<Acesso>
+	 */
+	Optional<Acesso> buscarPorIdUsuarioAndIdModuloAndIdFuncionalidade(Long idUsuario, Long idModulo, Long idFuncionalidade);
 	
 
 }

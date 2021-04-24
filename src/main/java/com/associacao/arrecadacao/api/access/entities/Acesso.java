@@ -21,6 +21,7 @@ public class Acesso implements Serializable {
 	private Long idUsuario;
 	private Long idModulo;
 	private Long idFuncionalidade;
+	private boolean acesso;
 	private Date dataCadastro;
 	private Long posicao;
 	
@@ -63,6 +64,15 @@ public class Acesso implements Serializable {
 
 	public void setIdFuncionalidade(Long id_funcionalidade) {
 		this.idFuncionalidade = id_funcionalidade;
+	}
+	
+    @Column(name = "acesso", nullable = false)
+	public boolean isAcesso() {
+		return acesso;
+	}
+
+	public void setAcesso(boolean acesso) {
+		this.acesso = acesso;
 	}
 
 	@Column(name = "data_cadastro", nullable = false)

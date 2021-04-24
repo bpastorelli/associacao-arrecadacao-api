@@ -73,7 +73,7 @@ public class AcessoController {
 		acessos = this.acessoService.persistir(acessos);
 		
 		response.setData(acessos);
-		return ResponseEntity.status(HttpStatus.CREATED).body(response);
+		return ResponseEntity.status(HttpStatus.CREATED).body(response.getData());
 		
 	}
 	
@@ -88,7 +88,7 @@ public class AcessoController {
 		log.info("Buscando acessos..");
 		
 		PageRequest pageRequest = new PageRequest(pag, size, Direction.valueOf(dir), ord);
-		Page<List<Acesso>> acessos = null;
+		Page<Acesso> acessos = null;
 		
 		if(idUsuario != 0 && idUsuario != null)
 			acessos =  acessoService.buscarPorUsuarioId(idUsuario, pageRequest);
@@ -122,11 +122,16 @@ public class AcessoController {
 				result.addError(new ObjectError("funcionalidade", "Funcionalidade inexistente para o código " + d.getIdFuncionalidade()));
 			}
 			
+			if(this.acessoService.buscarPorIdUsuarioAndIdModuloAndIdFuncionalidade(d.getIdUsuario(), d.getIdModulo(), d.getIdFuncionalidade()).isPresent()) {
+				result.addError(new ObjectError("acesso", "Funcionalidade e módulo já existente para este usuário"));
+			}
+			
 			if(!result.hasErrors()) {
 				Acesso acesso = new Acesso();
 				acesso.setIdUsuario(d.getIdUsuario());	
 				acesso.setIdModulo(d.getIdModulo());
 				acesso.setIdFuncionalidade(d.getIdFuncionalidade());
+				acesso.setAcesso(d.isAcesso());
 				listAcesso.add(acesso);
 			}
 			
@@ -137,5 +142,4 @@ public class AcessoController {
 	}
 	
 	
-
 }
