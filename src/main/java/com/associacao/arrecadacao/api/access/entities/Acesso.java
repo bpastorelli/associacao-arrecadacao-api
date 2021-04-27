@@ -99,6 +99,7 @@ public class Acesso implements Serializable {
         final long status = 1;
         dataCadastro = atual;
         posicao = status;
+        acesso = false;
     }
 
 }
