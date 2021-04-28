@@ -2,8 +2,9 @@ package com.associacao.arrecadacao.api.access.controllers;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-
+import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
@@ -107,16 +108,16 @@ public class AcessoController {
 		
 	}
 	
-	@PutMapping(value = "/id/{id}")
+	@PutMapping(value = "/idUsuario/{idUsuario}")
 	public ResponseEntity<?> atualizar(	
-									@PathVariable("id") Long id,
-									@Valid @RequestBody AtualizaAcessoDto acessoRequestBody,
+									@PathVariable("idUsuario") Long idUsuario,
+									@Valid @RequestBody List<AtualizaAcessoDto> acessoRequestBody,
 									BindingResult result) throws NoSuchAlgorithmException {
 		
 		log.info("Aatualização de acessos: {}", acessoRequestBody.toString());
 		Response<List<Acesso>> response = new Response<List<Acesso>>();
 		
-		List<Acesso> acessos = this.acessoService.buscarPorUsuarioId(id);
+		List<Acesso> acessos = this.acessoService.buscarPorUsuarioId(idUsuario);
 		
 		if(result.hasErrors()) {
 			log.error("Erro validando dados para cadastro de acessos: {}", result.getAllErrors());
@@ -124,6 +125,7 @@ public class AcessoController {
 			return ResponseEntity.status(400).body(response.getErrors());
 		}
 		
+		acessos = atualizaAcesso(acessos, acessoRequestBody, idUsuario);	
 		acessos = this.acessoService.persistir(acessos);
 		
 		response.setData(acessos);
@@ -168,5 +170,46 @@ public class AcessoController {
 		
 	}
 	
+	public List<Acesso> atualizaAcesso(List<Acesso> acessos, List<AtualizaAcessoDto> acessosDto, Long idUsuario) {
+		
+		List<Acesso> listAcessos = new ArrayList<Acesso>();
+		
+		acessosDto.forEach(a -> {
+			
+			Acesso acesso = new Acesso();
+			
+			List<Acesso> result = acessos.stream()
+						.filter(item -> item.getIdFuncionalidade() == a.getIdFuncionalidade())
+						.collect(Collectors.toList());
+			
+			if(result.size() > 0) {	
+			
+				acesso.setId(result.get(0).getId());
+				acesso.setIdUsuario(result.get(0).getIdUsuario());
+				acesso.setIdFuncionalidade(result.get(0).getIdFuncionalidade());
+				acesso.setIdModulo(result.get(0).getIdModulo());
+				acesso.setDataCadastro(result.get(0).getDataCadastro());
+				acesso.setPosicao(result.get(0).getPosicao());
+				acesso.setAcesso(a.isAcesso());
+				
+				listAcessos.add(acesso);
+				
+			}else {
+				
+				acesso.setIdUsuario(idUsuario);
+				acesso.setIdFuncionalidade(a.getIdFuncionalidade());
+				acesso.setIdModulo(a.getIdModulo());
+				acesso.setAcesso(a.isAcesso());
+				acesso.setDataCadastro(new Date());
+				
+				listAcessos.add(acesso);
+				
+			}			
+			
+		});
+		
+		return listAcessos;
+		
+	}
 	
 }

@@ -4,6 +4,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 public class AtualizaAcessoDto {
 	
+	
 	private Long idModulo;
 	private Long idFuncionalidade;
 	private boolean acesso;
