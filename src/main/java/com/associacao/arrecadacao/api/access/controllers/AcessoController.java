@@ -66,7 +66,7 @@ public class AcessoController {
 		log.info("Cadastro de acessos: {}", cadastroAcessoDto.toString());
 		Response<List<Acesso>> response = new Response<List<Acesso>>();
 		
-		List<Acesso> acessos = validarDados(cadastroAcessoDto, result);
+		List<Acesso> acessos = validarDadosPost(cadastroAcessoDto, result);
 		
 		if(result.hasErrors()) {
 			log.error("Erro validando dados para cadastro de acessos: {}", result.getAllErrors());
@@ -118,22 +118,22 @@ public class AcessoController {
 		Response<List<Acesso>> response = new Response<List<Acesso>>();
 		
 		List<Acesso> acessos = this.acessoService.buscarPorUsuarioId(idUsuario);
+		acessos = validarDadosPut(acessoRequestBody, acessos, idUsuario, result);
 		
 		if(result.hasErrors()) {
 			log.error("Erro validando dados para cadastro de acessos: {}", result.getAllErrors());
 			result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
 			return ResponseEntity.status(400).body(response.getErrors());
 		}
-		
-		acessos = atualizaAcesso(acessos, acessoRequestBody, idUsuario);	
+			
 		acessos = this.acessoService.persistir(acessos);
 		
 		response.setData(acessos);
-		return ResponseEntity.status(HttpStatus.CREATED).body(response.getData());
+		return ResponseEntity.status(HttpStatus.OK).body(response.getData());
 		
 	}
 	
-	public List<Acesso> validarDados(List<CadastroAcessoDto> listDto, BindingResult result) {
+	public List<Acesso> validarDadosPost(List<CadastroAcessoDto> listDto, BindingResult result) {
 		
 		List<Acesso> listAcesso = new ArrayList<Acesso>();
 		
@@ -167,6 +167,35 @@ public class AcessoController {
 		});
 		
 		return listAcesso;
+		
+	}
+	
+	public List<Acesso> validarDadosPut(List<AtualizaAcessoDto> listDto, List<Acesso> listAcessos, Long idUsuario, BindingResult result) {
+		
+		List<Acesso> listAcessosPut = new ArrayList<Acesso>();
+		
+		listDto.forEach(d -> {
+			
+			if(!this.moradorService.buscarPorId(idUsuario).isPresent()) {
+				result.addError(new ObjectError("morador", "Usuário inexistente para o código " + idUsuario));
+			}
+			
+			if(!this.moduloService.buscarPorId(d.getIdModulo()).isPresent()) {
+				result.addError(new ObjectError("módulo", "Módulo inexistente para o código " + d.getIdModulo()));
+			}
+			
+			if(!this.funcionalidadeService.buscarPorId(d.getIdFuncionalidade()).isPresent()) {
+				result.addError(new ObjectError("funcionalidade", "Funcionalidade inexistente para o código " + d.getIdFuncionalidade()));
+			}
+			
+		});
+		
+		//Se não houverem erros monta a lista de persistencia
+		if(!result.hasErrors()) {
+			listAcessosPut = this.atualizaAcesso(listAcessos, listDto, idUsuario);
+		}
+		
+		return listAcessosPut;
 		
 	}
 	
