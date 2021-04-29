@@ -95,11 +95,20 @@ CREATE TABLE `vinculo_veiculo` (
 	`posicao` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `acesso` (
+CREATE TABLE `acesso_funcionalidade` (
   `id` bigint(20) NOT NULL,
   `id_usuario` bigint(20) NOT NULL,
   `id_modulo` bigint(20) NOT NULL,
   `id_funcionalidade` bigint(20) NOT NULL,
+  `acesso` tinyint(1) NOT NULL,
+  `data_cadastro` datetime NOT NULL,
+  `posicao` int(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `acesso_modulo` (
+  `id` bigint(20) NOT NULL,
+  `id_usuario` bigint(20) NOT NULL,
+  `id_modulo` bigint(20) NOT NULL,
   `acesso` tinyint(1) NOT NULL,
   `data_cadastro` datetime NOT NULL,
   `posicao` int(1) NOT NULL
@@ -168,11 +177,18 @@ ALTER TABLE `vinculo_veiculo`
   ADD KEY `FK46i4k5vl8wah7feutye9kbpi4` (`visitante_id`, `veiculo_id`);
 
 --
--- Indexes for table `acesso`
+-- Indexes for table `acesso_funcionalidade`
 -- 
- ALTER TABLE `acesso`
+ ALTER TABLE `acesso_funcionalidade`
  	ADD PRIMARY KEY (`id`),
  	ADD KEY `FK46i4k5vl8wah7feutye9kbpi5` (`id_usuario`, `id_modulo`, `id_funcionalidade`);
+ 	
+ --
+-- Indexes for table `acesso_modulo`
+-- 
+ ALTER TABLE `acesso_modulo`
+ 	ADD PRIMARY KEY (`id`),
+ 	ADD KEY `FK46i4k5vl8wah7feutye9kbpi6` (`id_usuario`, `id_modulo`);
 
  --
 -- Indexes for table `modulo`
@@ -235,10 +251,16 @@ ALTER TABLE `vinculo_residencia`
 ALTER TABLE `vinculo_veiculo`
   MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
   
-  --
--- AUTO_INCREMENT for table `acesso`
 --
-ALTER TABLE `acesso`
+-- AUTO_INCREMENT for table `acesso_funcionalidade`
+--
+ALTER TABLE `acesso_funcionalidade`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+  
+--
+-- AUTO_INCREMENT for table `acesso_modulo`
+--
+ALTER TABLE `acesso_modulo`
   MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
   
  --
@@ -287,11 +309,20 @@ ALTER TABLE `vinculo_veiculo`
  ALTER TABLE `vinculo_veiculo`
   ADD CONSTRAINT `FK46i4k5vl8wah7feutye9kbpi61` FOREIGN KEY (`visitante_id`) REFERENCES `visitante` (`id`);
   
-  ALTER TABLE `acesso`
+  ALTER TABLE `acesso_funcionalidade`
   ADD CONSTRAINT `FK46i4k5vl8wah7feutye9kbpi62` FOREIGN KEY (`id_usuario`) REFERENCES `morador` (`id`);
   
- ALTER TABLE `acesso`
+ ALTER TABLE `acesso_funcionalidade`
   ADD CONSTRAINT `FK46i4k5vl8wah7feutye9kbpi63` FOREIGN KEY (`id_modulo`) REFERENCES `modulo` (`id`);
   
- ALTER TABLE `acesso`
+ ALTER TABLE `acesso_funcionalidade`
   ADD CONSTRAINT `FK46i4k5vl8wah7feutye9kbpi64` FOREIGN KEY (`id_funcionalidade`) REFERENCES `funcionalidade` (`id`);
+  
+ ALTER TABLE `acesso_funcionalidade`
+  ADD CONSTRAINT `FK46i4k5vl8wah7feutye9kbpi65` FOREIGN KEY (`id_usuario`) REFERENCES `morador` (`id`);
+  
+ ALTER TABLE `acesso_modulo`
+ ADD CONSTRAINT `FK46i4k5vl8wah7feutye9kbpi66` FOREIGN KEY (`id_modulo`) REFERENCES `modulo` (`id`);
+  
+ ALTER TABLE `acesso_modulo`
+  ADD CONSTRAINT `FK46i4k5vl8wah7feutye9kbpi67` FOREIGN KEY (`id_usuario`) REFERENCES `morador` (`id`);

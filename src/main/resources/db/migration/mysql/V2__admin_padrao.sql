@@ -8,22 +8,25 @@ INSERT INTO `vinculo_residencia` (`id`,`morador_id`, `residencia_id`, `data_vinc
 VALUES (NULL, (SELECT `id` FROM `morador` WHERE `cpf`='35979769056'), (SELECT `id` FROM `residencia` WHERE `id`=1), CURRENT_DATE());
 
 INSERT INTO `modulo` (`id`, `descricao`, `path_modulo`, `posicao`)
-VALUES (NULL, 'Residencia', '/residencia', 1);
+VALUES (NULL, 'Residencia', '\residencia', 1);
 
 INSERT INTO `modulo` (`id`, `descricao`, `path_modulo`, `posicao`)
-VALUES (NULL, 'Moradores', '/moradores', 1);
+VALUES (NULL, 'Moradores', '\moradores', 1);
 
 INSERT INTO `modulo` (`id`, `descricao`, `path_modulo`, `posicao`)
-VALUES (NULL, 'Residencias', '/residencias', 1);
+VALUES (NULL, 'Residencias', '\residencias', 1);
 
 INSERT INTO `funcionalidade` (`id`, `descricao`, `path_funcionalidade`, `posicao`)
-VALUES (NULL, 'Residencias', '/residencias', 1);
+VALUES (NULL, 'Residencias', '\residencias', 1);
 
 INSERT INTO `funcionalidade` (`id`, `descricao`, `path_funcionalidade`, `posicao`)
-VALUES (NULL, 'Moradores', '/moradores', 1);
+VALUES (NULL, 'Moradores', '\moradores', 1);
 
 INSERT INTO `funcionalidade` (`id`, `descricao`, `path_funcionalidade`, `posicao`)
-VALUES (NULL, 'Visitas', '/visitas', 1);
+VALUES (NULL, 'Visitas', '\visitas', 1);
 
-INSERT INTO `acesso` (`id`, `id_usuario`,`id_modulo`, `id_funcionalidade`, `acesso`, `data_cadastro`, `posicao`)
-VALUES (NULL, 1, 1, 1, 1, CURRENT_DATE(), 1);
+INSERT INTO `acesso_modulo` (`id`, `id_usuario`,`id_modulo`, `acesso`, `data_cadastro`, `posicao`)
+VALUES (NULL, 1, 1, true, CURRENT_DATE(), 1);
+
+INSERT INTO `acesso_funcionalidade` (`id`, `id_usuario`,`id_modulo`, `id_funcionalidade`, `acesso`, `data_cadastro`, `posicao`)
+VALUES (NULL, 1, 1, 1, true, CURRENT_DATE(), 1);

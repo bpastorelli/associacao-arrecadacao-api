@@ -33,6 +33,7 @@ import com.associacao.arrecadacao.api.access.entities.AcessoFuncionalidade;
 import com.associacao.arrecadacao.api.access.services.AcessoFuncionalidadeService;
 import com.associacao.arrecadacao.api.access.services.FuncionalidadeService;
 import com.associacao.arrecadacao.api.access.services.ModuloService;
+import com.associacao.arrecadacao.api.dtos.AtualizaMoradorDto;
 import com.associacao.arrecadacao.api.response.Response;
 import com.associacao.arrecadacao.api.services.MoradorService;
 
@@ -81,7 +82,7 @@ public class AcessoFuncionalidadeController {
 		
 	}
 	
-	@GetMapping("/filtro")
+	@GetMapping(value = "/filtro")
 	public ResponseEntity<?> buscarAcessos(			
 			@RequestParam(value = "idUsuario", defaultValue = "0") Long idUsuario,
 			@RequestParam(value = "pag", defaultValue = "0") int pag,
@@ -108,9 +109,10 @@ public class AcessoFuncionalidadeController {
 		
 	}
 	
-	@GetMapping()
+	@GetMapping(value = "/idUsuario/{idUsuario}")
 	public ResponseEntity<?> buscarAcessosPorUsuario(			
-			@RequestParam(value = "idUsuario", defaultValue = "0") Long idUsuario) throws NoSuchAlgorithmException {
+			@PathVariable("idUsuario") Long idUsuario,
+			@Valid @RequestBody AtualizaMoradorDto moradorDto, BindingResult result) throws NoSuchAlgorithmException {
 		
 		log.info("Buscando acessos do usuário {}", idUsuario);
 		

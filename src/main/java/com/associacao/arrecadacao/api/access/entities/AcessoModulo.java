@@ -12,20 +12,19 @@ import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "acesso_funcionalidade")
-public class AcessoFuncionalidade implements Serializable {
+@Table(name = "acesso_modulo")
+public class AcessoModulo implements Serializable {
 	
 	private static final long serialVersionUID = 6524560251526772839L;
 	
 	private Long id;
 	private Long idUsuario;
 	private Long idModulo;
-	private Long idFuncionalidade;
 	private boolean acesso;
 	private Date dataCadastro;
 	private Long posicao;
 	
-	public AcessoFuncionalidade() {
+	public AcessoModulo() {
 		
 	}
 
@@ -55,15 +54,6 @@ public class AcessoFuncionalidade implements Serializable {
 
 	public void setIdModulo(Long idModulo) {
 		this.idModulo = idModulo;
-	}
-	
-	@Column(name = "id_funcionalidade", nullable = false)
-	public Long getIdFuncionalidade() {
-		return idFuncionalidade;
-	}
-
-	public void setIdFuncionalidade(Long id_funcionalidade) {
-		this.idFuncionalidade = id_funcionalidade;
 	}
 	
     @Column(name = "acesso", nullable = false)
