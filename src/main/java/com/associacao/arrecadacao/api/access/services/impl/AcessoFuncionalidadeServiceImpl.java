@@ -10,50 +10,50 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import com.associacao.arrecadacao.api.access.entities.Acesso;
+import com.associacao.arrecadacao.api.access.entities.AcessoFuncionalidade;
 import com.associacao.arrecadacao.api.access.repositories.AcessoRepository;
-import com.associacao.arrecadacao.api.access.services.AcessoService;
+import com.associacao.arrecadacao.api.access.services.AcessoFuncionalidadeService;
 
 @Service
-public class AcessoServiceImpl implements AcessoService {
+public class AcessoFuncionalidadeServiceImpl implements AcessoFuncionalidadeService {
 	
-	private static final Logger log = LoggerFactory.getLogger(AcessoServiceImpl.class);
+	private static final Logger log = LoggerFactory.getLogger(AcessoFuncionalidadeServiceImpl.class);
 	
 	@Autowired
 	private AcessoRepository acessoRepository;
 
 	@Override
-	public List<Acesso> persistir(List<Acesso> acessos) {
+	public List<AcessoFuncionalidade> persistir(List<AcessoFuncionalidade> acessos) {
 		log.info("Persistindo acessos");
 		return this.acessoRepository.save(acessos);
 	}
 
 	@Override
-	public Page<Acesso> buscarPorUsuarioId(Long usuarioId, PageRequest pageRequest) {
+	public Page<AcessoFuncionalidade> buscarPorUsuarioId(Long usuarioId, PageRequest pageRequest) {
 		log.info("Buscando acessos por usuarioId", usuarioId);
 		return this.acessoRepository.findByIdUsuario(usuarioId, pageRequest);
 	}
 
 	@Override
-	public List<Acesso> buscarPorUsuarioId(Long usuarioId) {
+	public List<AcessoFuncionalidade> buscarPorUsuarioId(Long usuarioId) {
 		log.info("Buscando acessos por usuarioId", usuarioId);
 		return this.acessoRepository.findByIdUsuario(usuarioId);
 	}
 
 	@Override
-	public Optional<Acesso> buscarPorId(Long id) {
+	public Optional<AcessoFuncionalidade> buscarPorId(Long id) {
 		log.info("Buscando acesso por id", id);
 		return this.acessoRepository.findById(id);
 	}
 
 	@Override
-	public Page<Acesso> buscarTodos(PageRequest pageRequest) {
+	public Page<AcessoFuncionalidade> buscarTodos(PageRequest pageRequest) {
 		log.info("Buscando todos os acessos");
 		return this.acessoRepository.findAll(pageRequest);
 	}
 
 	@Override
-	public Optional<Acesso> buscarPorIdUsuarioAndIdModuloAndIdFuncionalidade(Long idUsuario, Long idModulo,
+	public Optional<AcessoFuncionalidade> buscarPorIdUsuarioAndIdModuloAndIdFuncionalidade(Long idUsuario, Long idModulo,
 			Long idFuncionalidade) {
 		log.info("Buscando acesso por id usuario, id módulo e id funcionalidade");
 		return this.acessoRepository.findByIdUsuarioAndIdModuloAndIdFuncionalidade(idUsuario, idModulo, idFuncionalidade);

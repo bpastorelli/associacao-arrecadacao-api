@@ -9,18 +9,18 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.associacao.arrecadacao.api.access.entities.Acesso;
+import com.associacao.arrecadacao.api.access.entities.AcessoFuncionalidade;
 
 @Repository
 @Transactional(readOnly = true)
-public interface AcessoRepository extends JpaRepository<Acesso, Long> {
+public interface AcessoRepository extends JpaRepository<AcessoFuncionalidade, Long> {
 	
-	List<Acesso> findByIdUsuario(Long idUsuario);
+	List<AcessoFuncionalidade> findByIdUsuario(Long idUsuario);
 	
-	Page<Acesso> findByIdUsuario(Long idUsuario, Pageable pageable);
+	Page<AcessoFuncionalidade> findByIdUsuario(Long idUsuario, Pageable pageable);
 	
-	Optional<Acesso> findById(Long id);
+	Optional<AcessoFuncionalidade> findById(Long id);
 	
-	Optional<Acesso> findByIdUsuarioAndIdModuloAndIdFuncionalidade(Long idUsuario, Long idModulo, Long idFuncionalidade);
+	Optional<AcessoFuncionalidade> findByIdUsuarioAndIdModuloAndIdFuncionalidade(Long idUsuario, Long idModulo, Long idFuncionalidade);
 
 }

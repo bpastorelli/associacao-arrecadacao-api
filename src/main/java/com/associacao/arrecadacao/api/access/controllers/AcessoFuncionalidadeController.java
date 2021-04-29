@@ -29,22 +29,22 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.associacao.arrecadacao.api.access.dtos.AtualizaAcessoDto;
 import com.associacao.arrecadacao.api.access.dtos.CadastroAcessoDto;
-import com.associacao.arrecadacao.api.access.entities.Acesso;
-import com.associacao.arrecadacao.api.access.services.AcessoService;
+import com.associacao.arrecadacao.api.access.entities.AcessoFuncionalidade;
+import com.associacao.arrecadacao.api.access.services.AcessoFuncionalidadeService;
 import com.associacao.arrecadacao.api.access.services.FuncionalidadeService;
 import com.associacao.arrecadacao.api.access.services.ModuloService;
 import com.associacao.arrecadacao.api.response.Response;
 import com.associacao.arrecadacao.api.services.MoradorService;
 
 @RestController
-@RequestMapping("/associados/acesso")
+@RequestMapping("/associados/acessoFuncionalidade")
 @CrossOrigin(origins = "*")
-public class AcessoController {
+public class AcessoFuncionalidadeController {
 	
-	private static final Logger log = LoggerFactory.getLogger(AcessoController.class);
+	private static final Logger log = LoggerFactory.getLogger(AcessoFuncionalidadeController.class);
 	
 	@Autowired
-	private AcessoService acessoService;
+	private AcessoFuncionalidadeService acessoFuncionalidadeService;
 	
 	@Autowired
 	private MoradorService moradorService;
@@ -55,7 +55,7 @@ public class AcessoController {
 	@Autowired
 	private FuncionalidadeService funcionalidadeService;
 	
-	public AcessoController() {
+	public AcessoFuncionalidadeController() {
 		
 	}
 	
@@ -64,9 +64,9 @@ public class AcessoController {
 									BindingResult result) throws NoSuchAlgorithmException {
 		
 		log.info("Cadastro de acessos: {}", cadastroAcessoDto.toString());
-		Response<List<Acesso>> response = new Response<List<Acesso>>();
+		Response<List<AcessoFuncionalidade>> response = new Response<List<AcessoFuncionalidade>>();
 		
-		List<Acesso> acessos = validarDadosPost(cadastroAcessoDto, result);
+		List<AcessoFuncionalidade> acessos = validarDadosPost(cadastroAcessoDto, result);
 		
 		if(result.hasErrors()) {
 			log.error("Erro validando dados para cadastro de acessos: {}", result.getAllErrors());
@@ -74,7 +74,7 @@ public class AcessoController {
 			return ResponseEntity.status(400).body(response.getErrors());
 		}
 		
-		acessos = this.acessoService.persistir(acessos);
+		acessos = this.acessoFuncionalidadeService.persistir(acessos);
 		
 		response.setData(acessos);
 		return ResponseEntity.status(HttpStatus.CREATED).body(response.getData());
@@ -92,12 +92,12 @@ public class AcessoController {
 		log.info("Buscando acessos..");
 		
 		PageRequest pageRequest = new PageRequest(pag, size, Direction.valueOf(dir), ord);
-		Page<Acesso> acessos = null;
+		Page<AcessoFuncionalidade> acessos = null;
 		
 		if(idUsuario != 0 && idUsuario != null)
-			acessos =  acessoService.buscarPorUsuarioId(idUsuario, pageRequest);
+			acessos =  acessoFuncionalidadeService.buscarPorUsuarioId(idUsuario, pageRequest);
 		else
-			acessos = acessoService.buscarTodos(pageRequest);
+			acessos = acessoFuncionalidadeService.buscarTodos(pageRequest);
 		
 		if (acessos.getSize() == 0) {
 			log.info("A consulta não retornou dados");
@@ -115,9 +115,9 @@ public class AcessoController {
 									BindingResult result) throws NoSuchAlgorithmException {
 		
 		log.info("Aatualização de acessos: {}", acessoRequestBody.toString());
-		Response<List<Acesso>> response = new Response<List<Acesso>>();
+		Response<List<AcessoFuncionalidade>> response = new Response<List<AcessoFuncionalidade>>();
 		
-		List<Acesso> acessos = this.acessoService.buscarPorUsuarioId(idUsuario);
+		List<AcessoFuncionalidade> acessos = this.acessoFuncionalidadeService.buscarPorUsuarioId(idUsuario);
 		acessos = validarDadosPut(acessoRequestBody, acessos, idUsuario, result);
 		
 		if(result.hasErrors()) {
@@ -126,16 +126,16 @@ public class AcessoController {
 			return ResponseEntity.status(400).body(response.getErrors());
 		}
 			
-		acessos = this.acessoService.persistir(acessos);
+		acessos = this.acessoFuncionalidadeService.persistir(acessos);
 		
 		response.setData(acessos);
 		return ResponseEntity.status(HttpStatus.OK).body(response.getData());
 		
 	}
 	
-	public List<Acesso> validarDadosPost(List<CadastroAcessoDto> listDto, BindingResult result) {
+	public List<AcessoFuncionalidade> validarDadosPost(List<CadastroAcessoDto> listDto, BindingResult result) {
 		
-		List<Acesso> listAcesso = new ArrayList<Acesso>();
+		List<AcessoFuncionalidade> listAcesso = new ArrayList<AcessoFuncionalidade>();
 		
 		listDto.forEach(d -> {
 			
@@ -151,12 +151,12 @@ public class AcessoController {
 				result.addError(new ObjectError("funcionalidade", "Funcionalidade inexistente para o código " + d.getIdFuncionalidade()));
 			}
 			
-			if(this.acessoService.buscarPorIdUsuarioAndIdModuloAndIdFuncionalidade(d.getIdUsuario(), d.getIdModulo(), d.getIdFuncionalidade()).isPresent()) {
+			if(this.acessoFuncionalidadeService.buscarPorIdUsuarioAndIdModuloAndIdFuncionalidade(d.getIdUsuario(), d.getIdModulo(), d.getIdFuncionalidade()).isPresent()) {
 				result.addError(new ObjectError("acesso", "Funcionalidade e módulo já existente para este usuário"));
 			}
 			
 			if(!result.hasErrors()) {
-				Acesso acesso = new Acesso();
+				AcessoFuncionalidade acesso = new AcessoFuncionalidade();
 				acesso.setIdUsuario(d.getIdUsuario());	
 				acesso.setIdModulo(d.getIdModulo());
 				acesso.setIdFuncionalidade(d.getIdFuncionalidade());
@@ -170,9 +170,9 @@ public class AcessoController {
 		
 	}
 	
-	public List<Acesso> validarDadosPut(List<AtualizaAcessoDto> listDto, List<Acesso> listAcessos, Long idUsuario, BindingResult result) {
+	public List<AcessoFuncionalidade> validarDadosPut(List<AtualizaAcessoDto> listDto, List<AcessoFuncionalidade> listAcessos, Long idUsuario, BindingResult result) {
 		
-		List<Acesso> listAcessosPut = new ArrayList<Acesso>();
+		List<AcessoFuncionalidade> listAcessosPut = new ArrayList<AcessoFuncionalidade>();
 		
 		listDto.forEach(d -> {
 			
@@ -199,15 +199,15 @@ public class AcessoController {
 		
 	}
 	
-	public List<Acesso> atualizaAcesso(List<Acesso> acessos, List<AtualizaAcessoDto> acessosDto, Long idUsuario) {
+	public List<AcessoFuncionalidade> atualizaAcesso(List<AcessoFuncionalidade> acessos, List<AtualizaAcessoDto> acessosDto, Long idUsuario) {
 		
-		List<Acesso> listAcessos = new ArrayList<Acesso>();
+		List<AcessoFuncionalidade> listAcessos = new ArrayList<AcessoFuncionalidade>();
 		
 		acessosDto.forEach(a -> {
 			
-			Acesso acesso = new Acesso();
+			AcessoFuncionalidade acesso = new AcessoFuncionalidade();
 			
-			List<Acesso> result = acessos.stream()
+			List<AcessoFuncionalidade> result = acessos.stream()
 						.filter(item -> item.getIdFuncionalidade() == a.getIdFuncionalidade())
 						.collect(Collectors.toList());
 			

@@ -13,7 +13,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "acesso")
-public class Acesso implements Serializable {
+public class AcessoFuncionalidade implements Serializable {
 	
 	private static final long serialVersionUID = 6524560251526772839L;
 	
@@ -25,7 +25,7 @@ public class Acesso implements Serializable {
 	private Date dataCadastro;
 	private Long posicao;
 	
-	public Acesso() {
+	public AcessoFuncionalidade() {
 		
 	}
 

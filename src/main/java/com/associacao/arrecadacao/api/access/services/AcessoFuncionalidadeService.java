@@ -6,9 +6,9 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
-import com.associacao.arrecadacao.api.access.entities.Acesso;
+import com.associacao.arrecadacao.api.access.entities.AcessoFuncionalidade;
 
-public interface AcessoService {
+public interface AcessoFuncionalidadeService {
 	
 	/**
 	 * Cadastra os vinculos de acessos
@@ -16,7 +16,7 @@ public interface AcessoService {
 	 * @param acessos
 	 * @return List<Acesso>
 	 */
-	List<Acesso> persistir(List<Acesso> acessos);
+	List<AcessoFuncionalidade> persistir(List<AcessoFuncionalidade> acessos);
 	
 	/**
 	 * Busca todos os acessos por usuarioId
@@ -25,7 +25,7 @@ public interface AcessoService {
 	 * @param pageRequest
 	 * @return Page<Acesso>
 	 */
-	Page<Acesso> buscarPorUsuarioId(Long usuarioId, PageRequest pageRequest);
+	Page<AcessoFuncionalidade> buscarPorUsuarioId(Long usuarioId, PageRequest pageRequest);
 	
 	/**
 	 * Busca todos os acessos por usuarioId
@@ -33,7 +33,7 @@ public interface AcessoService {
 	 * @param pageRequest
 	 * @return Page<Acesso>
 	 */
-	Page<Acesso> buscarTodos(PageRequest pageRequest);
+	Page<AcessoFuncionalidade> buscarTodos(PageRequest pageRequest);
 	
 	/**
 	 * Busca tosos os acessos por usuarioId
@@ -41,7 +41,7 @@ public interface AcessoService {
 	 * @param usuarioId
 	 * @return List<Acesso>
 	 */
-	List<Acesso> buscarPorUsuarioId(Long usuarioId);
+	List<AcessoFuncionalidade> buscarPorUsuarioId(Long usuarioId);
 	
 	/**
 	 * Busca um registro de acesso por id
@@ -49,7 +49,7 @@ public interface AcessoService {
 	 * @param id
 	 * @return Optional<Acesso>
 	 */
-	Optional<Acesso> buscarPorId(Long id);
+	Optional<AcessoFuncionalidade> buscarPorId(Long id);
 	
 	/**
 	 * Busca um acesso por id Usuario, id Modulo e id Funcionalidade
@@ -59,7 +59,7 @@ public interface AcessoService {
 	 * @param idFuncionalidade
 	 * @return Optional<Acesso>
 	 */
-	Optional<Acesso> buscarPorIdUsuarioAndIdModuloAndIdFuncionalidade(Long idUsuario, Long idModulo, Long idFuncionalidade);
+	Optional<AcessoFuncionalidade> buscarPorIdUsuarioAndIdModuloAndIdFuncionalidade(Long idUsuario, Long idModulo, Long idFuncionalidade);
 	
 
 }
