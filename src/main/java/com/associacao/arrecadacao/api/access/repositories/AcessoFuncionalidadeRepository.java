@@ -13,7 +13,7 @@ import com.associacao.arrecadacao.api.access.entities.AcessoFuncionalidade;
 
 @Repository
 @Transactional(readOnly = true)
-public interface AcessoRepository extends JpaRepository<AcessoFuncionalidade, Long> {
+public interface AcessoFuncionalidadeRepository extends JpaRepository<AcessoFuncionalidade, Long> {
 	
 	List<AcessoFuncionalidade> findByIdUsuario(Long idUsuario);
 	

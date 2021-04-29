@@ -2,14 +2,14 @@ package com.associacao.arrecadacao.api.access.dtos;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
-public class AtualizaAcessoDto {
+public class AtualizaAcessoFuncionalidadeDto {
 	
 	
 	private Long idModulo;
 	private Long idFuncionalidade;
 	private boolean acesso;
 	
-	public AtualizaAcessoDto() {
+	public AtualizaAcessoFuncionalidadeDto() {
 		
 	}
 

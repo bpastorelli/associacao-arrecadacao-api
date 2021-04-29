@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.associacao.arrecadacao.api.access.dtos.AtualizaAcessoDto;
+import com.associacao.arrecadacao.api.access.dtos.AtualizaAcessoFuncionalidadeDto;
 import com.associacao.arrecadacao.api.access.dtos.CadastroAcessoDto;
 import com.associacao.arrecadacao.api.access.entities.AcessoFuncionalidade;
 import com.associacao.arrecadacao.api.access.services.AcessoFuncionalidadeService;
@@ -108,10 +108,30 @@ public class AcessoFuncionalidadeController {
 		
 	}
 	
+	@GetMapping()
+	public ResponseEntity<?> buscarAcessosPorUsuario(			
+			@RequestParam(value = "idUsuario", defaultValue = "0") Long idUsuario) throws NoSuchAlgorithmException {
+		
+		log.info("Buscando acessos do usuário {}", idUsuario);
+		
+		List<AcessoFuncionalidade> acessos = new ArrayList<AcessoFuncionalidade>();
+		
+		if(idUsuario != 0 && idUsuario != null)
+			acessos =  acessoFuncionalidadeService.buscarPorUsuarioId(idUsuario);
+		
+		if (acessos.size() == 0) {
+			log.info("A consulta não retornou dados");
+			return ResponseEntity.status(404).body("A consulta não retornou dados!");
+		}
+		
+		return ResponseEntity.status(HttpStatus.OK).body(acessos);
+		
+	}
+	
 	@PutMapping(value = "/idUsuario/{idUsuario}")
 	public ResponseEntity<?> atualizar(	
 									@PathVariable("idUsuario") Long idUsuario,
-									@Valid @RequestBody List<AtualizaAcessoDto> acessoRequestBody,
+									@Valid @RequestBody List<AtualizaAcessoFuncionalidadeDto> acessoRequestBody,
 									BindingResult result) throws NoSuchAlgorithmException {
 		
 		log.info("Aatualização de acessos: {}", acessoRequestBody.toString());
@@ -170,7 +190,7 @@ public class AcessoFuncionalidadeController {
 		
 	}
 	
-	public List<AcessoFuncionalidade> validarDadosPut(List<AtualizaAcessoDto> listDto, List<AcessoFuncionalidade> listAcessos, Long idUsuario, BindingResult result) {
+	public List<AcessoFuncionalidade> validarDadosPut(List<AtualizaAcessoFuncionalidadeDto> listDto, List<AcessoFuncionalidade> listAcessos, Long idUsuario, BindingResult result) {
 		
 		List<AcessoFuncionalidade> listAcessosPut = new ArrayList<AcessoFuncionalidade>();
 		
@@ -199,7 +219,7 @@ public class AcessoFuncionalidadeController {
 		
 	}
 	
-	public List<AcessoFuncionalidade> atualizaAcesso(List<AcessoFuncionalidade> acessos, List<AtualizaAcessoDto> acessosDto, Long idUsuario) {
+	public List<AcessoFuncionalidade> atualizaAcesso(List<AcessoFuncionalidade> acessos, List<AtualizaAcessoFuncionalidadeDto> acessosDto, Long idUsuario) {
 		
 		List<AcessoFuncionalidade> listAcessos = new ArrayList<AcessoFuncionalidade>();
 		
