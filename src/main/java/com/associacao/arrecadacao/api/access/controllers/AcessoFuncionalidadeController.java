@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.associacao.arrecadacao.api.access.dtos.AtualizaAcessoFuncionalidadeDto;
-import com.associacao.arrecadacao.api.access.dtos.CadastroAcessoDto;
+import com.associacao.arrecadacao.api.access.dtos.CadastroAcessoFuncionalidadeDto;
 import com.associacao.arrecadacao.api.access.entities.AcessoFuncionalidade;
 import com.associacao.arrecadacao.api.access.services.AcessoFuncionalidadeService;
 import com.associacao.arrecadacao.api.access.services.FuncionalidadeService;
@@ -61,7 +61,7 @@ public class AcessoFuncionalidadeController {
 	}
 	
 	@PostMapping(value = "/incluir")
-	public ResponseEntity<?> cadastrar(@Valid @RequestBody List<CadastroAcessoDto> cadastroAcessoDto, 
+	public ResponseEntity<?> cadastrar(@Valid @RequestBody List<CadastroAcessoFuncionalidadeDto> cadastroAcessoDto, 
 									BindingResult result) throws NoSuchAlgorithmException {
 		
 		log.info("Cadastro de acessos: {}", cadastroAcessoDto.toString());
@@ -155,7 +155,7 @@ public class AcessoFuncionalidadeController {
 		
 	}
 	
-	public List<AcessoFuncionalidade> validarDadosPost(List<CadastroAcessoDto> listDto, BindingResult result) {
+	public List<AcessoFuncionalidade> validarDadosPost(List<CadastroAcessoFuncionalidadeDto> listDto, BindingResult result) {
 		
 		List<AcessoFuncionalidade> listAcesso = new ArrayList<AcessoFuncionalidade>();
 		
