@@ -28,7 +28,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.associacao.arrecadacao.api.access.dtos.AtualizaAcessoModuloDto;
-import com.associacao.arrecadacao.api.access.dtos.CadastroAcessoFuncionalidadeDto;
 import com.associacao.arrecadacao.api.access.dtos.CadastroAcessoModuloDto;
 import com.associacao.arrecadacao.api.access.dtos.CadastroAcessoModuloResponseDto;
 import com.associacao.arrecadacao.api.access.entities.AcessoFuncionalidade;
@@ -73,7 +72,7 @@ public class AcessoModuloController {
 									BindingResult result) throws NoSuchAlgorithmException {
 		
 		log.info("Cadastro de acessos: {}", cadastroAcessoDto.toString());
-		Response<List<CadastroAcessoModuloDto>> response = new Response<List<CadastroAcessoModuloDto>>();
+		Response<List<CadastroAcessoModuloResponseDto>> response = new Response<List<CadastroAcessoModuloResponseDto>>();
 		
 		List<AcessoModulo> acessosModulo = validarDadosPost(cadastroAcessoDto, result);
 		List<AcessoFuncionalidade> acessosFuncionalidade = validarDadosFuncionalidadePost(cadastroAcessoDto, result);
@@ -87,7 +86,7 @@ public class AcessoModuloController {
 		acessosModulo = this.acessoModuloService.persistir(acessosModulo);
 		acessosFuncionalidade = this.acessoFuncionalidadeService.persistir(acessosFuncionalidade);
 		
-		List<CadastroAcessoModuloDto> listResponse = new ArrayList<CadastroAcessoModuloDto>();
+		List<CadastroAcessoModuloResponseDto> listResponse = this.montaResponse(acessosModulo, acessosFuncionalidade);
 		
 		response.setData(listResponse);
 		return ResponseEntity.status(HttpStatus.CREATED).body(response.getData());
@@ -182,7 +181,7 @@ public class AcessoModuloController {
 			}
 			
 			if(this.acessoModuloService.buscarPorIdUsuarioAndIdModulo(d.getIdUsuario(), d.getIdModulo()).isPresent()) {
-				result.addError(new ObjectError("acesso", "Funcionalidade e módulo já existente para este usuário"));
+				result.addError(new ObjectError("acesso", "Módulo " + d.getIdModulo() + " já existente para este usuário"));
 			}
 			
 			if(!result.hasErrors()) {
@@ -268,15 +267,15 @@ public class AcessoModuloController {
 		
 		List<AcessoFuncionalidade> listAcesso = new ArrayList<AcessoFuncionalidade>();
 		
-		listDto.forEach(d -> {
+		listDto.forEach(m -> {
 			
-			d.getFuncionalidades().forEach(f -> {
+			m.getFuncionalidades().forEach(f -> {
 				
-				if(!this.moradorService.buscarPorId(f.getIdUsuario()).isPresent()) {
+				if(!this.moradorService.buscarPorId(m.getIdUsuario()).isPresent()) {
 					result.addError(new ObjectError("morador", "Usuário inexistente para o código " + f.getIdUsuario()));
 				}
 				
-				if(!this.moduloService.buscarPorId(f.getIdModulo()).isPresent()) {
+				if(!this.moduloService.buscarPorId(m.getIdModulo()).isPresent()) {
 					result.addError(new ObjectError("módulo", "Módulo inexistente para o código " + f.getIdModulo()));
 				}
 				
@@ -285,13 +284,13 @@ public class AcessoModuloController {
 				}
 				
 				if(this.acessoFuncionalidadeService.buscarPorIdUsuarioAndIdModuloAndIdFuncionalidade(f.getIdUsuario(), f.getIdModulo(), f.getIdFuncionalidade()).isPresent()) {
-					result.addError(new ObjectError("acesso", "Funcionalidade e módulo já existente para este usuário"));
+					result.addError(new ObjectError("acesso", "Funcionalidade " + f.getIdFuncionalidade() + " e módulo já existente para este usuário"));
 				}
 				
 				if(!result.hasErrors()) {
 					AcessoFuncionalidade acesso = new AcessoFuncionalidade();
-					acesso.setIdUsuario(f.getIdUsuario());	
-					acesso.setIdModulo(f.getIdModulo());
+					acesso.setIdUsuario(m.getIdUsuario());	
+					acesso.setIdModulo(m.getIdModulo());
 					acesso.setIdFuncionalidade(f.getIdFuncionalidade());
 					acesso.setAcesso(f.isAcesso());
 					listAcesso.add(acesso);
@@ -305,7 +304,7 @@ public class AcessoModuloController {
 		
 	}
 	
-	public List<CadastroAcessoModuloResponseDto> montaResponse(List<CadastroAcessoModuloDto> modulos, List<CadastroAcessoFuncionalidadeDto> funcionalidades){
+	public List<CadastroAcessoModuloResponseDto> montaResponse(List<AcessoModulo> modulos, List<AcessoFuncionalidade> funcionalidades){
 		
 		List<CadastroAcessoModuloResponseDto> listResponse = new ArrayList<CadastroAcessoModuloResponseDto>();
 		
