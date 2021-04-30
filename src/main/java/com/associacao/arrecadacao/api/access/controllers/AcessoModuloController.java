@@ -28,9 +28,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.associacao.arrecadacao.api.access.dtos.AtualizaAcessoModuloDto;
+import com.associacao.arrecadacao.api.access.dtos.CadastroAcessoFuncionalidadeDto;
 import com.associacao.arrecadacao.api.access.dtos.CadastroAcessoModuloDto;
+import com.associacao.arrecadacao.api.access.dtos.CadastroAcessoModuloResponseDto;
+import com.associacao.arrecadacao.api.access.entities.AcessoFuncionalidade;
 import com.associacao.arrecadacao.api.access.entities.AcessoModulo;
+import com.associacao.arrecadacao.api.access.services.AcessoFuncionalidadeService;
 import com.associacao.arrecadacao.api.access.services.AcessoModuloService;
+import com.associacao.arrecadacao.api.access.services.FuncionalidadeService;
 import com.associacao.arrecadacao.api.access.services.ModuloService;
 import com.associacao.arrecadacao.api.dtos.AtualizaMoradorDto;
 import com.associacao.arrecadacao.api.response.Response;
@@ -50,7 +55,13 @@ public class AcessoModuloController {
 	private MoradorService moradorService;
 	
 	@Autowired
+	private FuncionalidadeService funcionalidadeService;
+	
+	@Autowired
 	private AcessoModuloService acessoModuloService;
+	
+	@Autowired
+	private AcessoFuncionalidadeService acessoFuncionalidadeService;
 	
 	
 	public AcessoModuloController() {
@@ -62,9 +73,10 @@ public class AcessoModuloController {
 									BindingResult result) throws NoSuchAlgorithmException {
 		
 		log.info("Cadastro de acessos: {}", cadastroAcessoDto.toString());
-		Response<List<AcessoModulo>> response = new Response<List<AcessoModulo>>();
+		Response<List<CadastroAcessoModuloDto>> response = new Response<List<CadastroAcessoModuloDto>>();
 		
-		List<AcessoModulo> acessos = validarDadosPost(cadastroAcessoDto, result);
+		List<AcessoModulo> acessosModulo = validarDadosPost(cadastroAcessoDto, result);
+		List<AcessoFuncionalidade> acessosFuncionalidade = validarDadosFuncionalidadePost(cadastroAcessoDto, result);
 		
 		if(result.hasErrors()) {
 			log.error("Erro validando dados para cadastro de acessos: {}", result.getAllErrors());
@@ -72,9 +84,12 @@ public class AcessoModuloController {
 			return ResponseEntity.status(400).body(response.getErrors());
 		}
 		
-		acessos = this.acessoModuloService.persistir(acessos);
+		acessosModulo = this.acessoModuloService.persistir(acessosModulo);
+		acessosFuncionalidade = this.acessoFuncionalidadeService.persistir(acessosFuncionalidade);
 		
-		response.setData(acessos);
+		List<CadastroAcessoModuloDto> listResponse = new ArrayList<CadastroAcessoModuloDto>();
+		
+		response.setData(listResponse);
 		return ResponseEntity.status(HttpStatus.CREATED).body(response.getData());
 		
 	}
@@ -246,6 +261,61 @@ public class AcessoModuloController {
 		});
 		
 		return listAcessos;
+		
+	}
+	
+	public List<AcessoFuncionalidade> validarDadosFuncionalidadePost(List<CadastroAcessoModuloDto> listDto, BindingResult result) {
+		
+		List<AcessoFuncionalidade> listAcesso = new ArrayList<AcessoFuncionalidade>();
+		
+		listDto.forEach(d -> {
+			
+			d.getFuncionalidades().forEach(f -> {
+				
+				if(!this.moradorService.buscarPorId(f.getIdUsuario()).isPresent()) {
+					result.addError(new ObjectError("morador", "Usuário inexistente para o código " + f.getIdUsuario()));
+				}
+				
+				if(!this.moduloService.buscarPorId(f.getIdModulo()).isPresent()) {
+					result.addError(new ObjectError("módulo", "Módulo inexistente para o código " + f.getIdModulo()));
+				}
+				
+				if(!this.funcionalidadeService.buscarPorId(f.getIdFuncionalidade()).isPresent()) {
+					result.addError(new ObjectError("funcionalidade", "Funcionalidade inexistente para o código " + f.getIdFuncionalidade()));
+				}
+				
+				if(this.acessoFuncionalidadeService.buscarPorIdUsuarioAndIdModuloAndIdFuncionalidade(f.getIdUsuario(), f.getIdModulo(), f.getIdFuncionalidade()).isPresent()) {
+					result.addError(new ObjectError("acesso", "Funcionalidade e módulo já existente para este usuário"));
+				}
+				
+				if(!result.hasErrors()) {
+					AcessoFuncionalidade acesso = new AcessoFuncionalidade();
+					acesso.setIdUsuario(f.getIdUsuario());	
+					acesso.setIdModulo(f.getIdModulo());
+					acesso.setIdFuncionalidade(f.getIdFuncionalidade());
+					acesso.setAcesso(f.isAcesso());
+					listAcesso.add(acesso);
+				}
+				
+			});
+			
+		});
+		
+		return listAcesso;
+		
+	}
+	
+	public List<CadastroAcessoModuloResponseDto> montaResponse(List<CadastroAcessoModuloDto> modulos, List<CadastroAcessoFuncionalidadeDto> funcionalidades){
+		
+		List<CadastroAcessoModuloResponseDto> listResponse = new ArrayList<CadastroAcessoModuloResponseDto>();
+		
+		CadastroAcessoModuloResponseDto dto = new CadastroAcessoModuloResponseDto();
+		dto.setModulos(modulos);
+		dto.setFuncionalidades(funcionalidades);
+		
+		listResponse.add(dto);
+		
+		return listResponse;
 		
 	}
 	

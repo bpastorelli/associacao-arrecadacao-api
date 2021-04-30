@@ -1,5 +1,9 @@
 package com.associacao.arrecadacao.api.access.dtos;
 
+import java.util.List;
+
+import javax.validation.constraints.Size;
+
 import org.hibernate.validator.constraints.NotEmpty;
 
 public class CadastroAcessoModuloDto {
@@ -7,6 +11,7 @@ public class CadastroAcessoModuloDto {
 	private Long idUsuario;
 	private Long idModulo;
 	private boolean acesso;
+	private List<CadastroAcessoFuncionalidadeDto> funcionalidades;
 	
 	public CadastroAcessoModuloDto() {
 		
@@ -36,6 +41,15 @@ public class CadastroAcessoModuloDto {
 
 	public void setAcesso(boolean acesso) {
 		this.acesso = acesso;
+	}
+	
+	@Size(min = 1, message = "Você deve incluir ao menos uma funcionalidade.")
+	public List<CadastroAcessoFuncionalidadeDto> getFuncionalidades() {
+		return funcionalidades;
+	}
+
+	public void setFuncionalidades(List<CadastroAcessoFuncionalidadeDto> funcionalidades) {
+		this.funcionalidades = funcionalidades;
 	}
 
 }
