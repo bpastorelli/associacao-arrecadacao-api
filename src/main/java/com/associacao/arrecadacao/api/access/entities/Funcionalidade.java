@@ -69,4 +69,5 @@ public class Funcionalidade implements Serializable {
         posicao = status;
     }
 
+
 }
