@@ -37,6 +37,14 @@ public interface ModuloService {
 	Page<Modulo> buscarPorDescricao(String descricao, PageRequest pageRequest);
 	
 	/**
+	 * Buscar por descrição
+	 * 
+	 * @param descricao
+	 * @return Optional<Modulo>
+	 */
+	Optional<Modulo> buscarPorDescricao(String descricao);
+	
+	/**
 	 * Buscar modulo por id
 	 * 
 	 * @param id

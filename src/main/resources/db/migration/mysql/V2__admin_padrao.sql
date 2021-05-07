@@ -16,14 +16,14 @@ VALUES (NULL, 'Moradores', '\moradores', 1);
 INSERT INTO `modulo` (`id`, `descricao`, `path_modulo`, `posicao`)
 VALUES (NULL, 'Residencias', '\residencias', 1);
 
-INSERT INTO `funcionalidade` (`id`, `descricao`, `path_funcionalidade`, `posicao`)
-VALUES (NULL, 'Residencias', '\residencias', 1);
+INSERT INTO `modulo` (`id`, `descricao`, `path_modulo`, `posicao`)
+VALUES (NULL, 'Veiculos', '\veiculos', 1);
 
-INSERT INTO `funcionalidade` (`id`, `descricao`, `path_funcionalidade`, `posicao`)
-VALUES (NULL, 'Moradores', '\moradores', 1);
+INSERT INTO `modulo` (`id`, `descricao`, `path_modulo`, `posicao`)
+VALUES (NULL, 'Visitante', '\visitantes', 1);
 
-INSERT INTO `funcionalidade` (`id`, `descricao`, `path_funcionalidade`, `posicao`)
-VALUES (NULL, 'Visitas', '\visitas', 1);
+INSERT INTO `funcionalidade` (`id`, `id_modulo`, `descricao`, `path_funcionalidade`, `posicao`)
+VALUES (NULL, 1, 'Incluir', '\morador\novo', 1);
 
 INSERT INTO `acesso_modulo` (`id`, `id_usuario`,`id_modulo`, `acesso`, `data_cadastro`, `posicao`)
 VALUES (NULL, 1, 1, true, CURRENT_DATE(), 1);

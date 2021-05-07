@@ -123,6 +123,7 @@ CREATE TABLE `modulo` (
 
 CREATE TABLE `funcionalidade` (
 	`id` bigint(20) NOT NULL,
+	`id_modulo` bigint(20) NOT NULL,
 	`descricao` varchar(30)	NOT NULL,
 	`path_funcionalidade` varchar(40) NOT NULL,
 	`posicao` bigint(20) NOT NULL
