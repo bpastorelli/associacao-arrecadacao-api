@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.associacao.arrecadacao.api.access.dtos.AtualizaAcessoFuncionalidadeDto;
+import com.associacao.arrecadacao.api.access.dtos.AtualizaAcessoFuncionalidadePorModuloDto;
 import com.associacao.arrecadacao.api.access.dtos.CadastroAcessoFuncionalidadeDto;
 import com.associacao.arrecadacao.api.access.entities.AcessoFuncionalidade;
 import com.associacao.arrecadacao.api.access.services.AcessoFuncionalidadeService;
@@ -155,6 +156,32 @@ public class AcessoFuncionalidadeController {
 		
 	}
 	
+	@PutMapping(value = "/idUsuario/{idUsuario}/idModulo/{idModulo}")
+	public ResponseEntity<?> atualizarPorModulo(	
+									@PathVariable("idUsuario") Long idUsuario,
+									@PathVariable("idModulo") Long idModulo,
+									@Valid @RequestBody List<AtualizaAcessoFuncionalidadePorModuloDto> acessoRequestBody,
+									BindingResult result) throws NoSuchAlgorithmException {
+		
+		log.info("Aatualização de acessos: {}", acessoRequestBody.toString());
+		Response<List<AcessoFuncionalidade>> response = new Response<List<AcessoFuncionalidade>>();
+		
+		List<AcessoFuncionalidade> acessos = this.acessoFuncionalidadeService.buscarPorUsuarioIdAndModuloId(idUsuario, idModulo);
+		acessos = validarDadosPut(acessoRequestBody, acessos, idUsuario, idModulo, result);
+		
+		if(result.hasErrors()) {
+			log.error("Erro validando dados para cadastro de acessos: {}", result.getAllErrors());
+			result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
+			return ResponseEntity.status(400).body(response.getErrors());
+		}
+			
+		acessos = this.acessoFuncionalidadeService.persistir(acessos);
+		
+		response.setData(acessos);
+		return ResponseEntity.status(HttpStatus.OK).body(response.getData());
+		
+	}
+	
 	public List<AcessoFuncionalidade> validarDadosPost(List<CadastroAcessoFuncionalidadeDto> listDto, BindingResult result) {
 		
 		List<AcessoFuncionalidade> listAcesso = new ArrayList<AcessoFuncionalidade>();
@@ -221,6 +248,35 @@ public class AcessoFuncionalidadeController {
 		
 	}
 	
+	public List<AcessoFuncionalidade> validarDadosPut(List<AtualizaAcessoFuncionalidadePorModuloDto> listDto, List<AcessoFuncionalidade> listAcessos, Long idUsuario, Long idModulo, BindingResult result) {
+		
+		List<AcessoFuncionalidade> listAcessosPut = new ArrayList<AcessoFuncionalidade>();
+		
+		listDto.forEach(d -> {
+			
+			if(!this.moradorService.buscarPorId(idUsuario).isPresent()) {
+				result.addError(new ObjectError("morador", "Usuário inexistente para o código " + idUsuario));
+			}
+			
+			if(!this.moduloService.buscarPorId(idModulo).isPresent()) {
+				result.addError(new ObjectError("módulo", "Módulo inexistente para o código " + idModulo));
+			}
+			
+			if(!this.funcionalidadeService.buscarPorId(d.getIdFuncionalidade()).isPresent()) {
+				result.addError(new ObjectError("funcionalidade", "Funcionalidade inexistente para o código " + d.getIdFuncionalidade()));
+			}
+			
+		});
+		
+		//Se não houverem erros monta a lista de persistencia
+		if(!result.hasErrors()) {
+			listAcessosPut = this.atualizaAcesso(listAcessos, listDto, idUsuario, idModulo);
+		}
+		
+		return listAcessosPut;
+		
+	}
+	
 	public List<AcessoFuncionalidade> atualizaAcesso(List<AcessoFuncionalidade> acessos, List<AtualizaAcessoFuncionalidadeDto> acessosDto, Long idUsuario) {
 		
 		List<AcessoFuncionalidade> listAcessos = new ArrayList<AcessoFuncionalidade>();
@@ -250,6 +306,48 @@ public class AcessoFuncionalidadeController {
 				acesso.setIdUsuario(idUsuario);
 				acesso.setIdFuncionalidade(a.getIdFuncionalidade());
 				acesso.setIdModulo(a.getIdModulo());
+				acesso.setAcesso(a.isAcesso());
+				acesso.setDataCadastro(new Date());
+				
+				listAcessos.add(acesso);
+				
+			}			
+			
+		});
+		
+		return listAcessos;
+		
+	}
+	
+	public List<AcessoFuncionalidade> atualizaAcesso(List<AcessoFuncionalidade> acessos, List<AtualizaAcessoFuncionalidadePorModuloDto> acessosDto, Long idUsuario, Long idModulo) {
+		
+		List<AcessoFuncionalidade> listAcessos = new ArrayList<AcessoFuncionalidade>();
+		
+		acessosDto.forEach(a -> {
+			
+			AcessoFuncionalidade acesso = new AcessoFuncionalidade();
+			
+			List<AcessoFuncionalidade> result = acessos.stream()
+						.filter(item -> item.getIdFuncionalidade() == a.getIdFuncionalidade())
+						.collect(Collectors.toList());
+			
+			if(result.size() > 0) {	
+			
+				acesso.setId(result.get(0).getId());
+				acesso.setIdUsuario(result.get(0).getIdUsuario());
+				acesso.setIdFuncionalidade(result.get(0).getIdFuncionalidade());
+				acesso.setIdModulo(result.get(0).getIdModulo());
+				acesso.setDataCadastro(result.get(0).getDataCadastro());
+				acesso.setPosicao(result.get(0).getPosicao());
+				acesso.setAcesso(a.isAcesso());
+				
+				listAcessos.add(acesso);
+				
+			}else {
+				
+				acesso.setIdUsuario(idUsuario);
+				acesso.setIdFuncionalidade(a.getIdFuncionalidade());
+				acesso.setIdModulo(idModulo);
 				acesso.setAcesso(a.isAcesso());
 				acesso.setDataCadastro(new Date());
 				

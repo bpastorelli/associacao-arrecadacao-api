@@ -36,12 +36,21 @@ public interface AcessoFuncionalidadeService {
 	Page<AcessoFuncionalidade> buscarTodos(PageRequest pageRequest);
 	
 	/**
-	 * Busca tosos os acessos por usuarioId
+	 * Busca todos os acessos por usuarioId
 	 * 
 	 * @param usuarioId
 	 * @return List<Acesso>
 	 */
 	List<AcessoFuncionalidade> buscarPorUsuarioId(Long usuarioId);
+	
+	/**
+	 * Busca todos os acessos por usuarioId e moduloId
+	 * 
+	 * @param usuarioId
+	 * @param moduloId
+	 * @return List<AcessoFuncionalidade>
+	 */
+	List<AcessoFuncionalidade> buscarPorUsuarioIdAndModuloId(Long usuarioId, Long moduloId);
 	
 	/**
 	 * Busca um registro de acesso por id

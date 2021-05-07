@@ -59,4 +59,10 @@ public class AcessoFuncionalidadeServiceImpl implements AcessoFuncionalidadeServ
 		return this.acessoFuncionalidadeRepository.findByIdUsuarioAndIdModuloAndIdFuncionalidade(idUsuario, idModulo, idFuncionalidade);
 	}
 
+	@Override
+	public List<AcessoFuncionalidade> buscarPorUsuarioIdAndModuloId(Long usuarioId, Long moduloId) {
+		log.info("Buscando acessos por id usuário e id módulo");
+		return this.acessoFuncionalidadeRepository.findByIdUsuarioAndIdModulo(usuarioId, moduloId);
+	}
+
 }

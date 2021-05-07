@@ -17,6 +17,8 @@ public interface AcessoFuncionalidadeRepository extends JpaRepository<AcessoFunc
 	
 	List<AcessoFuncionalidade> findByIdUsuario(Long idUsuario);
 	
+	List<AcessoFuncionalidade> findByIdUsuarioAndIdModulo(Long idUsuario, Long idModulo);	
+	
 	Page<AcessoFuncionalidade> findByIdUsuario(Long idUsuario, Pageable pageable);
 	
 	Optional<AcessoFuncionalidade> findById(Long id);
