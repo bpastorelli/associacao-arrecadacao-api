@@ -8,6 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
@@ -19,7 +21,7 @@ public class AcessoModulo implements Serializable {
 	
 	private Long id;
 	private Long idUsuario;
-	private Long idModulo;
+	private Modulo modulo;
 	private boolean acesso;
 	private Date dataCadastro;
 	private Long posicao;
@@ -45,15 +47,6 @@ public class AcessoModulo implements Serializable {
 
 	public void setIdUsuario(Long id_usuario) {
 		this.idUsuario = id_usuario;
-	}
-
-    @Column(name = "id_modulo", nullable = false)
-	public Long getIdModulo() {
-		return idModulo;
-	}
-
-	public void setIdModulo(Long idModulo) {
-		this.idModulo = idModulo;
 	}
 	
     @Column(name = "acesso", nullable = false)
@@ -90,5 +83,15 @@ public class AcessoModulo implements Serializable {
         dataCadastro = atual;
         posicao = status;
     }
+
+	@ManyToOne
+	@JoinColumn(name="id_modulo")
+	public Modulo getModulo() {
+		return modulo;
+	}
+
+	public void setModulo(Modulo modulo) {
+		this.modulo = modulo;
+	}
 
 }

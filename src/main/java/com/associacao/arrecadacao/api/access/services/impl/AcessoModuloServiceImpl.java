@@ -55,7 +55,7 @@ public class AcessoModuloServiceImpl implements AcessoModuloService {
 	@Override
 	public Optional<AcessoModulo> buscarPorIdUsuarioAndIdModulo(Long idUsuario, Long idModulo) {
 		log.info("Buscando acesso por id usuario, id módulo e id funcionalidade");
-		return this.acessoModuloRepository.findByIdUsuarioAndIdModulo(idUsuario, idModulo);
+		return this.acessoModuloRepository.findByIdUsuarioAndModuloId(idUsuario, idModulo);
 	}
 
 }

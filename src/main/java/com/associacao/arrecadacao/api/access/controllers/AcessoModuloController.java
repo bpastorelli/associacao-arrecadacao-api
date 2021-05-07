@@ -32,6 +32,7 @@ import com.associacao.arrecadacao.api.access.dtos.CadastroAcessoModuloDto;
 import com.associacao.arrecadacao.api.access.dtos.CadastroAcessoModuloResponseDto;
 import com.associacao.arrecadacao.api.access.entities.AcessoFuncionalidade;
 import com.associacao.arrecadacao.api.access.entities.AcessoModulo;
+import com.associacao.arrecadacao.api.access.entities.Modulo;
 import com.associacao.arrecadacao.api.access.services.AcessoFuncionalidadeService;
 import com.associacao.arrecadacao.api.access.services.AcessoModuloService;
 import com.associacao.arrecadacao.api.access.services.FuncionalidadeService;
@@ -185,9 +186,11 @@ public class AcessoModuloController {
 			}
 			
 			if(!result.hasErrors()) {
+				Modulo modulo = new Modulo();
+				modulo.setId(d.getIdModulo());
 				AcessoModulo acesso = new AcessoModulo();
 				acesso.setIdUsuario(d.getIdUsuario());	
-				acesso.setIdModulo(d.getIdModulo());
+				acesso.setModulo(modulo);
 				acesso.setAcesso(d.isAcesso());
 				listAcesso.add(acesso);
 			}
@@ -232,14 +235,16 @@ public class AcessoModuloController {
 			AcessoModulo acesso = new AcessoModulo();
 			
 			List<AcessoModulo> result = acessos.stream()
-						.filter(item -> item.getIdModulo() == a.getIdModulo())
+						.filter(item -> item.getModulo().getId() == a.getIdModulo())
 						.collect(Collectors.toList());
 			
 			if(result.size() > 0) {	
-			
+				Modulo modulo = new Modulo();
+				modulo.setId(result.get(0).getId());
+				
 				acesso.setId(result.get(0).getId());
 				acesso.setIdUsuario(result.get(0).getIdUsuario());
-				acesso.setIdModulo(result.get(0).getIdModulo());
+				acesso.setModulo(modulo);
 				acesso.setDataCadastro(result.get(0).getDataCadastro());
 				acesso.setPosicao(result.get(0).getPosicao());
 				acesso.setAcesso(a.isAcesso());
@@ -247,9 +252,11 @@ public class AcessoModuloController {
 				listAcessos.add(acesso);
 				
 			}else {
+				Modulo modulo = new Modulo();
+				modulo.setId(a.getIdModulo());
 				
 				acesso.setIdUsuario(idUsuario);
-				acesso.setIdModulo(a.getIdModulo());
+				acesso.setModulo(modulo);
 				acesso.setAcesso(a.isAcesso());
 				acesso.setDataCadastro(new Date());
 				
@@ -304,11 +311,18 @@ public class AcessoModuloController {
 		
 	}
 	
-	public List<CadastroAcessoModuloResponseDto> montaResponse(List<AcessoModulo> modulos, List<AcessoFuncionalidade> funcionalidades){
+	public List<CadastroAcessoModuloResponseDto> montaResponse(List<AcessoModulo> acessosModulos, List<AcessoFuncionalidade> funcionalidades){
 		
 		List<CadastroAcessoModuloResponseDto> listResponse = new ArrayList<CadastroAcessoModuloResponseDto>();
 		
 		CadastroAcessoModuloResponseDto dto = new CadastroAcessoModuloResponseDto();
+		
+		List<Modulo> modulos = new ArrayList<Modulo>();
+		
+		acessosModulos.forEach(m -> {
+			modulos.add(m.getModulo());
+		});	
+		
 		dto.setModulos(modulos);
 		dto.setFuncionalidades(funcionalidades);
 		

@@ -21,6 +21,6 @@ public interface AcessoModuloRepository extends JpaRepository<AcessoModulo, Long
 	
 	Optional<AcessoModulo> findById(Long id);
 	
-	Optional<AcessoModulo> findByIdUsuarioAndIdModulo(Long idUsuario, Long idModulo);
+	Optional<AcessoModulo> findByIdUsuarioAndModuloId(Long idUsuario, Long idModulo);
 
 }
