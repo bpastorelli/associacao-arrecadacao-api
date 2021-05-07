@@ -124,7 +124,8 @@ public class AcessoModuloController {
 	@GetMapping(value = "/idUsuario/{idUsuario}")
 	public ResponseEntity<?> buscarAcessosPorUsuario(			
 			@PathVariable("idUsuario") Long idUsuario,
-			@Valid @RequestBody AtualizaMoradorDto moradorDto, BindingResult result) throws NoSuchAlgorithmException {
+			@Valid @RequestBody AtualizaMoradorDto moradorDto, 
+			BindingResult result) throws NoSuchAlgorithmException {
 		
 		log.info("Buscando acessos do usuário {}", idUsuario);
 		

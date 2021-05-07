@@ -10,16 +10,21 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.associacao.arrecadacao.api.access.dtos.AtualizaModuloDto;
@@ -88,6 +93,34 @@ public class ModuloController {
 		
 		response.setData(modulo.get());
 		return ResponseEntity.status(HttpStatus.OK).body(response.getData());
+		
+	}
+	
+	@GetMapping(value = "/filtro")
+	public ResponseEntity<?> buscarMoradoresFiltro(
+			@RequestParam(value = "id", defaultValue = "0") Long id,
+			@RequestParam(value = "descricao", defaultValue = "null") String descricao,
+			@RequestParam(value = "pag", defaultValue = "0") int pag,
+			@RequestParam(value = "ord", defaultValue = "id") String ord,
+			@RequestParam(value = "dir", defaultValue = "DESC") String dir,
+			@RequestParam(value = "size", defaultValue = "10") int size) throws NoSuchAlgorithmException {
+		
+		log.info("Buscando modulos...");
+		PageRequest pageRequest = new PageRequest(pag, size, Direction.valueOf(dir), ord);
+		
+		Page<Modulo> modulos = null;
+		
+		if(id == 0 && descricao.equals("null"))
+			modulos = this.moduloService.buscarTodos(pageRequest);
+		else 			
+			modulos = this.moduloService.buscarPorDescricao(descricao, pageRequest);
+		
+		if (modulos.getSize() == 0) {
+			log.info("A consulta não retornou dados");
+			return ResponseEntity.badRequest().body("A consulta não retornou dados!");
+		}
+		
+		return new ResponseEntity<>(modulos.getContent(), HttpStatus.OK);
 		
 	}
 	
