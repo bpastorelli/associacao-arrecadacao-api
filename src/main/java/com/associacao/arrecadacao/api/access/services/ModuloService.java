@@ -20,6 +20,14 @@ public interface ModuloService {
 	List<Modulo> persistir(List<Modulo> modulos);
 	
 	/**
+	 * Incluir um modulo
+	 * 
+	 * @param modulo
+	 * @return Optional<Modulo>
+	 */
+	Optional<Modulo> persistir(Modulo modulo);
+	
+	/**
 	 * Busca todos os registros de modulo
 	 * 
 	 * @param pageRequest

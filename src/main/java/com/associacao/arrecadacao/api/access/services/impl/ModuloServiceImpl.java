@@ -51,6 +51,12 @@ public class ModuloServiceImpl implements ModuloService {
 		log.info("Buscando módulo por descrição", descricao);
 		return this.moduloRepository.findByDescricao(descricao);
 	}
+
+	@Override
+	public Optional<Modulo> persistir(Modulo modulo) {
+		log.info("Persistindo módulo ", modulo.getDescricao());
+		return Optional.ofNullable(this.moduloRepository.save(modulo));
+	}
 	
 	
 
