@@ -56,20 +56,20 @@ public class Morador implements Serializable {
 
 	@Column(name = "nome", nullable = false)
 	public String getNome() {
-		return nome;
+		return nome.toUpperCase();
 	}
 
 	public void setNome(String nome) {
-		this.nome = nome;
+		this.nome = nome.toUpperCase();
 	}
 
 	@Column(name = "email", nullable = false)
 	public String getEmail() {
-		return email;
+		return email.toLowerCase();
 	}
 
 	public void setEmail(String email) {
-		this.email = email;
+		this.email = email.toLowerCase();
 	}
 
 	@Column(name = "cpf", nullable = true)
