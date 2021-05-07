@@ -97,7 +97,7 @@ public class ModuloController {
 	}
 	
 	@GetMapping(value = "/filtro")
-	public ResponseEntity<?> buscarMoradoresFiltro(
+	public ResponseEntity<?> buscarModuloFiltro(
 			@RequestParam(value = "id", defaultValue = "0") Long id,
 			@RequestParam(value = "descricao", defaultValue = "null") String descricao,
 			@RequestParam(value = "pag", defaultValue = "0") int pag,
